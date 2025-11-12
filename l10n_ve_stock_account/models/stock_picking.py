@@ -620,7 +620,7 @@ class StockPicking(models.Model):
                 picking.sale_id.is_consignation if picking.sale_id else False
             )
 
-    @api.depends("picking_type_id", "partner_id", "sale_id")
+    @api.depends("picking_type_id", "partner_id", "sale_id.is_consignation", "sale_id.partner_id")
     def _compute_location_id(self):
         for picking in self:
             picking = picking.with_company(picking.company_id)
@@ -839,7 +839,7 @@ class StockPicking(models.Model):
                     allowed_reason_ids.append(repair_improvement.id)
                 if external_storage:
                     allowed_reason_ids.append(external_storage.id)
-                
+
             # Internal
             elif picking.operation_code == "internal":
 
@@ -976,9 +976,9 @@ class StockPicking(models.Model):
                 picking.message_post(body=f"Error en facturación automática: {str(e)}")
 
     def alert_views(self, id_company):
-     
+
         company_ids = [int(cid) for cid in str(id_company).split(',') if cid.strip().isdigit()]
-        
+
         pickings_combined = (
             self.env["stock.picking"]
             .sudo()
@@ -989,7 +989,7 @@ class StockPicking(models.Model):
                     ("transfer_reason_id.code", "!=", "self_consumption"),
                     ("state_guide_dispatch", "=", "to_invoice"),
                     ('sale_id.document', '!=', 'invoice'),
-                    ('company_id','in', company_ids)
+                    ('company_id', 'in', company_ids)
                 ]
             )
         )
@@ -1013,6 +1013,6 @@ class StockPicking(models.Model):
             result = result - timedelta(days=1)
 
         return f"Tienes {len(pickings_combined)} guías de despacho sin facturar al {result.strftime('%d-%m-%Y')}. De facturarse en el siguiente periodo el Seniat será Notificado."
-    
+
     def get_foreign_currency_is_vef(self):
         return self.env.company.currency_foreign_id == self.env.ref("base.VEF")
