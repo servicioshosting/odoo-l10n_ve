@@ -571,27 +571,8 @@ class AccountRetention(models.Model):
 
     def action_post(self):
         today = datetime.now()
-
-
-<< << << < Updated upstream
-
-        self.payment_ids.write({"date": self.date_accounting})
-        self._reconcile_all_payments()
-
-        for retention in self:
-== == == =
-
-
-<< << << < Updated upstream
-== == == =
-
-        self.payment_ids.write({"date": self.date_accounting})
-        self._reconcile_all_payments()
-
->>>>>> > Stashed changes
         for retention in self:
 
->>>>>> > Stashed changes
             if (
                 retention.type in ["out_invoice", "out_refund", "out_debit"]
                 and not retention.number
@@ -613,15 +594,12 @@ class AccountRetention(models.Model):
                 retention._set_sequence()
                 self.set_voucher_number_in_invoice(move_ids, retention)
 
-<< << << < Updated upstream
-== == == =
         if retention.type_retention == 'iva':
             if not re.fullmatch(r"\d{14}", retention.number):
                 raise ValidationError(_("IVA retention: Number must be exactly 14 numeric digits."))
 
         self.payment_ids.write({"date": self.date_accounting})
         self._reconcile_all_payments()
->>>>>> > Stashed changes
         self.write({"state": "emitted"})
 
     def set_voucher_number_in_invoice(self, move, retention):
@@ -815,17 +793,16 @@ class AccountRetention(models.Model):
     def _reconcile_supplier_payment(self, payment):
 
         if payment.payment_type == "outbound":
-            
+
             line_to_reconcile = payment.move_id.line_ids.filtered(
                 lambda l: l.account_id.account_type == "liability_payable" and l.debit >= 0
             )[:1] or False
-            
+
             if line_to_reconcile:
                 payment.retention_line_ids.move_id.js_assign_outstanding_line(line_to_reconcile.id)
             else:
                 raise UserError("No se puede hacer una retencion con este concepto de pago")
-            
-        
+
         elif payment.payment_type == "inbound":
             line_to_reconcile = payment.move_id.line_ids.filtered(
                 lambda l: l.account_id.account_type == "liability_payable" and l.credit > 0
