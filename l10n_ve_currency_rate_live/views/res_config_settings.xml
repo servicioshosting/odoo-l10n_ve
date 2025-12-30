@@ -12,9 +12,9 @@
                             <field name="can_update_habil_days" readonly="False"/>
                         </div>
                         <div class="o_setting_right_pane">
-                            <label for="can_update_habil_days" string="Only update in habil days"/>
+                            <label for="can_update_habil_days" string="Only update on workdays"/>
                             <div class="text-muted">
-                                <span class="o_text-muted">Only update in habil days</span>
+                                <span class="o_text-muted">Only update on workdays</span>
                             </div>
                         </div>
                     </div>

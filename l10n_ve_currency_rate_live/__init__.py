@@ -16,6 +16,7 @@ def setup_currency_update(env):
     })
 
     try:
+        env.company.flush_recordset()
         env.company.update_currency_rates()
     except Exception:
         pass
