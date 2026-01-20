@@ -5,6 +5,7 @@ from datetime import datetime
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import format_date
+from odoo.tools.sql import column_exists, create_column, rename_column
 
 _logger = logging.getLogger(__name__)
 
@@ -13,7 +14,12 @@ class AccountMove(models.Model):
     _name = "account.move"
     _inherit = "account.move"
 
-    correlative = fields.Char("Control Number", copy=False, help="Sequence control number")
+    l10n_ve_control_number = fields.Char("Control Number", copy=False, help="Sequence control number")
+    l10n_ve_doc_datetime = fields.Datetime(
+        string='Fecha y hora de la factura',
+        readonly=True,
+        copy=False,
+    )
     invoice_reception_date = fields.Date(
         "Reception Date",
         help="Indicates when the invoice was received by the client/company",
@@ -34,6 +40,17 @@ class AccountMove(models.Model):
     free_form_copy_number = fields.Integer(default=0, copy=False)
     is_print_copy = fields.Boolean(compute='_compute_is_print_copy')
 
+    def _auto_init(self):
+        if not column_exists(self.env.cr, "account_move", "l10n_ve_doc_datetime"):
+            if column_exists(self.env.cr, "account_move", "l10n_ve_invoice_date"):
+                rename_column(self.env.cr, "account_move", "l10n_ve_invoice_date", "l10n_ve_doc_datetime")
+            else:
+                create_column(self.env.cr, "account_move", "l10n_ve_doc_datetime", "timestamp")
+                self.env.cr.execute(
+                    "UPDATE account_move SET l10n_ve_doc_datetime = invoice_date WHERE state != 'draft'"
+                )
+        return super()._auto_init()
+
     @api.constrains("invoice_line_ids")
     def _check_price_in_zero(self):
         for line in self.filtered(lambda m: m.is_invoice()).mapped("invoice_line_ids"):
@@ -42,27 +59,27 @@ class AccountMove(models.Model):
 
     def action_post(self):
         for record in self:
-            sequence = record.env["ir.sequence"].sudo().search([("code", "=", "invoice.correlative"), ("company_id", "=", self.env.company.id)])
+            sequence = record.env["ir.sequence"].sudo().search([("code", "=", "invoice.l10n_ve_control_number"), ("company_id", "=", self.env.company.id)])
 
-            correlative = str(sequence.number_next_actual).zfill(sequence.padding)
+            l10n_ve_control_number = str(sequence.number_next_actual).zfill(sequence.padding)
 
-            invoices = record.env['account.move'].sudo().search([("correlative", "=", correlative), ('move_type', 'in', ["out_invoice", "out_refund"])])
+            invoices = record.env['account.move'].sudo().search([("l10n_ve_control_number", "=", l10n_ve_control_number), ('move_type', 'in', ["out_invoice", "out_refund"])])
 
             if invoices and record.move_type in ["out_invoice", "out_refund"]:
-                raise ValidationError(_("An invoice already exists with the Control Number: %s" % correlative))
+                raise ValidationError(_("An invoice already exists with the Control Number: %s" % l10n_ve_control_number))
         return super().action_post()
 
-    @api.constrains("correlative", "is_contingency")
+    @api.constrains("l10n_ve_control_number", "is_contingency")
     def _check_correlative(self):
         AccountMove = self.env["account.move"]
         is_series_invoicing_enabled = self.company_id.group_sales_invoicing_series
         for move in self:
             if not move.is_contingency:
                 continue
-            if not is_series_invoicing_enabled and not move.correlative:
+            if not is_series_invoicing_enabled and not move.l10n_ve_control_number:
                 raise ValidationError(
                     _(
-                        "Contingency journal's invoices should always have a correlative if series "
+                        "Contingency journal's invoices should always have a l10n_ve_control_number if series "
                         "invoicing is not enabled"
                     )
                 )
@@ -70,8 +87,8 @@ class AccountMove(models.Model):
                 [
                     ("is_contingency", "=", True),
                     ("id", "!=", move.id),
-                    ("correlative", "!=", False),
-                    ("correlative", "=", move.correlative),
+                    ("l10n_ve_control_number", "!=", False),
+                    ("l10n_ve_control_number", "=", move.l10n_ve_control_number),
                     ("journal_id", "=", move.journal_id.id),
                 ],
                 limit=1,
@@ -167,8 +184,8 @@ class AccountMove(models.Model):
                 invoice_print_type = None
 
             if move.is_valid_to_sequence() and invoice_print_type != "fiscal":
-
-                move.correlative = move.get_sequence()
+                move.l10n_ve_doc_datetime = fields.Datetime.now()
+                move.l10n_ve_control_number = move.get_sequence()
 
         return res
 
@@ -186,7 +203,7 @@ class AccountMove(models.Model):
         journal_type = self.journal_id.type == "sale"
         is_series_invoicing_enabled = self.company_id.group_sales_invoicing_series
         is_valid = (
-            not self.correlative
+            not self.l10n_ve_control_number
             and journal_type
             and (not is_contingency or is_series_invoicing_enabled)
         )
@@ -207,27 +224,27 @@ class AccountMove(models.Model):
         self.ensure_one()
         is_series_invoicing_enabled = self.company_id.group_sales_invoicing_series
         sequence = self.env["ir.sequence"].sudo()
-        correlative = None
+        l10n_ve_control_number = None
 
         if is_series_invoicing_enabled:
-            correlative = self.journal_id.series_correlative_sequence_id
+            l10n_ve_control_number = self.journal_id.series_correlative_sequence_id
 
-            if not correlative:
+            if not l10n_ve_control_number:
                 raise UserError(_("The sale's series sequence must be in the selected journal."))
-            return correlative.next_by_id(correlative.id)
+            return l10n_ve_control_number.next_by_id(l10n_ve_control_number.id)
 
-        correlative = sequence.search(
-            [("code", "=", "invoice.correlative"), ("company_id", "=", self.env.company.id)]
+        l10n_ve_control_number = sequence.search(
+            [("code", "=", "invoice.l10n_ve_control_number"), ("company_id", "=", self.env.company.id)]
         )
-        if not correlative:
-            correlative = sequence.create(
+        if not l10n_ve_control_number:
+            l10n_ve_control_number = sequence.create(
                 {
                     "name": "Número de control",
-                    "code": "invoice.correlative",
+                    "code": "invoice.l10n_ve_control_number",
                     "padding": 5,
                 }
             )
-        return correlative.next_by_id(correlative.id)
+        return l10n_ve_control_number.next_by_id(l10n_ve_control_number.id)
 
     @api.depends('state', 'free_form_copy_number')
     def _compute_is_print_copy(self):

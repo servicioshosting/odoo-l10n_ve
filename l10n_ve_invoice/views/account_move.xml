@@ -21,11 +21,11 @@
             </field>
             <xpath expr="//div[hasclass('oe_title')]/h1" position="after">
                 <div class="inline-block"></div>
-                <label for="correlative"
+                <label for="l10n_ve_control_number"
                     style="font-weight: bold;"
                     invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')" />
 
-                <field name="correlative"
+                <field name="l10n_ve_control_number"
                     invisible="move_type not in ['out_invoice', 'out_refund', 'in_invoice', 'in_refund']"
                     readonly="(move_type in ['out_invoice', 'out_refund'] and not is_contingency) or state == 'posted'"
                     required="move_type in ['in_invoice', 'in_refund']" />
@@ -53,14 +53,14 @@
             </button> -->
 
             <button name="action_reverse" position="attributes">
-                <attribute name="invisible">move_type in ['in_invoice', 'in_refund'] or (correlative == False or debit_origin_id or reversed_entry_id)</attribute>
+                <attribute name="invisible">(l10n_ve_control_number == False or debit_origin_id or reversed_entry_id)</attribute>
             </button>
 
             <button name="action_reverse" position="after">
                 <button
                     name="action_debit_note_button" string="Add Debit note"
                     type="object" class="o_btn_validate"
-                    invisible="correlative == False or debit_origin_id or reversed_entry_id"
+                    invisible="l10n_ve_control_number == False or debit_origin_id or reversed_entry_id"
                 />
             </button>
 
@@ -68,7 +68,7 @@
                 <button
                     name="print_invoice_free_form" string="Free Form"
                     type="object" class="o_btn_validate"
-                    invisible="(move_type not in ('out_invoice', 'out_refund')) or state != 'posted' or correlative == False"
+                    invisible="(move_type not in ('out_invoice', 'out_refund')) or state != 'posted' or l10n_ve_control_number == False"
                 />
             </xpath>
 
@@ -76,6 +76,12 @@
                 <field name="debit_origin_id" invisible="not debit_origin_id" readonly="1" />
                 <field name="reversed_entry_id" invisible="not reversed_entry_id" readonly="1" />
                 <field name="free_form_copy_number" invisible="move_type not in ('out_invoice', 'out_refund', 'out_receipt')" readonly="1" />
+            </xpath>
+             <xpath expr="//header" position="after">
+                <field name="display_date_warning" invisible="1"/>
+                <div class="alert alert-warning mb-0" role="alert" invisible="not display_date_warning">
+                    Note: the invoice date is prior to the current date.
+                </div>
             </xpath>
         </field>
     </record>
@@ -175,7 +181,7 @@
         <field name="inherit_id" ref="account.view_invoice_tree" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after">
-                <field name="correlative" optional="hide" />
+                <field name="l10n_ve_control_number" optional="hide" />
             </xpath>
         </field>
     </record>

@@ -6,7 +6,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">ir.sequence</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain">[('code', '=','invoice.correlative')]</field>
+            <field name="domain">[('code', '=','invoice.l10n_ve_control_number')]</field>
         </record>
         
         <menuitem 

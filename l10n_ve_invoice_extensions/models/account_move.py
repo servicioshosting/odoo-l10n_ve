@@ -15,12 +15,58 @@ PREPRINTED_CORRELATIVE_PATTERN = re.compile('^\d{2}[-]\d{1,8}$')
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    is_debit = fields.Boolean(compute='_computed_is_debit')
+    l10n_ve_doc_type_internal_type = fields.Selection(related='l10n_latam_document_type_id.internal_type', store=True)
 
-    @api.depends('l10n_latam_document_type_id')
-    def _computed_is_debit(self):
+    is_debit = fields.Boolean(compute='_compute_l10n_ve_is_fiscal_document')
+
+    credit_note_count = fields.Integer('Número de Notas de Crédito', compute='_compute_credit_count')
+
+    affected_invoice_id = fields.Many2one("account.move", "Documento afectado", store=True, compute='_computed_affected_document')
+    affected_invoice_number = fields.Char("Nro. documento afectado", store=True, compute='_computed_affected_document')
+
+    note_reason = fields.Char("Motivo de la nota")
+
+    def _is_manual_document_number(self):
+        return self.journal_id.type == 'purchase' or self.is_contingency
+
+    @api.depends('l10n_ve_doc_type_internal_type')
+    def _compute_l10n_ve_is_fiscal_document(self):
+        # fiscal_documents = ['invoice', 'credit_note', 'debit_note']
         for move in self:
-            move.is_debit = move.l10n_latam_document_type_id.internal_type == 'debit_note'
+            move.is_debit = move.l10n_ve_doc_type_internal_type == 'debit_note'
+            # move.l10n_ve_is_fiscal_document = move.l10n_ve_doc_type_internal_type and move.l10n_ve_doc_type_internal_type in fiscal_documents
+
+    @api.depends('reversal_move_id')
+    def _compute_credit_count(self):
+        credit_data = self.env['account.move']._read_group([('reversed_entry_id', 'in', self.ids), ('l10n_ve_doc_type_internal_type', '=', 'credit_note'), ('state', '=', 'posted')],
+                                                           ['reversed_entry_id'], ['__count'])
+        data_map = {credit_origin.id: count for credit_origin, count in credit_data}
+        for inv in self:
+            inv.credit_note_count = data_map.get(inv.id, 0.0)
+
+    @api.depends('l10n_ve_doc_type_internal_type')
+    def _computed_affected_document(self):
+        for move in self:
+            move.affected_invoice_id = False
+            is_note = False
+
+            if not move.l10n_ve_doc_type_internal_type:
+                continue
+
+            if move.l10n_ve_doc_type_internal_type == 'debit_note':
+                if move.debit_origin_id and move.debit_origin_id.l10n_ve_doc_type_internal_type == 'invoice':
+                    move.affected_invoice_id = move.debit_origin_id
+                is_note = True
+            elif move.l10n_ve_doc_type_internal_type == 'credit_note':
+                if move.debit_origin_id and move.reversed_entry_id.l10n_ve_doc_type_internal_type == 'invoice':
+                    move.affected_invoice_id = move.debit_origin_id
+                move.affected_invoice_id = move.reversed_entry_id
+                is_note = True
+
+            if is_note and not move.affected_invoice_id:
+                raise UserError(_("La nota [%s] no tiene un documento origen válido", move.name), )
+
+            move.affected_invoice_number = move.affected_invoice_id.name if move.affected_invoice_id else ''
 
     @api.depends('journal_id')
     def _compute_is_debit_journal(self):
@@ -60,9 +106,20 @@ class AccountMove(models.Model):
         if not sequence:
             raise UserError(_("The sale's series sequence must be in the selected journal."))
 
-        correlative = sequence.next_by_id(sequence.id)
+        l10n_ve_control_number = sequence.next_by_id(sequence.id)
 
-        if not PREPRINTED_CORRELATIVE_PATTERN.match(correlative):
+        if not PREPRINTED_CORRELATIVE_PATTERN.match(l10n_ve_control_number):
             raise UserError(_("El número de control generado no cumple con el patrón secuencia '00-00000'"))
 
-        return correlative
+        return l10n_ve_control_number
+
+    def action_view_credit_notes(self):
+        self.ensure_one()
+
+        return {
+            "name": "Notas de crédito",
+            "type": "ir.actions.act_window",
+            "res_model": "account.move",
+            "view_mode": "tree,form",
+            "domain": [("reversed_entry_id", "=", self._origin.id)],
+        }
