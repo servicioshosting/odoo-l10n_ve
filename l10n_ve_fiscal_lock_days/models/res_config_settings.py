@@ -5,10 +5,6 @@ class ResConfigSettingsInherit(models.TransientModel):
     _inherit = "res.config.settings"
 
     tax_period = fields.Selection(
-        [
-            ("fortnightly", "Fortnightly"),
-            ("monthly", "Monthly"),
-        ],
         string="Tax Period",
         related="company_id.tax_period",
         readonly=False,
