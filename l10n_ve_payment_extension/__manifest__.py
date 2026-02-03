@@ -58,7 +58,7 @@
         "wizard/wizard_retention_iva.xml",
         "views/menu.xml",
     ],
-    "images": ["static/description/icon.png"],
+    "images": ["static/description/ve_flag.png"],
     "application": True,
     "pre_init_hook": "pre_init_hook"
 }

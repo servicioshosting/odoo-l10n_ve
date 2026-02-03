@@ -13,6 +13,6 @@
         "security/ir.model.access.csv",
         "wizard/stock_book_report.xml",
     ],
-    "images": ["static/description/icon.png"],
+    "images": ["static/description/ve_flag.png"],
     "installable": True,
 }
