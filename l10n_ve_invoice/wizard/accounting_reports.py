@@ -83,6 +83,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
             "correlative": move.correlative,
             "reduced_aliquot": 0.08,
             "general_aliquot": 0.16,
+            "extend_aliquot": 0.31,
             "total_sales_iva": taxes.get("amount_taxed", 0),
             "total_sales_not_iva": taxes.get("tax_base_exempt_aliquot", 0) * multiplier,
             "amount_reduced_aliquot": taxes.get("amount_reduced_aliquot", 0) * multiplier,
@@ -327,7 +328,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                 "field": "document_date",
                 "size": 15,
             },
-            {"name": "RIF", "field": "vat", "size": 15},
+            {"name": "RIF o CI", "field": "vat", "size": 15},
             {
                 "name": "Nombre/Razón Social",
                 "field": "partner_name",
@@ -424,7 +425,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                 "field": "document_date",
                 "size": 15,
             },
-            {"name": "RIF", "field": "vat", "size": 15},
+            {"name": "RIF o CI", "field": "vat", "size": 15},
             {
                 "name": "Nombre/Razón Social",
                 "field": "partner_name",

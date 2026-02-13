@@ -7,6 +7,7 @@ from datetime import datetime
 from odoo import Command, _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.float_utils import float_round
+from odoo.tools.sql import column_exists, create_column, rename_column
 
 from ..utils.utils_retention import load_retention_lines, search_invoices_with_taxes
 
@@ -118,6 +119,13 @@ class AccountRetention(models.Model):
     code_visible = fields.Boolean(
         related='company_id.code_visible')
 
+    tax_unit_id = fields.Many2one(
+        'tax.unit', 
+        'Unidad Tributaria', 
+        default=lambda x: x.env['tax.unit'].search([('status', '=', True)], limit=1).id, 
+        domain=[('status', '=', True)]
+    )
+
     payment_ids = fields.One2many(
         "account.payment",
         "retention_id",
@@ -159,6 +167,20 @@ class AccountRetention(models.Model):
             " that the one that just has been deleted."
         )
     )
+
+    def _auto_init(self):
+        if not column_exists(self.env.cr, "account_retention", "tax_unit_id"):
+            create_column(self.env.cr, "account_retention", "tax_unit_id", "timestamp")
+            self.env.cr.execute(
+                "UPDATE account_retention SET tax_unit_id = NULL WHERE state != 'draft'"
+            )
+        return super()._auto_init()
+
+    @api.constrains("tax_unit_id", "state")
+    def _constrains_tax_unit(self):
+        for ret in self:
+            if ret.state == 'emitted' and ret.tax_unit_id and not ret.tax_unit_id.status:
+                raise ValidationError("La retención está asociada a un")
 
     @api.depends("type", "partner_id")
     def _compute_allowed_lines_move_ids(self):
@@ -569,10 +591,24 @@ class AccountRetention(models.Model):
     def action_draft(self):
         self.write({"state": "draft"})
 
+    def _set_active_tax_unit(self):
+        without_tax_unit = self.filtered(lambda r: not r.tax_unit_id or not r.tax_unit_id.status)
+        if not without_tax_unit:
+            return
+
+        tax_unit = self.env['tax.unit'].search([('status', '=', True)], limit=1)
+        if not tax_unit:
+            raise UserError("No hay una unidad tributaria activa en este momento. Valide las configuraciones")
+
+        without_tax_unit.write({'tax_unit_id': tax_unit.id})
+
+
     def action_post(self):
         today = datetime.now()
-        for retention in self:
 
+        self._set_active_tax_unit()
+
+        for retention in self:
             if (
                 retention.type in ["out_invoice", "out_refund", "out_debit"]
                 and not retention.number

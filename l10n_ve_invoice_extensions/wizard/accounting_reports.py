@@ -49,7 +49,7 @@ class AccountingReportsWizard(models.TransientModel):
             number_invoice_affected = move.reversed_entry_id.l10n_latam_document_number
 
         fields_sale_book_line.update({
-            'number_invoice_affected': number_invoice_affected
+            'number_invoice_affected': number_invoice_affected,
         })
 
         return fields_sale_book_line

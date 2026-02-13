@@ -24,9 +24,10 @@ class AccountRetentionLine(models.Model):
         default=lambda self: self.env.company,
     )
     state = fields.Selection(related="retention_id.state")
+    retention_id = fields.Many2one("account.retention", string="Retention", ondelete="cascade")
     company_currency_id = fields.Many2one(related="retention_id.company_currency_id")
     foreign_currency_id = fields.Many2one(related="retention_id.foreign_currency_id")
-    retention_id = fields.Many2one("account.retention", string="Retention", ondelete="cascade")
+    tax_unit_id = fields.Many2one(related="retention_id.tax_unit_id")
     invoice_type = fields.Selection(
         selection=[
             ("out_invoice", "Out invoice"),
@@ -165,7 +166,7 @@ class AccountRetentionLine(models.Model):
         return super().unlink()
 
     @api.onchange("payment_concept_id")
-    @api.depends("payment_concept_id", "move_id")
+    @api.depends("payment_concept_id", "move_id", "retention_id.tax_unit_id")
     def _compute_related_fields(self):
         """
         This compute is used to get the related fields from the payment concept of the partner
@@ -176,9 +177,11 @@ class AccountRetentionLine(models.Model):
             and (not l.retention_id or l.retention_id.type_retention == "islr")
         )
 
-        tax_unit = self.env['tax.unit'].search_fetch([('status', '=', True)], ['value'])
+        lines_from_islr_retention.fetch(['tax_unit_id'])
 
         for record in lines_from_islr_retention:
+            tax_unit = record.tax_unit_id
+            
             # Payment concept of the line
             payment_concept = record.payment_concept_id.line_payment_concept_ids
             for line in payment_concept:
@@ -190,13 +193,18 @@ class AccountRetentionLine(models.Model):
                     # payment concept and set the related fields.
                     record.invoice_total = record.move_id.tax_totals["amount_total"]
                     record.foreign_invoice_total = record.move_id.tax_totals["foreign_amount_total"]
-                    # FIXME: El calculo del PAY_FROM depende de la unidad TRIBUTARIA, pero en este caso se introduce manualmente por razones que desconozco. Se debería almacenar el valor de la UT en la retención en lugar de que este enlazada a la tarifa.
+                    # FIXME: El calculo del PAY_FROM depende de la unidad TRIBUTARIA, pero en este caso se introduce 
+                    # manualmente por razones que desconozco. Se debería almacenar el valor de la UT en la retención 
+                    # en lugar de que este enlazada a la tarifa.
                     # record.related_pay_from = line.pay_from
                     record.related_pay_from = tax_unit.value * SENIAT_FACTOR_PN
                     record.related_percentage_tax_base = line.percentage_tax_base
                     record.related_percentage_fees = line.tariff_id.percentage
                     # FIXME: Al cambiar la unidad tributaria, no se cambia de este sustraendo automáticamente
-                    record.related_amount_subtract_fees = line.tariff_id.amount_subtract
+                    # record.related_amount_subtract_fees = line.tariff_id.amount_subtract
+                    record.related_amount_subtract_fees = tax_unit.value * SENIAT_FACTOR_PN * record.related_percentage_fees / 100 \
+                        if line.tariff_id.apply_subtracting else 0
+
                     record.foreign_currency_rate = record.move_id.foreign_rate
 
                     if not record.retention_id or record.retention_id.type == "in_invoice":
