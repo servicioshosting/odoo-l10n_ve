@@ -170,7 +170,7 @@ class AccountRetention(models.Model):
 
     def _auto_init(self):
         if not column_exists(self.env.cr, "account_retention", "tax_unit_id"):
-            create_column(self.env.cr, "account_retention", "tax_unit_id", "timestamp")
+            create_column(self.env.cr, "account_retention", "tax_unit_id", "integer")
             self.env.cr.execute(
                 "UPDATE account_retention SET tax_unit_id = NULL WHERE state != 'draft'"
             )
