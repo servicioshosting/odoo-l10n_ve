@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="product_template_form_view" model="ir.ui.view">
+      <field name="name">product.template.product.form.inherit.restrict_taxes</field>
+      <field name="model">product.template</field>
+      <field name="inherit_id" ref="product.product_template_form_view" />
+      <field name="arch" type="xml">
+        <field name='taxes_id' position="after">
+          <field name='l10n_ve_vat_id'/>
+        </field>
+        <field name='taxes_id' position="attributes">
+          <attribute name='groups' eval="base.group_no_one"/>
+          <attribute name='readonly'>1</attribute>
+        </field>
+
+        <field name='supplier_taxes_id' position="after">
+          <field name='l10n_ve_supplier_vat_id'/>
+        </field>
+        <field name='supplier_taxes_id' position="attributes">
+          <attribute name='groups' eval="base.group_no_one"/>
+          <attribute name='readonly'>1</attribute>
+        </field>
+      </field>
+    </record>
+  </data>
+</odoo>

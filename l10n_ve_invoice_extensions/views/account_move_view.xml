@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="name">account.move.form.l10n_ve_invoice_extensions.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="priority">32</field>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" type="object" name="action_view_credit_notes" icon="fa-minus"
+                    invisible="l10n_ve_doc_type_internal_type != 'invoice' or credit_note_count == 0">
+                    <field string="Notas de Crédito" name="credit_note_count" widget="statinfo" />
+                </button>
+            </div>
+
+            <field name="l10n_latam_document_type_id" position="after">
+                <field name="l10n_ve_doc_type_internal_type" invisible="1"></field>
+                <field name="l10n_ve_was_reversed" invisible="1"></field>
+                <field name="l10n_ve_was_reversed" string="Fue revertido por completo?"
+                    invisible="l10n_ve_doc_type_internal_type != 'invoice'"
+                    readonly="1"
+                    groups="base.group_no_one"></field>
+                <field name="note_reason"
+                    readonly="posted_before"
+                    invisible="l10n_ve_doc_type_internal_type not in ['credit_note', 'debit_note']"
+                    required="l10n_ve_doc_type_internal_type in ['credit_note', 'debit_note']" />
+            </field>
+
+            <field name="invoice_date" position="after">
+                <field name="l10n_ve_doc_datetime" readonly="1"/>
+            </field>
+
+            <xpath expr="//div[@name='journal_div']/field[@name='currency_id']" position="attributes">
+                <attribute name="domain">[('name', '=like', 'VE_')]</attribute>
+            </xpath>
+            <xpath expr="//div[@name='journal_div']/following-sibling::field[@name='currency_id']" position="attributes">
+                <attribute name="domain">[('name', '=like', 'VE_')]</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
+                <attribute name="create">company_id.account_fiscal_country_id.code != 'VE' or l10n_ve_doc_type_internal_type in ('credit_note', 'debit_note')</attribute>
+                <attribute name="delete">company_id.account_fiscal_country_id.code != 'VE' or l10n_ve_doc_type_internal_type in ('credit_note', 'debit_note')</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='product_id']" position="after">
+                <field name="l10n_ve_doc_type_internal_type" column_invisible="True" />
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='product_id']" position="attributes">
+                <attribute name="readonly">id and l10n_ve_doc_type_internal_type in ('credit_note', 'debit_note')</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='name']" position="attributes">
+                <attribute name="readonly">l10n_ve_doc_type_internal_type in ('credit_note', 'debit_note')</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='account_id']" position="attributes">
+                <attribute name="readonly">l10n_ve_doc_type_internal_type in ('credit_note', 'debit_note')</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='quantity']" position="attributes">
+                <attribute name="readonly">l10n_ve_doc_type_internal_type in ('credit_note', 'debit_note')</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_unit']" position="attributes">
+                <attribute name="readonly">l10n_ve_doc_type_internal_type == 'credit_note'</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_move_form_l10n_ve_invoice" model="ir.ui.view">
+        <field name="name">account.move.form.l10n_ve_invoice.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="l10n_ve_invoice.view_account_move_form_l10n_ve_invoice" />
+        <field name="arch" type="xml">
+            <!-- Mueve atributos de de documentos -->
+            <field name="l10n_latam_document_type_id" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+
+            <!-- Reemplazamos field para el tipo de documento -->
+            <field name="l10n_latam_document_number" position="replace"></field>
+            <xpath expr="//label[@for='l10n_ve_control_number']" position="before">
+                <label for="l10n_latam_document_number"
+                    style="font-weight: bold;"
+                    invisible="(not l10n_latam_use_documents or not l10n_latam_manual_document_number) and (not l10n_latam_use_documents or state != 'draft')" />
+
+                <field name="l10n_latam_document_number"
+                    invisible="(not l10n_latam_use_documents or not l10n_latam_manual_document_number) and (not l10n_latam_use_documents or state != 'draft')"
+                    readonly="not l10n_latam_manual_document_number"
+                    required="l10n_latam_manual_document_number" />
+
+                <div class="inline-block"></div>
+
+                <!-- Mostramos el número de documento -->
+                <label for="l10n_latam_document_number"
+                    style="font-weight: bold;"
+                    invisible="not l10n_latam_document_number or state != 'posted'" />
+
+                <field name="l10n_latam_document_number"
+                    invisible="not l10n_latam_document_number or state != 'posted'"
+                    readonly="1"
+                    required="0" />
+
+                <div class="inline-block"></div>
+            </xpath>
+
+            <field name="partner_id" position="attributes">
+                <attribute name="readonly">posted_before or l10n_ve_doc_type_internal_type in ['credit_note', 'debit_note']</attribute>
+            </field>
+
+            <button name="action_reverse" position="attributes">
+                <attribute name="invisible">state != 'posted' or (l10n_ve_control_number == False or debit_origin_id or reversed_entry_id) or l10n_ve_was_reversed</attribute>
+            </button>
+
+            <button name="action_debit_note_button" position="attributes">
+                <attribute name="invisible">state != 'posted' or (l10n_ve_control_number == False or debit_origin_id or reversed_entry_id) or l10n_ve_was_reversed</attribute>
+            </button>
+
+            <field name="financial_document" position="attributes">
+                <attribute name="groups">base.group_no_one</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_invoice_tree" model="ir.ui.view">
+        <field name="name">account.move.tree.l10n.ve.invoice</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="affected_invoice_number" optional="show" />
+            </xpath>
+            <field name="invoice_user_id" position="attributes">
+                <attribute name="optional">show</attribute>
+            </field>
+            <field name="l10n_ve_control_number" position="attributes">
+                <attribute name="optional">show</attribute>
+            </field>
+            <xpath expr="//field[@name='invoice_date'][2]" position="replace">
+                <field name="l10n_ve_doc_datetime" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
+  

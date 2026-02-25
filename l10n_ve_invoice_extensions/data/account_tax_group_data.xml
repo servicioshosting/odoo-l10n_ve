@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <function model="account.tax.group" name="write">
+            <value model="account.tax.group" eval="obj().search([('country_id.code', '=', 'VE'), ('name', 'ilike', 'VAT')]).ids"/>
+            <value eval="{'l10n_ve_type': 'VAT'}"/>
+        </function>
+    </data>
+</odoo>

@@ -54,7 +54,7 @@ class TxtWizard(models.TransientModel):
                 line.move_id.partner_id.prefix_vat + line.move_id.partner_id.vat
             )
             line_data["Número de documento"] = line.move_id.name
-            line_data["Número de control"] = line.move_id.correlative
+            line_data["Número de control"] = line.move_id.l10n_ve_control_number
             line_data["Número del documento afectado"] = line.move_id.reversed_entry_id.name or "0"
             line_data["Número de comprobante de retención"] = (
                 int(line.retention_id.number) if line.retention_id.number else 0

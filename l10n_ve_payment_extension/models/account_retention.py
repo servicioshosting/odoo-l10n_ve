@@ -7,6 +7,7 @@ from datetime import datetime
 from odoo import Command, _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.float_utils import float_round
+from odoo.tools.sql import column_exists, create_column, rename_column
 
 from ..utils.utils_retention import load_retention_lines, search_invoices_with_taxes
 
@@ -86,7 +87,7 @@ class AccountRetention(models.Model):
         tracking=True,
     )
     number = fields.Char("Voucher Number")
-    correlative = fields.Char(readonly=True)
+    l10n_ve_control_number = fields.Char(readonly=True)
     date = fields.Date(
         "Voucher Date",
         help="Date of issuance of the withholding voucher by the external party.",
@@ -159,6 +160,13 @@ class AccountRetention(models.Model):
             " that the one that just has been deleted."
         )
     )
+
+    def _auto_init(self):
+        if not column_exists(self.env.cr, "account_retention", "l10n_ve_control_number"):
+            if column_exists(self.env.cr, "account_retention", "correlative"):
+                rename_column(self.env.cr, "account_retention", "correlative", "l10n_ve_control_number")
+
+        return super()._auto_init()
 
     @api.depends("type", "partner_id")
     def _compute_allowed_lines_move_ids(self):
@@ -627,9 +635,9 @@ class AccountRetention(models.Model):
                 sequence_number = retention.get_sequence_islr_retention().next_by_id()
             else:
                 sequence_number = retention.get_sequence_municipal_retention().next_by_id()
-            correlative = f"{retention.date_accounting.year}{retention.date_accounting.month:02d}{sequence_number}"
-            retention.name = correlative
-            retention.number = correlative
+            document_number = f"{retention.date_accounting.year}{retention.date_accounting.month:02d}{sequence_number}"
+            retention.name = document_number
+            retention.number = document_number
 
     @api.model
     def get_sequence_iva_retention(self):

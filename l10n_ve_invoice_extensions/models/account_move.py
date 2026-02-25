@@ -26,8 +26,18 @@ class AccountMove(models.Model):
 
     note_reason = fields.Char("Motivo de la nota")
 
+    l10n_ve_was_reversed = fields.Boolean("Documento fue reversado", compute='_compute_l10n_ve_was_reversed', store=True, default=0)
+
     def _is_manual_document_number(self):
         return self.journal_id.type == 'purchase' or self.is_contingency
+
+    def _get_invoice_reference_odoo_invoice(self):
+        """ This computes the reference based on the Odoo format.
+            We simply return the number of the invoice, defined on the journal
+            sequence.
+        """
+        self.ensure_one()
+        return self.name
 
     @api.depends('l10n_ve_doc_type_internal_type')
     def _compute_l10n_ve_is_fiscal_document(self):
@@ -36,13 +46,26 @@ class AccountMove(models.Model):
             move.is_debit = move.l10n_ve_doc_type_internal_type == 'debit_note'
             # move.l10n_ve_is_fiscal_document = move.l10n_ve_doc_type_internal_type and move.l10n_ve_doc_type_internal_type in fiscal_documents
 
+    # @api.depends('product_balance_ids.quantity')
+    def _compute_l10n_ve_was_reversed(self):
+        for move in self:
+            move.l10n_ve_was_reversed = False
+            # move.l10n_ve_was_reversed = move.product_balance_ids and not any(balance.quantity > 0 for balance in move.product_balance_ids)
+
     @api.depends('reversal_move_id')
     def _compute_credit_count(self):
-        credit_data = self.env['account.move']._read_group([('reversed_entry_id', 'in', self.ids), ('l10n_ve_doc_type_internal_type', '=', 'credit_note'), ('state', '=', 'posted')],
+        credit_data = self.env['account.move']._read_group([('reversed_entry_id', 'in', self.ids), ('l10n_ve_doc_type_internal_type', '=', 'credit_note'), ('state', 'in', ['draft', 'posted'])],
                                                            ['reversed_entry_id'], ['__count'])
         data_map = {credit_origin.id: count for credit_origin, count in credit_data}
         for inv in self:
             inv.credit_note_count = data_map.get(inv.id, 0.0)
+
+    def _compute_debit_count(self):
+        debit_data = self.env['account.move']._read_group([('debit_origin_id', 'in', self.ids), ('l10n_ve_doc_type_internal_type', '=', 'debit_note'), ('state', 'in', ['draft', 'posted'])],
+                                                        ['debit_origin_id'], ['__count'])
+        data_map = {debit_origin.id: count for debit_origin, count in debit_data}
+        for inv in self:
+            inv.debit_note_count = data_map.get(inv.id, 0.0)
 
     @api.depends('l10n_ve_doc_type_internal_type')
     def _computed_affected_document(self):
@@ -112,6 +135,42 @@ class AccountMove(models.Model):
             raise UserError(_("El número de control generado no cumple con el patrón secuencia '00-00000'"))
 
         return l10n_ve_control_number
+
+    def _post(self, soft=True):
+        for move in self:
+            if move.l10n_ve_doc_type_internal_type not in ['credit_note', 'debit_note']:
+                continue
+
+            if move.affected_invoice_id and move.affected_invoice_id.l10n_ve_was_reversed:
+                raise UserError(f"No puede confirmar el documento [{self.id}] porque el documento afectado [{move.affected_invoice_id.name}] ya fue reversado por completo.")
+
+        posted_moves = super()._post(soft)
+
+        # for move in posted_moves:
+        #     if move.is_sale_document() and move.l10n_ve_doc_type_internal_type in ['invoice', 'credit_note', 'debit_note']:
+        #         move._update_product_balance()
+
+        return posted_moves
+
+    def _reverse_moves(self, default_values_list=None, cancel=False):
+        ''' Reverse a recordset of account.move.
+        If cancel parameter is true, the reconcilable or liquidity lines
+        of each original move will be reconciled with its reverse's.
+        :param default_values_list: A list of default values to consider per move.
+                                    ('type' & 'reversed_entry_id' are computed in the method).
+        :return:                    An account.move recordset, reverse of the current self.
+        '''
+        for move in self:
+            if move.company_id.account_fiscal_country_id.code != 'VE':
+                continue
+
+            if move.l10n_ve_doc_type_internal_type in ['invoice']:
+                raise UserError("No puede reversar el asiento de una factura. Debe crear una nota de crédito.")
+
+            if move.l10n_ve_doc_type_internal_type in ['credit_note', 'debit_note']:
+                raise UserError("No puede reversar notas de crédito o débito.")
+
+        return super(AccountMove, self)._reverse_moves(default_values_list, cancel)
 
     def action_view_credit_notes(self):
         self.ensure_one()

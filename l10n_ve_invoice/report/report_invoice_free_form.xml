@@ -64,7 +64,7 @@
                                 <br/>
                                 <span><strong>Factura afectada:</strong><t t-out="o.reversed_entry_id.l10n_latam_document_number"/></span>
                                 <br/>
-                                <span><strong>Nro de control:</strong><t t-out="o.reversed_entry_id.correlative"/></span>
+                                <span><strong>Nro de control:</strong><t t-out="o.reversed_entry_id.l10n_ve_control_number"/></span>
                                 <br/>
                                 <span><strong>Fecha de la factura:</strong><t t-if="o.reversed_entry_id.invoice_date" t-out="o.reversed_entry_id.invoice_date.strftime('%d/%m/%Y')"/></span>
                                 <br/>
@@ -84,10 +84,10 @@
                                     <strong>Factura afectada:</strong>
                                     <t t-out="o.debit_origin_id.l10n_latam_document_number"/>
                                 </span>
-                                <span t-if="o.debit_origin_id.correlative">
+                                <span t-if="o.debit_origin_id.l10n_ve_control_number">
                                     <br/>
                                     <strong>Número de control:</strong>
-                                    <t t-out="o.debit_origin_id.correlative"/>
+                                    <t t-out="o.debit_origin_id.l10n_ve_control_number"/>
                                 </span>
                                 <br/>
                                 <span>

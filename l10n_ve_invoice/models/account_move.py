@@ -31,6 +31,9 @@ class AccountMove(models.Model):
 
     next_installment_date = fields.Date(compute="_compute_next_installment_date")
 
+    display_date_warning = fields.Boolean(
+        compute="_compute_display_date_warning")
+
     is_debit_journal = fields.Boolean(
         compute="_compute_is_debit_journal",
         store=True
@@ -40,7 +43,19 @@ class AccountMove(models.Model):
     free_form_copy_number = fields.Integer(default=0, copy=False)
     is_print_copy = fields.Boolean(compute='_compute_is_print_copy')
 
+    # Backwards compatibility
+    correlative = fields.Char("Correlativo", compute='_compute_correlative')
+
+    @api.depends("l10n_ve_control_number")
+    def _compute_correlative(self):
+        for rec in self:
+            rec.correlative = rec.l10n_ve_control_number
+
     def _auto_init(self):
+        if not column_exists(self.env.cr, "account_move", "l10n_ve_control_number"):
+            if column_exists(self.env.cr, "account_move", "correlative"):
+                rename_column(self.env.cr, "account_move", "correlative", "l10n_ve_control_number")
+
         if not column_exists(self.env.cr, "account_move", "l10n_ve_doc_datetime"):
             if column_exists(self.env.cr, "account_move", "l10n_ve_invoice_date"):
                 rename_column(self.env.cr, "account_move", "l10n_ve_invoice_date", "l10n_ve_doc_datetime")
@@ -158,6 +173,14 @@ class AccountMove(models.Model):
                 raise ValidationError(
                     _("You can not add more than %s products to the invoice." % max_product_invoice)
                 )
+
+    @api.depends("invoice_date", "state")
+    def _compute_display_date_warning(self):
+        today = fields.Date.context_today(self)
+        for move in self:
+            move.display_date_warning = bool(
+                move.invoice_date and move.state == "draft" and move.invoice_date < today
+            )
 
     @api.depends("payment_term_details")
     def _compute_next_installment_date(self):
