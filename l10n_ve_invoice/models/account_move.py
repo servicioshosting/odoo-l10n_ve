@@ -14,6 +14,7 @@ class AccountMove(models.Model):
     _name = "account.move"
     _inherit = "account.move"
 
+    l10n_ve_responsible_id = fields.Many2one("res.users", "Responsable")
     l10n_ve_control_number = fields.Char("Control Number", copy=False, help="Sequence control number")
     l10n_ve_doc_datetime = fields.Datetime(
         string='Fecha y hora de la factura',
@@ -46,11 +47,6 @@ class AccountMove(models.Model):
     # Backwards compatibility
     correlative = fields.Char("Correlativo", compute='_compute_correlative')
 
-    @api.depends("l10n_ve_control_number")
-    def _compute_correlative(self):
-        for rec in self:
-            rec.correlative = rec.l10n_ve_control_number
-
     def _auto_init(self):
         if not column_exists(self.env.cr, "account_move", "l10n_ve_control_number"):
             if column_exists(self.env.cr, "account_move", "correlative"):
@@ -64,13 +60,32 @@ class AccountMove(models.Model):
                 self.env.cr.execute(
                     "UPDATE account_move SET l10n_ve_doc_datetime = invoice_date WHERE state != 'draft'"
                 )
+
+        if not column_exists(self.env.cr, "account_move", "l10n_ve_responsible_id"):
+            create_column(self.env.cr, "account_move", "l10n_ve_responsible_id", "integer")
+            self.env.cr.execute(
+                "UPDATE account_move SET l10n_ve_responsible_id = invoice_user_id"
+            )
         return super()._auto_init()
+
+    @api.depends("l10n_ve_control_number")
+    def _compute_correlative(self):
+        for rec in self:
+            rec.correlative = rec.l10n_ve_control_number
 
     @api.constrains("invoice_line_ids")
     def _check_price_in_zero(self):
         for line in self.filtered(lambda m: m.is_invoice()).mapped("invoice_line_ids"):
             if line.price_unit <= 0 and line.display_type not in ("line_section", "line_note"):
                 raise ValidationError(_("An invoice cannot have a line with a price of zero"))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('move_type', False) in ['out_invoice', 'out_refund', 'out_receipt']:
+                vals['l10n_ve_responsible_id'] = self.env.user.id if self.env.user else vals.get('invoice_user_id')
+        res = super().create(vals_list)
+        return res
 
     def action_post(self):
         for record in self:
@@ -205,7 +220,9 @@ class AccountMove(models.Model):
                 invoice_print_type = move.company_id.invoice_print_type
             else:
                 invoice_print_type = None
-
+                
+            move.l10n_ve_responsible_id =  self.env.user or move.invoice_user_id \
+                if move.move_type in ['out_invoice', 'out_refund', 'out_receipt'] else False
             if move.is_valid_to_sequence() and invoice_print_type != "fiscal":
                 move.l10n_ve_doc_datetime = fields.Datetime.now()
                 move.l10n_ve_control_number = move.get_sequence()

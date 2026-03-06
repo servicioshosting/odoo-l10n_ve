@@ -10,4 +10,4 @@ class ResCompany(models.Model):
 
     def _localization_use_documents(self):
         self.ensure_one()
-        return self.account_fiscal_country_id.code == "VE" or super(ResCompany, self)._localization_use_documents()
+        return self.account_fiscal_country_id.code == "VE" or super()._localization_use_documents()

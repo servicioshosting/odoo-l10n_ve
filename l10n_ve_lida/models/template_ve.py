@@ -50,13 +50,13 @@ class AccountChartTemplate(models.AbstractModel):
                 "default_account_id": "acc_ingresos_por_ventas",
             },
 
-            "lida_delivery_notes": {
-                "name": "Ordenes de entrega",
-                "invoice_reference_type": "invoice",
-                "type": "sale",
-                "code": "OE",
-                "default_account_id": "acc_ingresos_por_ventas",
-            },
+            # "lida_delivery_notes": {
+            #     "name": "Ordenes de entrega",
+            #     "invoice_reference_type": "invoice",
+            #     "type": "sale",
+            #     "code": "OE",
+            #     "default_account_id": "acc_ingresos_por_ventas",
+            # },
 
             "purchase": {
                 "name": "Facturas de proveedores",

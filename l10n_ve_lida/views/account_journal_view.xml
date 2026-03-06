@@ -1,0 +1,14 @@
+<odoo>
+
+    <record model="ir.ui.view" id="account_journal_form">
+        <field name="name">account.journal.form.ext</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form" />
+        <field name="arch" type="xml">
+            <field name="l10n_latam_use_documents" position="after">
+                <field name="l10n_ve_document_series" invisible="type != 'sale'" />
+            </field>
+        </field>
+    </record>
+</odoo>
+  

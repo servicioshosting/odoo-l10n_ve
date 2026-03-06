@@ -7,11 +7,11 @@ acc_banco_generico,1.1.1.11.001,BANCO ABC,asset_cash,False
 acc_transferencias_internas,1.1.1.40.000,TRANSFERENCIAS INTERNAS,asset_current,True
 acc_transito_bancario,1.1.1.50.000,TRANSITO BANCARIO,asset_current,False
 acc_cuentas_por_cobrar_clientes,1.1.2.01.000,CUENTAS POR COBRAR CLIENTES,asset_receivable,True
-acc_cuentas_por_cobrar_a_terceros,1.1.2.02.000,CUENTAS POR COBRAR A TERCEROS,asset_receivable,True
-acc_cuentas_por_cobrar_a_empleados,1.1.2.03.000,CUENTAS POR COBRAR A EMPLEADOS,asset_receivable,True
-acc_cuentas_por_cobrar_accionistas,1.1.2.04.000,CUENTAS POR COBRAR ACCIONISTAS,asset_receivable,True
-acc_efectos_por_cobrar,1.1.2.05.000,EFECTOS POR COBRAR,asset_receivable,True
-acc_otras_cuentas_por_cobrar,1.1.2.06.000,OTRAS CUENTAS POR COBRAR,asset_receivable,True
+acc_cuentas_por_cobrar_a_terceros,1.1.2.02.000,CUENTAS POR COBRAR A TERCEROS,asset_current,True
+acc_cuentas_por_cobrar_a_empleados,1.1.2.03.000,CUENTAS POR COBRAR A EMPLEADOS,asset_current,True
+acc_cuentas_por_cobrar_accionistas,1.1.2.04.000,CUENTAS POR COBRAR ACCIONISTAS,asset_current,True
+acc_efectos_por_cobrar,1.1.2.05.000,EFECTOS POR COBRAR,asset_current,True
+acc_otras_cuentas_por_cobrar,1.1.2.06.000,OTRAS CUENTAS POR COBRAR,asset_current,True
 acc_provision_de_cuentas_incobrables,1.1.2.07.000,PROVISION DE CUENTAS INCOBRABLES,asset_current,False
 acc_retencion_iva,1.1.2.08.000,RETENCION IVA,asset_current,False
 acc_credito_fiscal,1.1.2.09.000,CREDITO FISCAL,asset_current,False
