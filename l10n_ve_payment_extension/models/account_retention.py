@@ -119,6 +119,13 @@ class AccountRetention(models.Model):
     code_visible = fields.Boolean(
         related='company_id.code_visible')
 
+    tax_unit_id = fields.Many2one(
+        'tax.unit', 
+        'Unidad Tributaria', 
+        default=lambda x: x.env['tax.unit'].search([('status', '=', True)], limit=1).id, 
+        domain=[('status', '=', True)]
+    )
+
     payment_ids = fields.One2many(
         "account.payment",
         "retention_id",
@@ -166,6 +173,11 @@ class AccountRetention(models.Model):
             if column_exists(self.env.cr, "account_retention", "correlative"):
                 rename_column(self.env.cr, "account_retention", "correlative", "l10n_ve_control_number")
 
+        if not column_exists(self.env.cr, "account_retention", "tax_unit_id"):
+            create_column(self.env.cr, "account_retention", "tax_unit_id", "integer")
+            self.env.cr.execute(
+                "UPDATE account_retention SET tax_unit_id = NULL WHERE state != 'draft'"
+            )
         return super()._auto_init()
 
     @api.depends("type", "partner_id")
@@ -577,8 +589,23 @@ class AccountRetention(models.Model):
     def action_draft(self):
         self.write({"state": "draft"})
 
+    def _set_active_tax_unit(self):
+        without_tax_unit = self.filtered(lambda r: not r.tax_unit_id or not r.tax_unit_id.status)
+        if not without_tax_unit:
+            return
+
+        tax_unit = self.env['tax.unit'].search([('status', '=', True)], limit=1)
+        if not tax_unit:
+            raise UserError("No hay una unidad tributaria activa en este momento. Valide las configuraciones")
+
+        without_tax_unit.write({'tax_unit_id': tax_unit.id})
+
+
     def action_post(self):
         today = datetime.now()
+
+        self._set_active_tax_unit()
+
         for retention in self:
 
             if (
@@ -602,9 +629,9 @@ class AccountRetention(models.Model):
                 retention._set_sequence()
                 self.set_voucher_number_in_invoice(move_ids, retention)
 
-        if retention.type_retention == 'iva':
-            if not re.fullmatch(r"\d{14}", retention.number):
-                raise ValidationError(_("IVA retention: Number must be exactly 14 numeric digits."))
+            if retention.type_retention == 'iva':
+                if not re.fullmatch(r"\d{14}", retention.number):
+                    raise ValidationError(_("IVA retention: Number must be exactly 14 numeric digits."))
 
         self.payment_ids.write({"date": self.date_accounting})
         self._reconcile_all_payments()

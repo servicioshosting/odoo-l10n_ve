@@ -55,11 +55,6 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
 
     show_field_currency_system = fields.Boolean(string="Report in currency system", default=_default_check_currency_system)
 
-    def _default_currency_system(self):
-        return True if self.env.company.currency_id.id == self.env.ref("base.VEF").id else False
-
-    show_field_currency_system = fields.Boolean(string="Report in currency system", default=_default_check_currency_system)
-
     currency_system = fields.Boolean(string="Report in currency system", default=_default_currency_system)
 
     def _fields_sale_book_line(self, move, taxes):
@@ -80,9 +75,10 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                 if move.journal_id.is_debit
                 else move.reversed_entry_id.name or "--"
             ),
-            "correlative": move.l10n_ve_control_number,
+            "correlative": move.correlative,
             "reduced_aliquot": 0.08,
             "general_aliquot": 0.16,
+            "extend_aliquot": 0.31,
             "total_sales_iva": taxes.get("amount_taxed", 0),
             "total_sales_not_iva": taxes.get("tax_base_exempt_aliquot", 0) * multiplier,
             "amount_reduced_aliquot": taxes.get("amount_reduced_aliquot", 0) * multiplier,
@@ -107,7 +103,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
             "move_type": self._determinate_type_for_move(move),
             "transaction_type": self._determinate_transaction_type(move),
             "number_invoice_affected": move.debit_origin_id.name if move.journal_id.is_debit else move.reversed_entry_id.name or "--",
-            "correlative": move.l10n_ve_control_number,
+            "correlative": move.correlative,
             "reduced_aliquot": 0.08,
             "extend_aliquot": 0.31,
             "general_aliquot": 0.16,
@@ -327,7 +323,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                 "field": "document_date",
                 "size": 15,
             },
-            {"name": "RIF", "field": "vat", "size": 15},
+            {"name": "RIF o CI", "field": "vat", "size": 15},
             {
                 "name": "Nombre/Razón Social",
                 "field": "partner_name",
@@ -424,7 +420,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                 "field": "document_date",
                 "size": 15,
             },
-            {"name": "RIF", "field": "vat", "size": 15},
+            {"name": "RIF o CI", "field": "vat", "size": 15},
             {
                 "name": "Nombre/Razón Social",
                 "field": "partner_name",
