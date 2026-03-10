@@ -663,9 +663,9 @@ class AccountRetention(models.Model):
                 sequence_number = retention.get_sequence_islr_retention().next_by_id()
             else:
                 sequence_number = retention.get_sequence_municipal_retention().next_by_id()
-            correlative = f"{retention.date_accounting.year}{retention.date_accounting.month:02d}{sequence_number}"
-            retention.name = correlative
-            retention.number = correlative
+            document_number = f"{retention.date_accounting.year}{retention.date_accounting.month:02d}{sequence_number}"
+            retention.name = document_number
+            retention.number = document_number
 
     @api.model
     def get_sequence_iva_retention(self):
