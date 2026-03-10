@@ -19,7 +19,7 @@
         "lida_NOT_SUPPORTED"
     ],
     
-    "images": ["static/description/ve_flag.png"],
+    "images": ["static/description/icon.png"],
     "application": False,
     "installable": True,
     "auto_install": False,

@@ -12,7 +12,7 @@
     "data": [
         "views/res_partner_views.xml"
     ],
-    "images": ["static/description/ve_flag.png"],
+    "images": ["static/description/icon.png"],
     "auto_install": True,
     "application": False,
 }

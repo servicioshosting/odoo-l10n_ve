@@ -36,7 +36,7 @@
         "wizard/accounting_reports_views.xml",
         "views/account_debit_note_view.xml",
     ],
-    "images": ["static/description/ve_flag.png"],
+    "images": ["static/description/icon.png"],
     "application": True,
     "pre_init_hook": "pre_init_hook"
 }

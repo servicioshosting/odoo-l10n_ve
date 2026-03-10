@@ -17,6 +17,6 @@
         "views/account_fiscalyear_closing.xml",
         "views/account_fiscalyear_closing_template.xml",
     ],
-    "images": ["static/description/ve_flag.png"],
+    "images": ["static/description/icon.png"],
     "application": True,
 }

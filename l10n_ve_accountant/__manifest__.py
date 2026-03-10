@@ -47,7 +47,7 @@
         "wizard/payment_report.xml",
         "wizard/move_action_post_alert_views.xml",
     ],
-    "images": ["static/description/ve_flag.png"],
+    "images": ["static/description/icon.png"],
     "application": True,
     "pre_init_hook": "pre_init_hook"
 }

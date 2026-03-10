@@ -35,7 +35,7 @@
         "views/product_pricelist_item_views.xml",
         "views/menuitems.xml",
     ],
-    "images": ["static/description/ve_flag.png"],
+    "images": ["static/description/icon.png"],
     "application": True,
     "pre_init_hook": "pre_init_hook",
 }

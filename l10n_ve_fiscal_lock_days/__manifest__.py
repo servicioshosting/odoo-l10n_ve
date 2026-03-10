@@ -15,5 +15,5 @@
     "data": [
         "views/res_config_settings.xml",
     ],
-    "images": ["static/description/ve_flag.png"],
+    "images": ["static/description/icon.png"],
 }

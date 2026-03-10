@@ -16,5 +16,5 @@
         "security/ir.model.access.csv",
     ],
     "application": True,
-    "images": ["static/description/ve_flag.png"],
+    "images": ["static/description/icon.png"],
 }

@@ -32,7 +32,7 @@
         "wizard/payment_report.xml",
         "report/payment_report.xml",
     ],
-    "images": ["static/description/ve_flag.png"],
+    "images": ["static/description/icon.png"],
     "application": True,
     "pre_init_hook": "pre_init_hook",
     "assets": {

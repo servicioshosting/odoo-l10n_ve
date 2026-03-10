@@ -13,6 +13,6 @@
     "data": [
         "views/res_partner.xml",
     ],
-    "images": ["static/description/ve_flag.png"],
+    "images": ["static/description/icon.png"],
     "application": False,
 }

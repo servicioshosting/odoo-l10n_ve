@@ -32,7 +32,7 @@
             "l10n_ve_pos_mf/static/src/css/*.css",
         ],
     },
-    "images": ["static/description/ve_flag.png"],
+    "images": ["static/description/icon.png"],
     "installable": False,
     "application": False,
     "auto_install": False,
