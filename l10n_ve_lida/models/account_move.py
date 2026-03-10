@@ -50,7 +50,7 @@ class AccountMove(models.Model):
             has_document_series = self.l10n_ve_document_series and len(self.l10n_ve_document_series) > 0
             where_string = where_string.replace(
                 'journal_id = %(journal_id)s', 
-                'journal_id in (%(available_journal_ids)s)'
+                'journal_id in %(available_journal_ids)s'
             )
             if has_document_series:
                 where_string += ' AND l10n_ve_document_series = %(l10n_ve_document_series)s'
@@ -59,7 +59,8 @@ class AccountMove(models.Model):
                 
             where_string += ' AND company_id = %(company_id)s AND l10n_latam_document_type_id = %(l10n_latam_document_type_id)s'
 
-            param['available_journal_ids'] = ",".join(map(str, self.env['account.journal'].search([('type', '=', self.journal_id.type)]).ids))
+            # param['available_journal_ids'] = ",".join(map(str, self.env['account.journal'].search([('type', '=', self.journal_id.type)]).ids))
+            param['available_journal_ids'] = tuple(self.env['account.journal'].search([('type', '=', self.journal_id.type)]).ids)
             param['l10n_ve_document_series'] = self.l10n_ve_document_series or None
             param['company_id'] = self.company_id.id or False
             param['l10n_latam_document_type_id'] = self.l10n_latam_document_type_id.id or 0

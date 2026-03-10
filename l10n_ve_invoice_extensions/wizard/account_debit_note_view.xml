@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_account_debit_note" model="ir.ui.view">
+            <field name="name">account.debit.note.form</field>
+            <field name="model">account.debit.note</field>
+            <field name="inherit_id" ref="account_debit_note.view_account_debit_note" />
+            <field name="arch" type="xml">
+                <field name="move_type" position="after">
+                    <field name="country_code" invisible="1"/>
+                    <field name="is_invoice" invisible="1"/>
+                </field>
+
+                <field name="copy_lines" position="attributes">
+                    <attribute name="invisible">country_code == 'VE' or move_type in ['in_refund', 'out_refund']</attribute>
+                </field>
+
+                <field name="date" position="attributes">
+                    <attribute name="invisible">is_invoice</attribute>
+                </field>
+
+                <!-- <footer position="before">
+                    <field
+                        name="product_balance_ids"
+                        mode="tree"
+                        invisible="not is_invoice"
+                        readonly="0"
+                    >
+                        <tree create="False" edit="True" delete="False" editable="bottom" decoration-warning="unit_price &lt; currency_rounding">
+                            <control></control>
+
+                            <field name="id" column_invisible="1" />
+                            <field name="currency_rounding" column_invisible="1" />
+                            <field name="origin_balance_id" column_invisible="1" />
+                            <field name="invoice_line_id" column_invisible="1" />
+                            <field name="invoice_id" optional="hide" readonly="1" />
+                            <field name="origin_id" readonly="1" />
+                            <field name="product_id" readonly="1" />
+                            <field name="quantity" readonly="1"/>
+                            <field name="origin_unit_price" string="Precio unit. original" readonly="1" />
+                            <field name="new_unit_price" string="Nuevo precio unit." />
+                            <field name="unit_price" string="Diferencia" />
+                            <field name="amount_total" help="Monto con IVA" readonly="1" />
+                        </tree>
+                    </field>
+                </footer> -->
+            </field>
+        </record>
+    </data>
+</odoo>

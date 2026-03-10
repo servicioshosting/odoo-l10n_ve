@@ -96,14 +96,6 @@ class AccountMove(models.Model):
         for move in self:
             move.is_debit_journal = True
 
-    def _get_invoice_reference_odoo_invoice(self):
-        """ This computes the reference based on the Odoo format.
-            We simply return the number of the invoice, defined on the journal
-            sequence.
-        """
-        self.ensure_one()
-        return self.name
-
     @api.depends('posted_before', 'move_type')
     def _compute_show_reset_to_draft_button(self):
         """ Previene que un movimiento sea regresado a  """
