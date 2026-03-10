@@ -81,6 +81,7 @@ class SaleOrder(models.Model):
             "[('company_id', 'in', (company_id, False)),"
             f"('currency_id', '=', {self.env.company.currency_id.id})]"
         )
+        # domain="[('company_id', 'in', (company_id, False))]"
     )
 
     address = fields.Char(related="partner_id.street")
@@ -277,10 +278,12 @@ class SaleOrder(models.Model):
 
         res = super()._get_invoiceable_lines(final)
         limit = self.company_id.max_product_invoice
-        res = res.filtered(lambda line: line.invoiced == False)
-        if len(res) <= limit:
-            return res
-        return res[:limit]
+        if len(res) > limit:
+            res = res[:limit]
+
+        if not any(not line.display_type for line in res):
+            return self.env['sale.order.line']
+        return res
 
     def _create_invoices(self, grouped=False, final=False, date=None):
         """
@@ -300,12 +303,18 @@ class SaleOrder(models.Model):
         return invoices
 
     def _prepare_invoice(self):
+        original_currency_id = self.currency_id
+        if self.currency_id != self.env.company.currency_id:
+            self.currency_id = self.env.company.currency_id
         invoice_vals = super()._prepare_invoice()
+        self.currency_id = original_currency_id
+
         invoice_vals["manually_set_rate"] = (
             self.manually_set_rate or self.env.company.use_invoice_rate_from_sale_order
         )
         invoice_vals["foreign_rate"] = self.foreign_rate
         invoice_vals["foreign_inverse_rate"] = self.foreign_inverse_rate
+
         return invoice_vals
 
     def _update_invoices_rate(self):

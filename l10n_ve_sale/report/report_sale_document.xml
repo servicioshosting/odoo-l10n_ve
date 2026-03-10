@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
   <template id="report_sale_document_l10n_ve_sale" inherit_id="sale.report_saleorder_document">
-    <xpath expr="//div[@class='page']" position="inside">
+    <!-- <xpath expr="//div[@class='page']" position="inside">
       <h3 t-if="doc.state == 'draft'"
         style="position:absolute;left:35px;top:250px;font-size:180px !important;opacity: 0.1;">
-        BORRADOR</h3>
-    </xpath>
+        NO FISCAL</h3>
+    </xpath> -->
     <xpath expr="//div[@class='clearfix'][1]" position="after">
       <div class="row mt-4">
+        <div t-if="not doc.currency_id.name.startswith('VE')" class="col-12 text-center">
+          <p class="fw-bold">Las operaciones en Bolívares se determinan según la tasa de cambio publicada por el BCV en fecha valor del pago.</p>          
+        </div>
+
         <div class="col-12 text-center">
-          <p class="fw-bold">SIN DERECHO A CRÉDITO FISCAL</p>
+          <p class="fw-bold">NO FISCAL</p>
         </div>
       </div>
     </xpath>
