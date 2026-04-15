@@ -1,10 +1,9 @@
+import logging
 from datetime import datetime
 
 import xlsxwriter
 from odoo import _, api, models
 from odoo.osv import expression
-
-import logging
 
 _logger = logging.getLogger(__name__)
 
@@ -146,6 +145,9 @@ class WizardAccountingReports(models.TransientModel):
         retention_ids = retention.search(domain)
         moves = retention_ids.mapped("retention_line_ids.move_id")
         res_moves |= moves
+
+        res_moves.sorted(lambda m: m.invoice_date)
+        res_moves.sorted(lambda m: m.l10n_ve_control_number)
 
         return res_moves
 

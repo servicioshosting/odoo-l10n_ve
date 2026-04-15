@@ -18,7 +18,7 @@
         </field>
     </record>
 
-    <act_window
+    <!-- <act_window
             id="action_picking_multi_invoice"
             name="Create Invoices"
             res_model="picking.invoice.wizard"
@@ -26,6 +26,6 @@
             binding_views="list"
             view_mode="form"
             target="new"
-    />
+    /> -->
 
 </odoo>

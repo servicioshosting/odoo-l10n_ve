@@ -659,7 +659,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
             return "03-ANU"
 
     def search_moves(self):
-        order = "invoice_date asc" if self.report == "purchase" else "correlative asc"
+        order = "invoice_date asc" if self.report == "purchase" else "invoice_date,l10n_ve_control_number asc"
         env = self.env
         move_model = env["account.move"]
         domain = self._get_domain()

@@ -15,7 +15,7 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     l10n_ve_responsible_id = fields.Many2one("res.users", "Responsable")
-    l10n_ve_control_number = fields.Char("Control Number", copy=False, help="Sequence control number")
+    l10n_ve_control_number = fields.Char("Número de control", copy=False, help="Será asignado al confirmar el documento")
     l10n_ve_doc_datetime = fields.Datetime(
         string='Fecha y hora de la factura',
         readonly=True,
@@ -79,6 +79,13 @@ class AccountMove(models.Model):
             if line.price_unit <= 0 and line.display_type not in ("line_section", "line_note"):
                 raise ValidationError(_("An invoice cannot have a line with a price of zero"))
 
+    @api.onchange("move_type", "partner_id")
+    def _onchange_move_type(self):
+        if self.move_type == "out_invoice":
+            self.invoice_date = False
+        elif not self.invoice_date:
+            self.invoice_date = fields.Date.today()
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -89,11 +96,10 @@ class AccountMove(models.Model):
 
     def action_post(self):
         for record in self:
-            sequence = record.env["ir.sequence"].sudo().search([("code", "=", "invoice.l10n_ve_control_number"), ("company_id", "=", self.env.company.id)])
-
+            sequence = record.env["ir.sequence"].sudo().search([("code", "=", "l10n_ve.invoice.control_number"), ("company_id", "=", self.env.company.id)])
             l10n_ve_control_number = str(sequence.number_next_actual).zfill(sequence.padding)
 
-            invoices = record.env['account.move'].sudo().search([("l10n_ve_control_number", "=", l10n_ve_control_number), ('move_type', 'in', ["out_invoice", "out_refund"])])
+            invoices = record.env['account.move'].with_company(self.env.company.id).sudo().search([("l10n_ve_control_number", "=", l10n_ve_control_number), ('move_type', 'in', ["out_invoice", "out_refund"]), ('company_id', '=', self.env.company.id)])
 
             if invoices and record.move_type in ["out_invoice", "out_refund"]:
                 raise ValidationError(_("An invoice already exists with the Control Number: %s" % l10n_ve_control_number))
@@ -115,11 +121,11 @@ class AccountMove(models.Model):
                 )
             repeated_moves = AccountMove.search(
                 [
-                    ("is_contingency", "=", True),
                     ("id", "!=", move.id),
+                    ("is_contingency", "=", True),
                     ("l10n_ve_control_number", "!=", False),
                     ("l10n_ve_control_number", "=", move.l10n_ve_control_number),
-                    ("journal_id", "=", move.journal_id.id),
+                    ("journal_id.type", "=", 'sale'),
                 ],
                 limit=1,
             )
@@ -189,14 +195,6 @@ class AccountMove(models.Model):
                     _("You can not add more than %s products to the invoice." % max_product_invoice)
                 )
 
-    @api.depends("invoice_date", "state")
-    def _compute_display_date_warning(self):
-        today = fields.Date.context_today(self)
-        for move in self:
-            move.display_date_warning = bool(
-                move.invoice_date and move.state == "draft" and move.invoice_date < today
-            )
-
     @api.depends("payment_term_details")
     def _compute_next_installment_date(self):
         lang = self.env["res.lang"].search([("code", "=", self.env.user.lang)])
@@ -212,6 +210,14 @@ class AccountMove(models.Model):
                     invoice.next_installment_date = term_date
                     break
 
+    @api.depends("invoice_date", "state")
+    def _compute_display_date_warning(self):
+        today = fields.Date.context_today(self)
+        for move in self:
+            move.display_date_warning = bool(
+                move.invoice_date and move.state == "draft" and move.invoice_date < today
+            )
+
     def _post(self, soft=True):
         res = super()._post(soft)
         for move in res:
@@ -220,11 +226,12 @@ class AccountMove(models.Model):
                 invoice_print_type = move.company_id.invoice_print_type
             else:
                 invoice_print_type = None
-                
+
             move.l10n_ve_responsible_id =  self.env.user or move.invoice_user_id \
                 if move.move_type in ['out_invoice', 'out_refund', 'out_receipt'] else False
             if move.is_valid_to_sequence() and invoice_print_type != "fiscal":
                 move.l10n_ve_doc_datetime = fields.Datetime.now()
+                move.invoice_date = move.l10n_ve_doc_datetime
                 move.l10n_ve_control_number = move.get_sequence()
 
         return res
@@ -233,7 +240,7 @@ class AccountMove(models.Model):
     def is_valid_to_sequence(self) -> bool:
         """
         Check if the invoice satisfies the conditions to associate a new sequence number to its
-        correlative.
+        l10n_ve_control_number.
 
         Returns:
             True or False whether the invoice already has a sequence number or not.
@@ -274,13 +281,13 @@ class AccountMove(models.Model):
             return l10n_ve_control_number.next_by_id(l10n_ve_control_number.id)
 
         l10n_ve_control_number = sequence.search(
-            [("code", "=", "invoice.l10n_ve_control_number"), ("company_id", "=", self.env.company.id)]
+            [("code", "=", "l10n_ve.invoice.control_number"), ("company_id", "=", self.env.company.id)]
         )
         if not l10n_ve_control_number:
             l10n_ve_control_number = sequence.create(
                 {
                     "name": "Número de control",
-                    "code": "invoice.l10n_ve_control_number",
+                    "code": "l10n_ve.invoice.control_number",
                     "padding": 5,
                 }
             )

@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <field position="after" name="invoice_has_outstanding">
                 <field name="is_contingency" invisible="1" />
+                <field name="correlative" invisible="1" />
             </field>
             <field position="after" name="invoice_user_id">
                 <field name="l10n_ve_responsible_id" readonly="1" />
