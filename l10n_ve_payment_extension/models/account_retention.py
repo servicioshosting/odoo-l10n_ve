@@ -87,7 +87,7 @@ class AccountRetention(models.Model):
         tracking=True,
     )
     number = fields.Char("Voucher Number")
-    correlative = fields.Char(readonly=True)
+    l10n_ve_control_number = fields.Char(readonly=True)
     date = fields.Date(
         "Voucher Date",
         help="Date of issuance of the withholding voucher by the external party.",
@@ -168,7 +168,19 @@ class AccountRetention(models.Model):
         )
     )
 
+    # Backwards compatibility
+    correlative = fields.Char("Correlativo", compute='_compute_correlative')
+
+    @api.depends("l10n_ve_control_number")
+    def _compute_correlative(self):
+        for rec in self:
+            rec.correlative = rec.l10n_ve_control_number
+
     def _auto_init(self):
+        if not column_exists(self.env.cr, "account_retention", "l10n_ve_control_number"):
+            if column_exists(self.env.cr, "account_retention", "correlative"):
+                rename_column(self.env.cr, "account_retention", "correlative", "l10n_ve_control_number")
+
         if not column_exists(self.env.cr, "account_retention", "tax_unit_id"):
             create_column(self.env.cr, "account_retention", "tax_unit_id", "integer")
             self.env.cr.execute(

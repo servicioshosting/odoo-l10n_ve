@@ -5,8 +5,8 @@ from io import BytesIO
 import xlsxwriter
 from dateutil.relativedelta import relativedelta
 from odoo import _, fields, models
-from odoo.fields import float_round
 from odoo.exceptions import UserError
+from odoo.tools import float_round
 from xlsxwriter import utility
 
 _logger = logging.getLogger(__name__)
@@ -106,97 +106,125 @@ class AccountingReportsWizard(models.TransientModel):
         return purchase_book_fields
     
 
-    def _resume_sale_book_fields(self, moves):
-        resume_sale_book_fields = super()._resume_sale_book_fields(moves)
+    # def _resume_sale_book_fields(self, moves):
+    #     resume_sale_book_fields = super()._resume_sale_book_fields(moves)
 
-        vef_base = self.company_id.currency_id.id == self.env.ref("base.VEF").id
+    #     vef_base = self.company_id.currency_id.id == self.env.ref("base.VEF").id
 
-        if vef_base:
-            field_base, field_amount = ("igtf_base_amount", "igtf_amount")
-        else:
-            field_base, field_amount = ("foreign_igtf_base_amount", "foreign_igtf_amount")
+    #     if vef_base:
+    #         field_base, field_amount = ("igtf_base_amount", "igtf_amount")
+    #     else:
+    #         field_base, field_amount = ("foreign_igtf_base_amount", "foreign_igtf_amount")
 
-        igtf_debit_base = 0.0
-        igtf_debit_amount = 0.0
-        igtf_credit_base = 0.0
-        igtf_credit_amount = 0.0
+    #     igtf_debit_base = 0.0
+    #     igtf_debit_amount = 0.0
+    #     igtf_credit_base = 0.0
+    #     igtf_credit_amount = 0.0
 
-        for move in moves:
-            igtf_totals = move.tax_totals.get('igtf', {'apply_igtf': False})
-            if not igtf_totals.get('apply_igtf', False):
-                continue
+    #     for move in moves:
+    #         igtf_totals = move.tax_totals.get('igtf', {'apply_igtf': False})
+    #         if not igtf_totals.get('apply_igtf', False):
+    #             continue
 
-            if move.move_type in ["out_refund", "in_refund"]:
-                igtf_credit_base -= igtf_totals.get(field_base)
-                igtf_credit_amount -= igtf_totals.get(field_amount)
-            else: 
-                igtf_debit_base += igtf_totals.get(field_base)
-                igtf_debit_amount += igtf_totals.get(field_amount)
+    #         if move.move_type in ["out_refund", "in_refund"]:
+    #             igtf_credit_base -= igtf_totals.get(field_base)
+    #             igtf_credit_amount -= igtf_totals.get(field_amount)
+    #         else: 
+    #             igtf_debit_base += igtf_totals.get(field_base)
+    #             igtf_debit_amount += igtf_totals.get(field_amount)
             
 
-        resume_sale_book_fields.extend([
-            {
-                "name": "Pagos recibidos Gravados por IGTF",
-                "format": "number",
-                "values": [
-                    igtf_debit_base,
-                    igtf_debit_amount,
-                    igtf_credit_base,
-                    igtf_credit_amount,
-                    0.0,
-                    0.0,
-                    # igtf_debit_base - igtf_credit_base,
-                    # igtf_debit_amount - igtf_credit_amount,
-                ],
-            }
-        ])
+    #     resume_sale_book_fields.extend([
+    #         {
+    #             "name": "Pagos recibidos Gravados por IGTF",
+    #             "format": "number",
+    #             "values": [
+    #                 igtf_debit_base,
+    #                 igtf_debit_amount,
+    #                 igtf_credit_base,
+    #                 igtf_credit_amount,
+    #                 0.0,
+    #                 0.0,
+    #                 # igtf_debit_base - igtf_credit_base,
+    #                 # igtf_debit_amount - igtf_credit_amount,
+    #             ],
+    #         }
+    #     ])
 
-        return resume_sale_book_fields
+    #     return resume_sale_book_fields
     
 
-    def _resume_purchase_book_fields(self, moves):
-        resume_purchase_book_fields = super()._resume_purchase_book_fields(moves)
+    # def _resume_purchase_book_fields(self, moves):
+    #     resume_purchase_book_fields = super()._resume_purchase_book_fields(moves)
 
-        vef_base = self.company_id.currency_id.id == self.env.ref("base.VEF").id
+    #     vef_base = self.company_id.currency_id.id == self.env.ref("base.VEF").id
 
-        if vef_base:
-            field_base, field_amount = ("igtf_base_amount", "igtf_amount")
-        else:
-            field_base, field_amount = ("foreign_igtf_base_amount", "foreign_igtf_amount")
+    #     if vef_base:
+    #         field_base, field_amount = ("igtf_base_amount", "igtf_amount")
+    #     else:
+    #         field_base, field_amount = ("foreign_igtf_base_amount", "foreign_igtf_amount")
 
-        igtf_debit_base = 0.0
-        igtf_debit_amount = 0.0
-        igtf_credit_base = 0.0
-        igtf_credit_amount = 0.0
+    #     igtf_debit_base = 0.0
+    #     igtf_debit_amount = 0.0
+    #     igtf_credit_base = 0.0
+    #     igtf_credit_amount = 0.0
 
-        for move in moves:
-            igtf_totals = move.tax_totals.get('igtf', {'apply_igtf': False})
-            if not igtf_totals.get('apply_igtf', False):
-                continue
+    #     for move in moves:
+    #         igtf_totals = move.tax_totals.get('igtf', {'apply_igtf': False})
+    #         if not igtf_totals.get('apply_igtf', False):
+    #             continue
 
-            if move.move_type in ["out_refund", "in_refund"]:
-                igtf_credit_base -= igtf_totals.get(field_base)
-                igtf_credit_amount -= igtf_totals.get(field_amount)
-            else: 
-                igtf_debit_base += igtf_totals.get(field_base)
-                igtf_debit_amount += igtf_totals.get(field_amount)
+    #         if move.move_type in ["out_refund", "in_refund"]:
+    #             igtf_credit_base -= igtf_totals.get(field_base)
+    #             igtf_credit_amount -= igtf_totals.get(field_amount)
+    #         else: 
+    #             igtf_debit_base += igtf_totals.get(field_base)
+    #             igtf_debit_amount += igtf_totals.get(field_amount)
             
 
-        resume_purchase_book_fields.extend([
-            {
-                "name": "Pagos emitidos Gravados por IGTF",
-                "format": "number",
-                "values": [
-                    igtf_debit_base,
-                    igtf_debit_amount,
-                    igtf_credit_base,
-                    igtf_credit_amount,
-                    0.0,
-                    0.0,
-                    # igtf_debit_base - igtf_credit_base,
-                    # igtf_debit_amount - igtf_credit_amount,
-                ],
-            }
-        ])
+    #     resume_purchase_book_fields.extend([
+    #         {
+    #             "name": "Pagos emitidos Gravados por IGTF",
+    #             "format": "number",
+    #             "values": [
+    #                 igtf_debit_base,
+    #                 igtf_debit_amount,
+    #                 igtf_credit_base,
+    #                 igtf_credit_amount,
+    #                 0.0,
+    #                 0.0,
+    #                 # igtf_debit_base - igtf_credit_base,
+    #                 # igtf_debit_amount - igtf_credit_amount,
+    #             ],
+    #         }
+    #     ])
         
-        return resume_purchase_book_fields
+    #     return resume_purchase_book_fields
+
+    def _fill_sales_summary(self, summary: dict, line: dict):
+        summary = super()._fill_sales_summary(summary, line)
+
+        summary['total_pagos_igtf_base'] += line['igtf_base_amount']
+        summary['total_pagos_igtf'] += line['igtf_amount']
+
+        return summary
+
+    def _fill_purchases_summary(self, summary: dict, line: dict):
+        summary = super()._fill_sales_summary(summary, line)
+
+        summary['total_pagos_igtf_base'] += line['igtf_base_amount']
+        summary['total_pagos_igtf'] += line['igtf_amount']
+
+        return summary
+
+    def _generate_book_resume(self, wb: xlsxwriter.workbook.Workbook, ws: xlsxwriter.workbook.Worksheet, summary_data: dict, index_to_start: int, cell_formats):
+        super()._generate_book_resume(wb, ws, summary_data, index_to_start, cell_formats)
+
+        header_idx = index_to_start + 3
+
+        ws.merge_range(header_idx-1, 9, header_idx-1, 10, "Resumen de IGTF",
+                cell_formats['merge'])
+        ws.write(header_idx, 9, "Base imponible", cell_formats['subheader'])
+        ws.write(header_idx, 10, "IGTF", cell_formats['subheader'])
+        ws.write(header_idx+1, 9, summary_data['total_pagos_igtf_base'], cell_formats['number'])
+        ws.write(header_idx+1, 10, summary_data['total_pagos_igtf'], cell_formats['number'])
