@@ -28,7 +28,7 @@
             </style>
             <div class="text-center">
                 <h2 t-out="company.name"/>
-                <p t-out="company.vat" />
+                <p t-out="company.l10n_ve_vat" />
                 <p>Sales Report</p>
                 <t t-if="date_from == date_to">
                     <span><t t-out="str(date_from)"/></span>

@@ -7,7 +7,7 @@
             <field name="partner_bank_id" position="after">
                 <field name="foreign_rate" readonly="state == 'posted'" />
                 <field name="foreign_inverse_rate" invisible="1" />
-                <field name="foreign_inverse_rate" groups="base.group_no_one" />
+                <field name="foreign_inverse_rate" readonly="1" groups="base.group_no_one" />
             </field>
             <field name="ref" position="after">
                 <field name="concept" />
