@@ -57,8 +57,10 @@ class AccountMove(models.Model):
                 rename_column(self.env.cr, "account_move", "l10n_ve_invoice_date", "l10n_ve_doc_datetime")
             else:
                 create_column(self.env.cr, "account_move", "l10n_ve_doc_datetime", "timestamp")
+
+                # Agregar +4 horas en postgres -> (invoice_date::timestamp + interval '12 hours') 5
                 self.env.cr.execute(
-                    "UPDATE account_move SET l10n_ve_doc_datetime = invoice_date WHERE state != 'draft'"
+                    "UPDATE account_move SET l10n_ve_doc_datetime = invoice_date::timestamp with time zone + INTERVAL '4 hours' WHERE state != 'draft'" 
                 )
 
         if not column_exists(self.env.cr, "account_move", "l10n_ve_responsible_id"):
@@ -79,7 +81,7 @@ class AccountMove(models.Model):
             if line.price_unit <= 0 and line.display_type not in ("line_section", "line_note"):
                 raise ValidationError(_("An invoice cannot have a line with a price of zero"))
 
-    @api.onchange("move_type", "partner_id")
+    @api.onchange("move_type")
     def _onchange_move_type(self):
         if self.move_type == "out_invoice":
             self.invoice_date = False
@@ -121,17 +123,18 @@ class AccountMove(models.Model):
                 )
             repeated_moves = AccountMove.search(
                 [
+                    ("is_contingency", "=", True),
                     ("id", "!=", move.id),
                     ("is_contingency", "=", True),
                     ("l10n_ve_control_number", "!=", False),
                     ("l10n_ve_control_number", "=", move.l10n_ve_control_number),
-                    ("journal_id.type", "=", 'sale'),
+                    ("journal_id", "=", move.journal_id.id),
                 ],
                 limit=1,
             )
             if repeated_moves:
                 raise UserError(
-                    _("The correlative must be unique per journal when using a contingency journal")
+                    _("The l10n_ve_control_number must be unique per journal when using a contingency journal")
                 )
 
     @api.depends('journal_id')

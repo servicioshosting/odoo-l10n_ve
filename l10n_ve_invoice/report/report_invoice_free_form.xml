@@ -228,12 +228,14 @@
                     </div>
                 </div>
                 <div name="coletilla"> 
-                    <span t-if="o.company_id.show_tag_on_usd_invoice">
-                        A los efectos de lo previsto en el <strong>Art. 25</strong> de la Ley de
+                    <div t-if="o.company_id.show_tag_on_usd_invoice">
+                        <span>A los efectos de lo previsto en el <strong>Art. 25</strong> de la Ley de
                         Impuesto al Valor Agregado se expresa el monto total
                         de la factura en <strong>USD</strong> calculado a la tasa de cambio
-                        establecida por BCV de 1US$ por <strong><t t-out="o.foreign_rate" t-options='{"widget": "monetary", "display_currency": o.env["res.currency"].browse(int(%(base.VEF)s))}'/></strong>
-                    </span>
+                        establecida por BCV de 1US$ por <strong><t t-out="o.foreign_rate" t-options='{"widget": "monetary", "display_currency": o.env["res.currency"].browse(int(%(base.VEF)s))}'/></strong>.</span>
+
+                        <span><b>PARA EFECTOS DEL PAGO DEBE UTILIZARSE LA TASA VIGENTE AL DIA DE PAGO</b></span>
+                    </div>
                 </div>
                 
                 <div t-if="not is_html_empty(o.narration)" name="comment">
@@ -248,7 +250,7 @@
                 <t t-if="o.state == 'draft' or o.free_form_copy_number > 1">
                     <div class="row mt-4">
                         <div class="col-12 text-center">
-                            <p class="fw-bold">COPIA</p>
+                            <p t-if="o.free_form_copy_number > 1" class="fw-bold">COPIA</p>
                             <p class="fw-bold">SIN DERECHO A CRÉDITO FISCAL</p>
                         </div>
                     </div>
