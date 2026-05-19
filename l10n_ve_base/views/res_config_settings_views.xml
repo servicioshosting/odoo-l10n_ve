@@ -5,8 +5,8 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app data-string="VE Settings" string="VE Settings" name="l10n_ve_base">
-                    <block name="l10n_ve_base_block" invisible="1">
+                <app data-string="VE Configuraciones" string="VE Configuraciones" name="l10n_ve_base">
+                    <block name="l10n_ve_base_block">
                         <setting name="l10n_ve_base_setting"/>
                     </block>
                 </app>
