@@ -18,7 +18,7 @@
                     <attribute name="invisible">is_invoice</attribute>
                 </field>
 
-                <!-- <footer position="before">
+                <footer position="before">
                     <field
                         name="product_balance_ids"
                         mode="tree"
@@ -40,7 +40,11 @@
                             <field name="amount_total" readonly="1" />
                         </tree>
                     </field>
-                </footer> -->
+                </footer>
+
+                <button name="modify_moves" position="attributes">
+                    <attribute name="invisible">move_type  == 'entry' or is_invoice</attribute>
+                </button>
             </field>
         </record>
     </data>

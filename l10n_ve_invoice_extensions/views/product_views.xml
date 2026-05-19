@@ -10,7 +10,7 @@
           <field name='l10n_ve_vat_id'/>
         </field>
         <field name='taxes_id' position="attributes">
-          <attribute name='groups' eval="base.group_no_one"/>
+          <attribute name='groups'>base.group_no_one</attribute>
           <attribute name='readonly'>1</attribute>
         </field>
 
@@ -18,7 +18,7 @@
           <field name='l10n_ve_supplier_vat_id'/>
         </field>
         <field name='supplier_taxes_id' position="attributes">
-          <attribute name='groups' eval="base.group_no_one"/>
+          <attribute name='groups'>base.group_no_one</attribute>
           <attribute name='readonly'>1</attribute>
         </field>
       </field>

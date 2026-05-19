@@ -1,8 +1,8 @@
 from datetime import datetime
 
 from odoo import api, fields, models
-from odoo.tools.misc import formatLang
 from odoo.exceptions import UserError
+from odoo.tools.misc import formatLang
 
 
 class InvoicePaymentsReport(models.AbstractModel):
@@ -55,7 +55,7 @@ class InvoicePaymentsReport(models.AbstractModel):
                         self.env, payment_record.amount, currency_obj=payment_record.currency_id
                     ),
                     'exchange_rate': payment_record.foreign_rate,
-                    'is_igtf': payment_record.is_igtf_on_foreign_exchange,
+                    'is_igtf': payment_record.is_igtf_payment,
                     'date': payment_record.date,
                 })
                 invoice_payments_data[invoice.id]['total_payments'] += payment_record.amount

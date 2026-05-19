@@ -19,7 +19,7 @@
                     <attribute name="invisible">is_invoice</attribute>
                 </field>
 
-                <!-- <footer position="before">
+                <footer position="before">
                     <field
                         name="product_balance_ids"
                         mode="tree"
@@ -43,7 +43,27 @@
                             <field name="amount_total" help="Monto con IVA" readonly="1" />
                         </tree>
                     </field>
-                </footer> -->
+                </footer>
+
+                <!-- <form string="Create Debit Note">
+                    <field name="move_type" invisible="1"/>
+                    <field name="journal_type" invisible="1"/>
+                    <field name="move_ids" invisible="1"/>
+                    <group>
+                         <group>
+                             <field name="reason"/>
+                             <field name="date" string="Debit Note Date"/>
+                             <field name="copy_lines" invisible="move_type in ['in_refund', 'out_refund']"/>
+                         </group>
+                         <group>
+                             <field name="journal_id" domain="[('type', '=', journal_type)]"/>
+                         </group>
+                    </group>
+                    <footer>
+                        <button string='Create Debit Note' name="create_debit" type="object" class="btn-primary" data-hotkey="q"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                    </footer>
+               </form> -->
             </field>
         </record>
     </data>

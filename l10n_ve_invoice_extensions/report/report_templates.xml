@@ -4,7 +4,7 @@
         <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout" position="inside">
             <div class="text-center" style="border-top: 1px solid black;" t-if="o and o._name in ['sale.order','stock.picking']">
                 <div class="text-center">
-                    <h5><strong>Documento sin derecho a crédito fiscal</strong></h5>
+                    <!-- <h5><strong>Documento sin derecho a crédito fiscal</strong></h5> -->
                 </div>
             </div>
         </div>
@@ -14,7 +14,7 @@
         <div t-attf-class="footer o_boxed_footer o_company_#{company.id}_layout" position='inside'>
             <div class="text-center" style="border-top: 1px solid black;" t-if="o and o._name in ['sale.order','stock.picking']">
                 <div class="text-center">
-                    <h5><strong>Documento sin derecho a crédito fiscal</strong></h5>
+                    <!-- <h5><strong>Documento sin derecho a crédito fiscal</strong></h5> -->
                 </div>
             </div>
         </div>
@@ -24,7 +24,7 @@
         <div t-attf-class="o_company_#{company.id}_layout footer o_background_footer" position="inside">
             <div class="text-center" style="border-top: 1px solid black;" t-if="o and o._name in ['sale.order','stock.picking']">
                 <div class="text-center">
-                    <h5><strong>Documento sin derecho a crédito fiscal</strong></h5>
+                    <!-- <h5><strong>Documento sin derecho a crédito fiscal</strong></h5> -->
                 </div>
             </div>
         </div>
@@ -34,9 +34,16 @@
         <div t-attf-class="footer o_clean_footer o_company_#{company.id}_layout" position="inside">
             <div class="text-center" style="border-top: 1px solid black;" t-if="o and o._name in ['sale.order','stock.picking']">
                 <div class="text-center">
-                    <h5><strong>Documento sin derecho a crédito fiscal</strong></h5>
+                    <!-- <h5><strong>Documento sin derecho a crédito fiscal</strong></h5> -->
                 </div>
             </div>
+        </div>
+    </template>
+
+    <!-- Reemplaza header de reportes externos -->
+    <template id="custom_headers_internal_layout" inherit_id="web.internal_layout">
+        <div class="col-2 offset-2 text-center" position="inside">
+            <span t-if="company.account_fiscal_country_id.code == 'VE'" t-esc="company.l10n_ve_vat"/>
         </div>
     </template>
 </odoo>
