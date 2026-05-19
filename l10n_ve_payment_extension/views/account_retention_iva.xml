@@ -36,7 +36,7 @@
                             <field name="number" force_save="1"
                                 readonly="type == 'in_invoice' or state in ['emitted', 'cancel']"
                                 required="type == 'out_invoice'"/>
-                            <field name="correlative" force_save="1"
+                            <field name="l10n_ve_control_number" force_save="1"
                                 invisible="1"
                                 readonly="type == 'in_invoice'" />
                             <field name="date"

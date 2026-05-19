@@ -78,8 +78,9 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                 if move.journal_id.is_debit
                 else move.reversed_entry_id.name or "--"
             ),
-            "correlative": move.correlative,
+            "l10n_ve_control_number": move.l10n_ve_control_number,
             "reduced_aliquot": 0.08,
+            "extend_aliquot": 0.31,
             "general_aliquot": 0.16,
             "extend_aliquot": 0.31,
             "total_sales_iva": taxes.get("amount_taxed", 0),
@@ -109,7 +110,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
             "move_type": self._determinate_type_for_move(move),
             "transaction_type": self._determinate_transaction_type(move),
             "number_invoice_affected": move.debit_origin_id.name if move.journal_id.is_debit else move.reversed_entry_id.name or "--",
-            "correlative": move.correlative,
+            "l10n_ve_control_number": move.l10n_ve_control_number,
             "reduced_aliquot": 0.08,
             "extend_aliquot": 0.31,
             "general_aliquot": 0.16,
@@ -334,27 +335,16 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
             {
                 "name": "Nombre/Razón Social",
                 "field": "partner_name",
-                "size": 50,
+                "size": 25,
             },
-            # {
-            #     "name": "Tipo",
-            #     "field": "move_type",
-            #     "size": 6,
-            # },
             {
                 "name": "N° de documento",
                 "field": "document_number",
                 "size": 15,
             },
             {
-                "name": "N° de Control",
-                "field": "correlative",
-                "size": 15,
-            },
-            {
-                "name": "Tipo de Transacción",
-                "field": "transaction_type",
-                "size": 15,
+                "name": "Nª de Control",
+                "field": "l10n_ve_control_number",
             },
             {
                 "name": "N° Factura Afectada",
@@ -448,8 +438,8 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                 "size": 15,
             },
             {
-                "name": "N° de Control",
-                "field": "correlative",
+                "name": "Nª de Control",
+                "field": "l10n_ve_control_number",
                 "size": 15,
             },
             {
@@ -563,28 +553,6 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
 
         return purchase_fields
 
-    # def resume_book_headers(self):
-    #     credit_or_debit_based_on_report_type = {"purchase": "Crédito", "sale": "Débito"}
-    #     HEADERS = ("Base Imponible", f"{credit_or_debit_based_on_report_type[self.report]} Fiscal")
-
-    #     return [
-    #         {
-    #             "name": "Resumen",
-    #             "field": "resume",
-    #             "headers": [
-    #                 "",
-    #                 f"{credit_or_debit_based_on_report_type[self.report]}s Fiscales",
-    #             ],
-    #         },
-    #         {"name": "Facturas/Notas de Débito", "field": "inv_debit_notes", "headers": HEADERS},
-    #         {
-    #             "name": "Notas de Crédito",
-    #             "field": "credit_notes",
-    #             "headers": HEADERS,
-    #         },
-    #         {"name": "Total Neto", "field": "total", "headers": HEADERS},
-    #     ]
-
     def _get_domain(self):
         search_domain = []
         is_purchase = self.report == "purchase"
@@ -602,7 +570,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
         search_domain += [
             ("state", "in", ("posted", "cancel")),
             ("move_type", "in", move_type),
-            ("correlative", "not in", ['/', False])
+            ("l10n_ve_control_number", "not in", ['/', False])
         ]
 
         return search_domain
@@ -674,97 +642,52 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
             return "03-ANU"
 
     def search_moves(self):
-        order = "invoice_date asc" if self.report == "purchase" else "invoice_date,correlative asc"
+        order = "invoice_date asc" if self.report == "purchase" else "l10n_ve_control_number asc"
         env = self.env
         move_model = env["account.move"]
         domain = self._get_domain()
         moves = move_model.search(domain, order=order)
         return moves
 
-    # def _resume_sale_book_fields(self, moves):
-    #     return [
-    #         {
-    #             "name": "Ventas Internas no Gravadas",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves, "exempt_aliquot"),
-    #         },
-    #         {
-    #             "name": "Exportaciones Gravadas por Alícuota General",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves),
-    #         },
-    #         {
-    #             "name": "Exportaciones Gravadas por Alícuota General más Adicional",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves),
-    #         },
-    #         {
-    #             "name": "Ventas Internas Gravadas sólo por Alícuota General",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves, "general_aliquot"),
-    #         },
-    #         {
-    #             "name": "Ventas Internas Gravadas por Alícuota Reducida",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves, "reduced_aliquot"),
-    #         },
-    #         {
-    #             "name": "Ajustes a los Débitos Fiscales de Periodos Anteriores",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves),
-    #         },
-    #         {
-    #             "name": "Total Ventas y Débitos Fiscales del Periodo",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves),
-    #             "total": True,
-    #         },
-    #     ]
-
-    # def _resume_purchase_book_fields(self, moves):
-    #     return [
-    #         {
-    #             "name": "Compras Internas no Gravadas",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves, "exempt_aliquot"),
-    #         },
-    #         {
-    #             "name": "Importaciones Gravadas por Alícuota General",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves),
-    #         },
-    #         {
-    #             "name": "Importaciones Gravadas por Alícuota General más Adicional",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves),
-    #         },
-    #         {
-    #             "name": "Compras Internas Gravadas sólo por Alícuota General",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves, "general_aliquot"),
-    #         },
-    #         {
-    #             "name": "Compras Internas Gravadas por Alícuota General más Adicional",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves, "extend_aliquot"),
-    #         },
-    #         {
-    #             "name": "Compras Internas Gravadas por Alícuota Reducida",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves, "reduced_aliquot"),
-    #         },
-    #         {
-    #             "name": "Ajustes a los Créditos Fiscales de Periodos Anteriores",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves),
-    #         },
-    #         {
-    #             "name": "Total Compras y Créditos Fiscales del Periodo",
-    #             "format": "number",
-    #             "values": self._determinate_resume_books(moves),
-    #             "total": True,
-    #         },
-    #     ]
+    def _resume_sale_book_fields(self, moves):
+        return [
+            {
+                "name": "Ventas Internas no Gravadas",
+                "format": "number",
+                "values": self._determinate_resume_books(moves, "exempt_aliquot"),
+            },
+            {
+                "name": "Exportaciones Gravadas por Alícuota General",
+                "format": "number",
+                "values": self._determinate_resume_books(moves),
+            },
+            {
+                "name": "Exportaciones Gravadas por Alícuota General más Adicional",
+                "format": "number",
+                "values": self._determinate_resume_books(moves),
+            },
+            {
+                "name": "Ventas Internas Gravadas sólo por Alícuota General",
+                "format": "number",
+                "values": self._determinate_resume_books(moves, "general_aliquot"),
+            },
+            {
+                "name": "Ventas Internas Gravadas por Alícuota Reducida",
+                "format": "number",
+                "values": self._determinate_resume_books(moves, "reduced_aliquot"),
+            },
+            {
+                "name": "Ajustes a los Débitos Fiscales de Periodos Anteriores",
+                "format": "number",
+                "values": self._determinate_resume_books(moves),
+            },
+            {
+                "name": "Total Ventas y Débitos Fiscales del Periodo",
+                "format": "number",
+                "values": self._determinate_resume_books(moves),
+                "total": True,
+            },
+        ]
 
     def _determinate_amount_taxeds(self, move):
         is_posted = move.state == "posted"
@@ -1019,8 +942,10 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
 
         summary_data = self._get_sales_summary_fields()
 
+        # worksheet.set_row(6, 5)
         worksheet.set_row(7, 50)
         for index, field in enumerate(name_columns):
+            summary_total = 0
             worksheet.set_column(index, index, field.get("size", len(field.get("name")) + 5))
             # worksheet.merge_range(6, index, 7, index, field.get("name"), cell_formats['header'])
             worksheet.write(7, index, field.get("name"), cell_formats['header'])
@@ -1039,11 +964,28 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                         cell_format
                     )
 
+                if field.get("format") == "number" and line.get("transaction_type") != 'COM': 
+                    summary_total += line.get(field.get("field"))
+                
+                if field.get("field") == "iva_retained" and line.get("transaction_type") == 'COM':
+                    summary_total += line.get(field.get("field"))
+                
             if field.get("format") == "number":
-                col = utility.xl_col_to_name(index)
-                worksheet.write_formula(
-                    total_idx, index, f"=SUM({col}9:{col}{total_idx})", cell_formats["number"]
+                worksheet.write(
+                    total_idx, index, summary_total, cell_formats["number"]
                 )
+
+                if field.get("field") == "igtf_base_amount":
+                    summary_data['total_pagos_igtf_base'] = summary_total
+                    summary_data = summary_data
+                
+                if field.get("field") == "igtf_amount":
+                    summary_data['total_pagos_igtf'] = summary_total
+                    summary_data = summary_data
+
+                if field.get("field") == "iva_retained":
+                    summary_data['iva_retenido'] = summary_total
+                    summary_data = summary_data
 
             summary_data = self._fill_sales_summary(summary_data, line)
 
@@ -1185,7 +1127,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
 
             if field.get("format") == "number":
                 col = utility.xl_col_to_name(index)
-                worksheet.write_formula(
+                worksheet.write(
                     total_idx, index, f"=SUM({col}9:{col}{total_idx})", cell_formats.get("number")
                 )
 
@@ -1395,27 +1337,6 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                 "debit_field": "iva_retenido",
                 "debit_code": "",
             },
-            # {
-            #     "name": "Ajuste a los Debito fiscales de períodos anteriores",
-            #     "base_code": "7",
-            #     "base_field": None,
-            #     "debit_field": None,
-            #     "debit_code": "48",
-            # },
-            # {
-            #     "name": "Certificados de débitos fiscales exonerados (recibos entes exonerados)",
-            #     "base_code": "8",
-            #     "base_field": None,
-            #     "debit_field": None,
-            #     "debit_code": "80",
-            # },
-            # {
-            #     "name": "Total Débitos Fiscales",
-            #     "base_code": "",
-            #     "base_field": None,
-            #     "debit_field": "total_debito_fiscal",
-            #     "debit_code": "",
-            # },
         ]
 
     def _fill_purchases_summary(self, summary: dict, line: dict):
@@ -1464,94 +1385,3 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
             ws.write(row_idx, 7,
                      summary_data.get(row['debit_field'], "") if row.get('debit_field') else 0,
                      cell_formats.get("number"))
-
-    # def generate_book_resume(self, worksheet, index_to_start, merge_format, cell_formats):
-    #     is_purchase = self.report == "purchase"
-    #     header_idx = index_to_start + 2
-    #     resume_headers = self.resume_book_headers()
-
-    #     for idx, header in enumerate(resume_headers):
-    #         nidx = idx * 2
-    #         worksheet.merge_range(
-    #             header_idx, nidx, header_idx, nidx + 1, header.get("name"), merge_format
-    #         )
-    #         worksheet.write(header_idx + 1, nidx, header.get("headers")[0])
-    #         worksheet.write(header_idx + 1, nidx + 1, header.get("headers")[1])
-
-    #     moves = self.search_moves()
-    #     resume_columns = (
-    #         self._resume_purchase_book_fields(moves)
-    #         if is_purchase
-    #         else self._resume_sale_book_fields(moves)
-    #     )
-
-    #     for idx, resume in enumerate(resume_columns):
-    #         row_resume = (index_to_start + 4) + idx
-
-    #         worksheet.write(row_resume, 0, idx + 1)
-    #         worksheet.write(row_resume, 1, resume.get("name"))
-
-    #         total_line = 0
-    #         for idx_line, line in enumerate(resume.get("values")):
-    #             total_line = idx_line + 2
-    #             worksheet.write(row_resume, idx_line + 2, line, cell_formats.get("number"))
-
-    #         if not is_purchase:
-    #             if resume.get("total"):
-    #                 total_c_formula = f"=SUM(C{index_to_start + 5}:C{row_resume})"
-    #                 total_d_formula = f"=SUM(D{index_to_start + 5}:D{row_resume})"
-    #                 total_e_formula = f"=SUM(E{index_to_start + 5}:E{row_resume})"
-    #                 total_f_formula = f"=SUM(F{index_to_start + 5}:F{row_resume})"
-
-    #                 worksheet.write_formula(
-    #                     row_resume, 2, total_c_formula, cell_formats.get("number")
-    #                 )
-    #                 worksheet.write_formula(
-    #                     row_resume, 3, total_d_formula, cell_formats.get("number")
-    #                 )
-    #                 worksheet.write_formula(
-    #                     row_resume, 4, total_e_formula, cell_formats.get("number")
-    #                 )
-    #                 worksheet.write_formula(
-    #                     row_resume, 5, total_f_formula, cell_formats.get("number")
-    #                 )
-
-    #         else:
-    #             if resume.get("total"):
-    #                 total_c_formula = f"=SUM(C{index_to_start + 5}:C{row_resume})"
-    #                 total_d_formula = f"=SUM(D{index_to_start + 5}:D{row_resume})"
-    #                 total_e_formula = f"=SUM(E{index_to_start + 5}:E{row_resume})"
-    #                 total_f_formula = f"=SUM(F{index_to_start + 5}:F{row_resume})"
-
-    #                 worksheet.write_formula(
-    #                     row_resume, 2, total_c_formula, cell_formats.get("number")
-    #                 )
-    #                 worksheet.write_formula(
-    #                     row_resume, 3, total_d_formula, cell_formats.get("number")
-    #                 )
-    #                 worksheet.write_formula(
-    #                     row_resume, 4, total_e_formula, cell_formats.get("number")
-    #                 )
-    #                 worksheet.write_formula(
-    #                     row_resume, 5, total_f_formula, cell_formats.get("number")
-    #                 )
-
-    #         column_bi_range = (
-    #             f"C{row_resume + 1}:{utility.xl_col_to_name(total_line - 1)}{row_resume + 1}"
-    #         )
-    #         column_df_range = (
-    #             f"D{row_resume + 1}:{utility.xl_col_to_name(total_line)}{row_resume + 1}"
-    #         )
-    #         imposed_formula = (
-    #             f"=SUMPRODUCT(--({column_bi_range}), --(MOD(COLUMN({column_bi_range}), 2)=1))"
-    #         )
-    #         debit_formula = (
-    #             f"=SUMPRODUCT(--({column_df_range}), --(MOD(COLUMN({column_df_range}), 2)=0))"
-    #         )
-
-    #         worksheet.write_formula(
-    #             row_resume, total_line + 1, imposed_formula, cell_formats.get("number")
-    #         )
-    #         worksheet.write_formula(
-    #             row_resume, total_line + 2, debit_formula, cell_formats.get("number")
-    #         )

@@ -203,7 +203,7 @@
 
                         <!--Nro de Control Factura -->
                         <div class="" style="width:6%;">
-                            <span t-esc="line.move_id.correlative or '--'"/>
+                            <span t-esc="line.move_id.l10n_ve_control_number or '--'"/>
                         </div>
                         <!--Nota de Débito -->
                         <div class="" style="width:6%">
@@ -628,7 +628,7 @@
                         </div>
                         <!-- Nro de Control -->
                         <div style="width:7%">
-                            <span t-esc="line.move_id.correlative or '--'"/>
+                            <span t-esc="line.move_id.l10n_ve_control_number or '--'"/>
                         </div>
                         <!-- Fecha -->
                         <div style="width:5%">

@@ -1,0 +1,57 @@
+<odoo>
+    <data>
+        <record id="view_move_product_balance_tree" model="ir.ui.view">
+            <field name="name">account.move.product.balance.tree</field>
+            <field name="model">account.move.product.balance</field>
+            <field name="arch" type="xml">
+                <tree create="False" edit="False" delete="False">
+                    <field name="invoice_id" />
+                    <field name="origin_id" optional="hide" />
+                    <field name="invoice_line_id" optional="hide" />
+                    <field name="product_id" />
+                    <field name="quantity" />
+                    <field name="unit_price" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_move_product_balances_form" model="ir.ui.view">
+            <field name="name">account.move.form.view_product_balances</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="l10n_ve_invoice.view_account_move_form_l10n_ve_invoice" />
+            <field name="arch" type="xml">
+                <div name="button_box" position="inside">
+                    <button class="oe_stat_button" type="object" name="action_view_product_balance" icon="fa-book"
+                        invisible="move_type not in ['out_invoice', 'out_refund'] or l10n_ve_doc_type_internal_type != 'invoice' or not posted_before">
+                        <field string="Balances de productos" name="product_balance_count" widget="statinfo" />
+                    </button>
+                </div>
+
+                <button name="button_request_cancel" position="after">
+                    <button name="action_update_product_balance" type="object" string="Actualizar balances de productos"
+                        groups="base.group_no_one"
+                        invisible="not id or state != 'posted' or l10n_ve_doc_type_internal_type not in ['invoice']"
+                    />
+                </button>
+            </field>
+        </record>
+
+        <!-- <record id="model_account_move_action_view_product_balance" model="ir.actions.server">
+            <field name="name">Ver balances de productos</field>
+            <field name="model_id" ref="account.model_account_move" />
+            <field name="binding_model_id" ref="account.model_account_move" />
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = {
+                "name": "Balances de productos",
+                "type": "ir.actions.act_window",
+                "res_model": "account.move.product.balance",
+                "view_mode": "tree",
+                "domain": [("invoice_id", "=", record.id)],
+                }
+            </field>
+        </record> -->
+    </data>
+</odoo>
+  

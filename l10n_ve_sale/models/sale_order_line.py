@@ -52,3 +52,12 @@ class SaleOrderLine(models.Model):
                 1 - (line.discount / 100.0)
             )
             line.foreign_subtotal = line_discount_price_unit * line.product_uom_qty
+
+    def _prepare_invoice_line(self, **optional_values):
+        res = super()._prepare_invoice_line(**optional_values)
+
+        if self.currency_id and self.currency_id != self.company_id.currency_id:
+            res['price_unit'] = self.currency_id._convert(res['price_unit'], self.company_id.currency_id)
+            res['discount'] = self.currency_id._convert(res['discount'], self.company_id.currency_id)
+
+        return res

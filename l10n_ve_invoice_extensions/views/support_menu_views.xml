@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_vat_tax_tree" model="ir.actions.act_window">
+            <field name="name">Alícuotas del IVA</field>
+            <field name="res_model">account.tax</field>
+            <field name="view_mode">tree,form</field>
+            <!-- <field name="domain">[('l10n_ve_tax_type', '=', 'VAT')]</field> -->
+            <field name="context">{'search_default_l10n_ve_vat': True, 'search_default_sale': True, 'search_default_purchase': True, 'active_test': False, 'create': 1, 'edit': 1, 'delete': 0}</field>
+            <field name="view_id" ref="account.view_tax_tree" />
+        </record>
+
+        <record id="action_igtf_tax_tree" model="ir.actions.act_window">
+            <field name="name">Alícuotas del IGTF</field>
+            <field name="res_model">account.tax</field>
+            <field name="view_mode">tree,form</field>
+            <!-- <field name="domain">[('l10n_ve_tax_type', '=', 'IGTF')]</field> -->
+            <field name="context">{'search_default_l10n_ve_igtf': True, 'search_default_sale': True, 'search_default_purchase': True, 'active_test': False, 'create': 1, 'edit': 1, 'delete': 0}</field>
+            <field name="view_id" ref="account.view_tax_tree" />
+        </record>
+
+        <record id="action_currency_tree" model="ir.actions.act_window">
+            <field name="name">Monedas</field>
+            <field name="res_model">res.currency</field>
+            <!-- <field name="view_id" ref="base.sequence_view_tree" /> -->
+            <!-- <field name="domain">[('active', '=', True)]</field> -->
+            <field name="context">{'search_default_active': True, 'active_test': False, 'create': 0, 'delete': 0}</field>
+        </record>
+
+        <record id="action_sequences" model="ir.actions.act_window">
+            <field name="name">Secuencias</field>
+            <field name="res_model">ir.sequence</field>
+            <field name="view_id" ref="base.sequence_view_tree" />
+            <field name="domain">[('code', 'like', 'l10n_ve'), ('active', '=', True)]</field>
+            <field name="context">{'active_test': False}</field>
+        </record>
+
+        <menuitem id="l10n_ve_accountant.l10n_ve_accountant_account_tax" active="False" />
+
+        <menuitem
+            id="menu_vat_tax_tree"
+            name="Alícuotas del IVA"
+            sequence="1"
+            parent="l10n_ve_accountant.l10n_ve_account_support_views"
+            action="action_vat_tax_tree" />
+
+        <menuitem
+            id="menu_igtf_tax_tree"
+            name="Alícuotas del IGTF"
+            sequence="2"
+            parent="l10n_ve_accountant.l10n_ve_account_support_views"
+            action="action_igtf_tax_tree" />
+
+        <menuitem
+            id="menu_currency_tree"
+            name="Monedas"
+            sequence="3"
+            parent="l10n_ve_accountant.l10n_ve_account_support_views"
+            action="action_currency_tree" />
+
+        <menuitem
+            id="l10n_ve_accountant.l10n_ve_accountant_ir_sequence"
+            name="Secuencias"
+            parent="l10n_ve_accountant.l10n_ve_account_support_views"
+            action="action_sequences" />
+    </data>
+</odoo>

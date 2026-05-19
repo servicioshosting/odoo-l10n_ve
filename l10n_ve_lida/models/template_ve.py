@@ -1,5 +1,5 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models, Command
 from odoo.addons.account.models.chart_template import template
 
 
@@ -50,13 +50,13 @@ class AccountChartTemplate(models.AbstractModel):
                 "default_account_id": "acc_ingresos_por_ventas",
             },
 
-            "lida_delivery_notes": {
-                "name": "Ordenes de entrega",
-                "invoice_reference_type": "invoice",
-                "type": "sale",
-                "code": "OE",
-                "default_account_id": "acc_ingresos_por_ventas",
-            },
+            # "lida_delivery_notes": {
+            #     "name": "Ordenes de entrega",
+            #     "invoice_reference_type": "invoice",
+            #     "type": "sale",
+            #     "code": "OE",
+            #     "default_account_id": "acc_ingresos_por_ventas",
+            # },
 
             "purchase": {
                 "name": "Facturas de proveedores",
@@ -66,13 +66,13 @@ class AccountChartTemplate(models.AbstractModel):
                 "default_account_id": "acc_compras",
             },
 
-            "lida_supplier_receipts": {
-                "name": "Recibos de proveedores",
-                "invoice_reference_type": "invoice",
-                "type": "purchase",
-                "code": "RP",
-                "default_account_id": "acc_compras",
-            },
+            # "lida_supplier_receipts": {
+            #     "name": "Recibos de proveedores",
+            #     "invoice_reference_type": "invoice",
+            #     "type": "purchase",
+            #     "code": "RP",
+            #     "default_account_id": "acc_compras",
+            # },
 
             "bank": {
                 "name": "Banco",
@@ -129,12 +129,12 @@ class AccountChartTemplate(models.AbstractModel):
                 "default_account_id": "acc_caja_dolares",
             },
 
-            "lida_inventory_valuation": {
-                "name": "Valorización de inventario",
-                "invoice_reference_type": "invoice",
-                "type": "general",
-                "code": "VI",
-            },
+            # "lida_inventory_valuation": {
+            #     "name": "Valorización de inventario",
+            #     "invoice_reference_type": "invoice",
+            #     "type": "general",
+            #     "code": "VI",
+            # },
 
             "general": {
                 "name": "Operaciones varias",
@@ -155,13 +155,19 @@ class AccountChartTemplate(models.AbstractModel):
                 "type": "cash",
                 "code": "RIVA",
                 "inbound_payment_method_line_ids": [
-                    (0, 0, {
+                    Command.create({
                         'name': 'Retención de IVA',
                         'payment_method_id': 'account.account_payment_method_manual_in',
                         'payment_account_id': 'acc_retencion_iva',
                     })],
-                "outbound_payment_method_line_ids": [fields.Command.clear()],
+                "outbound_payment_method_line_ids": [
+                    Command.create({
+                        'name': 'Retención de IVA',
+                        'payment_method_id': 'account.account_payment_method_manual_out',
+                        'payment_account_id': 'acc_retencion_iva',
+                    })],
                 "default_account_id": "acc_retencion_iva",
+                "suspense_account_id": "acc_retencion_iva",
             },
 
             "lida_withholding_islr_customers": {
@@ -174,15 +180,26 @@ class AccountChartTemplate(models.AbstractModel):
                         'payment_method_id': 'account.account_payment_method_manual_in',
                         'payment_account_id': 'acc_retencion_de_islr',
                     })],
-                "outbound_payment_method_line_ids": [fields.Command.clear()],
+                "outbound_payment_method_line_ids": [
+                    (0, 0, {
+                        'name': 'Retención de ISLR',
+                        'payment_method_id': 'account.account_payment_method_manual_out',
+                        'payment_account_id': 'acc_retencion_de_islr',
+                    })],
                 "default_account_id": "acc_retencion_de_islr",
+                "suspense_account_id": "acc_retencion_de_islr",
             },
 
             "lida_withholding_iva_suppliers": {
                 "name": "Retenciones IVA proveedores",
                 "type": "cash",
                 "code": "RPIVA",
-                "inbound_payment_method_line_ids": [fields.Command.clear()],
+                "inbound_payment_method_line_ids": [
+                    (0, 0, {
+                        'name': 'Retención de IVA',
+                        'payment_method_id': 'account.account_payment_method_manual_in',
+                        'payment_account_id': 'acc_iva_retenido_por_pagar',
+                    })],
                 "outbound_payment_method_line_ids": [
                     (0, 0, {
                         'name': 'Retención de IVA',
@@ -190,13 +207,19 @@ class AccountChartTemplate(models.AbstractModel):
                         'payment_account_id': 'acc_iva_retenido_por_pagar',
                     })],
                 "default_account_id": "acc_iva_retenido_por_pagar",
+                "suspense_account_id": "acc_iva_retenido_por_pagar",
             },
 
             "lida_withholding_islr_suppliers": {
                 "name": "Retenciones ISLR proveedores",
                 "type": "cash",
                 "code": "RPSLR",
-                "inbound_payment_method_line_ids": [fields.Command.clear()],
+                "inbound_payment_method_line_ids": [
+                    (0, 0, {
+                        'name': 'Retención de ISLR',
+                        'payment_method_id': 'account.account_payment_method_manual_in',
+                        'payment_account_id': 'acc_retenciones_de_islr_por_pagar',
+                    })],
                 "outbound_payment_method_line_ids": [
                     (0, 0, {
                         'name': 'Retención de ISLR',
@@ -204,6 +227,7 @@ class AccountChartTemplate(models.AbstractModel):
                         'payment_account_id': 'acc_retenciones_de_islr_por_pagar',
                     })],
                 "default_account_id": "acc_retenciones_de_islr_por_pagar",
+                "suspense_account_id": "acc_retenciones_de_islr_por_pagar",
             },
         }
 

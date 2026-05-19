@@ -47,7 +47,7 @@ class AccountPayment(models.Model):
         """
         Override the create method to set the rate of the payment to its move.
         """
-        payments = super().create(vals_list)
+        payments = super(AccountPayment, self).create(vals_list)
         for payment in payments.with_context(skip_account_move_synchronization=True):
             payment.move_id.write(
                 {

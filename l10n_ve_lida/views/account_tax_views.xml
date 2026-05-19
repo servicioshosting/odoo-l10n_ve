@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_tax_group_form" model="ir.ui.view">
+            <field name="name">account.tax.group.form.inherit.l10n_ve_type</field>
+            <field name="model">account.tax.group</field>
+            <field name="inherit_id" ref="account.view_tax_group_form" />
+            <field name="arch" type="xml">
+                <field position="after" name="sequence">
+                    <field name="l10n_ve_type" />
+                </field>
+            </field>
+        </record>
+
+        <record id="view_tax_form" model="ir.ui.view">
+            <field name="name">account.tax.form.inherit.l10n_ve_type</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form" />
+            <field name="arch" type="xml">
+                <field position="after" name="active">
+                    <field name="l10n_ve_tax_type" />
+                </field>
+            </field>
+        </record>
+
+        <record id="view_account_tax_vat_filter_search" model="ir.ui.view">
+            <field name="name">account.tax.search.l10n_ve.inherit</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_account_tax_search" />
+            <field name="arch" type="xml">
+                <filter name="inactive" position="after">
+                    <separator/>
+                    <filter name="l10n_ve_vat" string="Alícuotas del IVA" domain="[('l10n_ve_tax_type', '=', 'VAT')]" />
+                </filter>
+            </field>
+        </record>
+    </data>
+</odoo>

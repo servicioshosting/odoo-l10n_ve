@@ -259,6 +259,18 @@ class WizardAccountingReports(models.TransientModel):
 
         return self._sort_book_data(data + withholdings_data)
 
+    def _fill_sales_summary(self, summary: dict, line: dict):
+        summary = super()._fill_sales_summary(summary, line)
+        summary['iva_retenido'] = summary['iva_retenido'] + line['iva_retained']
+
+        return summary
+
+    def _fill_purchases_summary(self, summary: dict, line: dict):
+        summary = super()._fill_purchases_summary(summary, line)
+        summary['iva_retenido'] = summary['iva_retenido'] + line['iva_retained']
+
+        return summary
+
     def _sum_retention_total(self, lines):
         is_check_currency_system = self.currency_system
         retention = lines.mapped("retention_id")

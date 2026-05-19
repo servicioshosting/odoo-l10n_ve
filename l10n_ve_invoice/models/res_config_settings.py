@@ -36,6 +36,6 @@ class ResConfigSettings(models.TransientModel):
         ir_sequence = self.env["ir.sequence"].sudo()
 
         series_sequence = ir_sequence.search(
-            ["|", ("code", "=", "series.invoice.correlative"), ("active", "=", False)]
+            ["|", ("code", "=", "l10n_ve.invoice.control_number"), ("active", "=", False)]
         )
         series_sequence.active = self.group_sales_invoicing_series

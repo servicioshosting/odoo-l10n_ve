@@ -168,14 +168,6 @@ class AccountRetention(models.Model):
         )
     )
 
-    # Backwards compatibility
-    correlative = fields.Char("Correlativo", compute='_compute_correlative')
-
-    @api.depends("l10n_ve_control_number")
-    def _compute_correlative(self):
-        for rec in self:
-            rec.correlative = rec.l10n_ve_control_number
-
     def _auto_init(self):
         if not column_exists(self.env.cr, "account_retention", "l10n_ve_control_number"):
             if column_exists(self.env.cr, "account_retention", "correlative"):
@@ -187,12 +179,6 @@ class AccountRetention(models.Model):
                 "UPDATE account_retention SET tax_unit_id = NULL WHERE state != 'draft'"
             )
         return super()._auto_init()
-
-    @api.constrains("tax_unit_id", "state")
-    def _constrains_tax_unit(self):
-        for ret in self:
-            if ret.state == 'emitted' and ret.tax_unit_id and not ret.tax_unit_id.status:
-                raise ValidationError("La retención está asociada a un")
 
     @api.depends("type", "partner_id")
     def _compute_allowed_lines_move_ids(self):
@@ -617,6 +603,10 @@ class AccountRetention(models.Model):
 
     def action_post(self):
         today = datetime.now()
+
+        self._set_active_tax_unit()
+
+        for retention in self:
 
         self._set_active_tax_unit()
 

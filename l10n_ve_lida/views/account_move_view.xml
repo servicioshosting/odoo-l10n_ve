@@ -1,0 +1,27 @@
+<odoo>
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="name">account.move.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="l10n_latam_invoice_document.view_move_form" />
+        <field name="arch" type="xml">
+            <field name="l10n_latam_document_number" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="required">0</attribute>
+            </field>
+
+            <!-- <xpath expr="//div[@name='journal_div']" position="after">
+                <field name="l10n_latam_document_type_id"
+                    invisible="not l10n_latam_use_documents"
+                    readonly="posted_before"
+                    required="partner_id and l10n_latam_use_documents"
+                    domain="[('id', 'in', l10n_latam_available_document_type_ids)]" options="{'no_open': True, 'no_create': True}"/>
+                <field name="l10n_latam_document_number"
+                    invisible="(not l10n_latam_use_documents or not l10n_latam_manual_document_number) and (not l10n_latam_use_documents or
+            highest_name or state != 'draft')"
+                    readonly="posted_before and state != 'draft'"
+                    required="partner_id and l10n_latam_use_documents and (l10n_latam_manual_document_number or not highest_name)"/>
+            </xpath> -->
+        </field>
+    </record>
+</odoo>
+  

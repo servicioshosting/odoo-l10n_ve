@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_account_move_reversal" model="ir.ui.view">
+            <field name="name">account.move.reversal.form.l10n_ve_invoice_extensions</field>
+            <field name="model">account.move.reversal</field>
+            <field name="inherit_id" ref="account.view_account_move_reversal" />
+            <field name="arch" type="xml">
+                <field name="reason" position="attributes">
+                    <attribute name="required">is_invoice</attribute>
+                </field>
+                <group position="inside">
+                    <field name="is_invoice" invisible="1" />
+                    <field name="fully_reverse_invoice" readonly="1" invisible="not is_invoice" />
+                </group>
+
+                <field name="date" position="attributes">
+                    <attribute name="invisible">is_invoice</attribute>
+                </field>
+
+                <footer position="before">
+                    <field
+                        name="product_balance_ids"
+                        mode="tree"
+                        invisible="not is_invoice"
+                        readonly="0"
+                    >
+                        <tree create="False" edit="True" delete="False" editable="bottom" decoration-warning="quantity &lt; 0.01">
+                            <control></control>
+
+                            <field name="id" column_invisible="1" />
+                            <field name="origin_balance_id" column_invisible="1" />
+                            <field name="invoice_line_id" column_invisible="1" />
+                            <field name="invoice_id" optional="hide" readonly="1" />
+                            <field name="origin_id" readonly="1" />
+                            <field name="product_id" readonly="1" />
+                            <field name="unit_price" readonly="1" />
+                            <field name="origin_available_quantity" string="Disponible" readonly="1" />
+                            <field name="quantity" readonly="0"/>
+                            <field name="amount_total" readonly="1" />
+                        </tree>
+                    </field>
+                </footer>
+
+                <button name="modify_moves" position="attributes">
+                    <attribute name="invisible">move_type  == 'entry' or is_invoice</attribute>
+                </button>
+            </field>
+        </record>
+    </data>
+</odoo>

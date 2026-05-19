@@ -12,7 +12,7 @@ class IrSequence(models.Model):
     journals_using_sequence_as_correlative_series_ids = fields.One2many(
         comodel_name='account.journal',
         inverse_name='series_correlative_sequence_id',
-        string="Journals using this sequence as correlative series"
+        string="Journals using this sequence as l10n_ve_control_number series"
     )
 
     def unlink(self):

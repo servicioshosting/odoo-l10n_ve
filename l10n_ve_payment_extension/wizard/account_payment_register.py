@@ -204,7 +204,7 @@ class AccountPaymentRegister(models.TransientModel):
                 "company_id": self.company_id.id,
                 "code": self.retention_ref,
                 "number": self.retention_ref,
-                "correlative": self.retention_ref,
+                "l10n_ve_control_number": self.retention_ref,
                 "type": "out_invoice",
                 "payment_ids": payments.ids,
                 "retention_line_ids": self.retention_line_ids.ids,
