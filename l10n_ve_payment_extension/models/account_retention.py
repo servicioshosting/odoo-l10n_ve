@@ -608,6 +608,9 @@ class AccountRetention(models.Model):
 
         for retention in self:
 
+        self._set_active_tax_unit()
+
+        for retention in self:
             if (
                 retention.type in ["out_invoice", "out_refund", "out_debit"]
                 and not retention.number

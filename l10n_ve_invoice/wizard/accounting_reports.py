@@ -55,11 +55,6 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
 
     show_field_currency_system = fields.Boolean(string="Report in currency system", default=_default_check_currency_system)
 
-    def _default_currency_system(self):
-        return True if self.env.company.currency_id.id == self.env.ref("base.VEF").id else False
-
-    show_field_currency_system = fields.Boolean(string="Report in currency system", default=_default_check_currency_system)
-
     currency_system = fields.Boolean(string="Report in currency system", default=_default_currency_system)
 
     def _fields_sale_book_line(self, move, taxes):
@@ -87,6 +82,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
             "reduced_aliquot": 0.08,
             "extend_aliquot": 0.31,
             "general_aliquot": 0.16,
+            "extend_aliquot": 0.31,
             "total_sales_iva": taxes.get("amount_taxed", 0),
             "total_sales_not_iva": taxes.get("tax_base_exempt_aliquot", 0) * multiplier,
             "amount_reduced_aliquot": taxes.get("amount_reduced_aliquot", 0) * multiplier,
@@ -103,6 +99,9 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
         multiplier = -1 if move.move_type == "in_refund" else 1
         fields_purchase_book_line = {
             "_id": move.id,
+            "_sort_document_date": move.invoice_date,
+            "_sort_document_number": move.l10n_latam_document_number if move.is_invoice() else move.name,
+            "_sort_order": 10,
             "document_date": self._format_date(move.invoice_date),
             "accounting_date": self._format_date(move.date),
             "vat": move.vat,
@@ -323,16 +322,16 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
     def sale_book_fields(self):
         sale_fields = [
             {
-                "name": "N° operacion",
+                "name": "N°",
                 "field": "index",
                 "size": 5,
             },
             {
                 "name": "Fecha del documento",
                 "field": "document_date",
-                "size": 15,
+                "size": 12,
             },
-            {"name": "RIF", "field": "vat", "size": 15},
+            {"name": "RIF o CI", "field": "vat", "size": 15},
             {
                 "name": "Nombre/Razón Social",
                 "field": "partner_name",
@@ -341,13 +340,12 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
             {
                 "name": "N° de documento",
                 "field": "document_number",
-                "size": 20,
+                "size": 15,
             },
             {
                 "name": "Nª de Control",
                 "field": "l10n_ve_control_number",
             },
-            {"name": "Tipo de Transacción", "field": "transaction_type"},
             {
                 "name": "N° Factura Afectada",
                 "field": "number_invoice_affected",
@@ -414,50 +412,54 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
     def purchase_book_fields(self):
         purchase_fields = [
             {
-                "name": "N° operacion",
+                "name": "N°",
                 "field": "index",
                 "size": 5,
             },
             {
                 "name": "Fecha del documento",
                 "field": "document_date",
-                "size": 15,
+                "size": 12,
             },
-            {"name": "RIF", "field": "vat", "size": 15},
+            {"name": "RIF o CI", "field": "vat", "size": 15},
             {
                 "name": "Nombre/Razón Social",
                 "field": "partner_name",
-                "size": 25,
+                "size": 60,
             },
-            {
-                "name": "Tipo",
-                "field": "move_type",
-                "size": 6,
-            },
+            # {
+            #     "name": "Tipo",
+            #     "field": "move_type",
+            #     "size": 6,
+            # },
             {
                 "name": "N° de documento",
                 "field": "document_number",
-                "size": 20,
+                "size": 15,
             },
             {
                 "name": "Nª de Control",
                 "field": "l10n_ve_control_number",
                 "size": 15,
             },
-            {"name": "Tipo de Transacción", "field": "transaction_type"},
             {
-                "name": "NFactura Afectada",
+                "name": "Tipo de Transacción",
+                "field": "transaction_type",
+                "size": 15,
+            },
+            {
+                "name": "N° Factura Afectada",
                 "field": "number_invoice_affected",
                 "size": 15,
             },
             {
-                "name": "Total compras con IVA",
-                "field": "total_purchases_iva",
+                "name": "Total ventas con IVA",
+                "field": "total_sales_iva",
                 "format": "number",
                 "size": 15,
             },
             {
-                "name": "Total compras exentas",
+                "name": "Total ventas exentas",
                 "field": "total_purchases_not_iva",
                 "format": "number",
                 "size": 15,
@@ -1004,15 +1006,24 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
         worksheet = workbook.add_worksheet()
 
         # cell formats
-        cell_bold = workbook.add_format(
-            {"bold": True, "center_across": True, "text_wrap": True, "bottom": True, "locked": True}
-        )
-        merge_format = workbook.add_format(
-            {"bold": 1, "border": 1, "align": "center", "valign": "vcenter", "fg_color": "gray", "locked": True}
-        )
         cell_formats = {
-            "number": workbook.add_format({"num_format": "#,##0.00", "locked": True}),
-            "percent": workbook.add_format({"num_format": "0.00%", "locked": True}),
+            'title': workbook.add_format(
+                {"bold": True, "center_across": True, "text_wrap": True, "bottom": True, "locked": True}
+            ),
+            'bold': workbook.add_format(
+                {"bold": True, "text_wrap": True, "locked": True}
+            ),
+            'header': workbook.add_format(
+                {"bold": True, "center_across": True, "text_wrap": True, "bottom": True, "locked": True}
+            ),
+            'subheader': workbook.add_format(
+                {"bold": 1, "align": "center", "valign": "vcenter", "locked": True}
+            ),
+            'merge': workbook.add_format(
+                {"bold": 1, "border": 1, "align": "center", "valign": "vcenter", "fg_color": "gray", "locked": True}
+            ),
+            'number': workbook.add_format({"num_format": "#,##0.00", "locked": True}),
+            'percent': workbook.add_format({"num_format": "0.00%", "locked": True}),
         }
 
         # header
@@ -1024,16 +1035,16 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
         worksheet.merge_range(
             "C2:M2",
             f"Direccion:  {self.company_id.street}",
-            cell_bold,
+            cell_formats['title'],
         )
-        worksheet.merge_range("C3:M3", "Libro de Compras", cell_bold)
+        worksheet.merge_range("C3:M3", "Libro de Ventas", cell_formats['title'])
         worksheet.merge_range(
             "C4:M4",
             (
                 f"Desde {self._format_date(self.date_from)}"
                 f" Hasta {self._format_date(self.date_to)}"
             ),
-            cell_bold,
+            cell_formats['title'],
         )
 
         company = self.company_id
@@ -1096,8 +1107,9 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
 
         worksheet.set_row(7, 50)
         for index, field in enumerate(name_columns):
-            worksheet.set_column(index, index, len(field.get("name")) + 10)
-            worksheet.merge_range(6, index, 7, index, field.get("name"), merge_format)
+            worksheet.set_column(index, index, field.get("size", len(field.get("name")) + 5))
+            # worksheet.merge_range(6, index, 7, index, field.get("name"), cell_formats['header'])
+            worksheet.write(7, index, field.get("name"), cell_formats['header'])
 
             for index_line, line in enumerate(purchase_book_lines):
                 total_idx = (8 + index_line) + 1
@@ -1107,7 +1119,10 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                 else:
                     cell_format = cell_formats.get(field.get("format"), workbook.add_format({"locked": True}))
                     worksheet.write(
-                        INIT_LINES + index_line, index, line.get(field["field"]), cell_format
+                        INIT_LINES + index_line, 
+                        index, 
+                        line.get(field["field"], 0 if field.get("format") == "number" else ""), 
+                        cell_format
                     )
 
             if field.get("format") == "number":
@@ -1116,7 +1131,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                     total_idx, index, f"=SUM({col}9:{col}{total_idx})", cell_formats.get("number")
                 )
 
-        self.generate_book_resume(worksheet, total_idx, merge_format, cell_formats)
+        self._generate_book_resume(workbook, worksheet, summary_data, total_idx, cell_formats)
 
         worksheet.protect(password=password_protection)
 
@@ -1228,17 +1243,17 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
         ]
 
     def _fill_sales_summary(self, summary: dict, line: dict):
-        summary['total_alicuota_general_base'] = summary['total_alicuota_general_base']+ line['tax_base_general_aliquot']
-        summary['total_alicuota_general_debito_fiscal'] = summary['total_alicuota_general_debito_fiscal']+ line['amount_general_aliquot']
-        summary['total_debito_fiscal'] = summary['total_debito_fiscal']+ line['amount_general_aliquot']
-        summary['total_alicuota_extendida_base'] = summary['total_alicuota_extendida_base']+ line['tax_base_extend_aliquot']
-        summary['total_alicuota_extendida_debito_fiscal'] = summary['total_alicuota_extendida_debito_fiscal']+ line['amount_extend_aliquot']
-        summary['total_debito_fiscal'] = summary['total_debito_fiscal']+ line['amount_extend_aliquot']
-        summary['total_alicuota_reducida_base'] = summary['total_alicuota_reducida_base']+ line['tax_base_reduced_aliquot']
-        summary['total_alicuota_reducida_debito_fiscal'] = summary['total_alicuota_reducida_debito_fiscal']+ line['amount_reduced_aliquot']
-        summary['total_debito_fiscal'] = summary['total_debito_fiscal']+ line['amount_reduced_aliquot']
+        summary['total_alicuota_general_base'] += line['tax_base_general_aliquot']
+        summary['total_alicuota_general_debito_fiscal'] += line['amount_general_aliquot']
+        summary['total_debito_fiscal'] += line['amount_general_aliquot']
+        summary['total_alicuota_extendida_base'] += line['tax_base_extend_aliquot']
+        summary['total_alicuota_extendida_debito_fiscal'] += line['amount_extend_aliquot']
+        summary['total_debito_fiscal'] += line['amount_extend_aliquot']
+        summary['total_alicuota_reducida_base'] += line['tax_base_reduced_aliquot']
+        summary['total_alicuota_reducida_debito_fiscal'] += line['amount_reduced_aliquot']
+        summary['total_debito_fiscal'] += line['amount_reduced_aliquot']
 
-        summary['total_ventas'] = summary['total_ventas']+ line['total_sales_iva']
+        summary['total_ventas'] += line['total_sales_iva']
 
         return summary
 
@@ -1335,7 +1350,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
         summary['total_alicuota_reducida_debito_fiscal'] += line['amount_reduced_aliquot']
         summary['total_debito_fiscal'] += line['amount_reduced_aliquot']
 
-        summary['total_ventas'] += line['total_sales_iva']
+        summary['total_compras'] += line['total_sales_iva']
 
         return summary
 
