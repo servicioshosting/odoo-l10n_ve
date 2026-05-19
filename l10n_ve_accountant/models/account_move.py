@@ -286,51 +286,6 @@ class AccountMove(models.Model):
             )
         return res
 
-    @api.model
-    def get_view(self, view_id=None, view_type="form", **options):
-        """
-        This method is used to get the view of the account move form and add the foreign currency
-        symbol to the page title.
-
-        Parameters
-        ----------
-        view_id : int
-            The id of the view
-
-        view_type : str
-            The type of the view
-
-        options : dict
-            The options of the view
-
-        Returns
-        -------
-        type = dict
-            The view of the account move form with the foreign currency symbol added to the page
-            title.
-        """
-        foreign_currency_id = self.env.company.currency_foreign_id.id
-
-        res = super().get_view(view_id, view_type, **options)
-
-        if foreign_currency_id:
-            foreign_currency_record = self.env["res.currency"].search(
-                [("id", "=", int(foreign_currency_id))]
-            )
-            foreign_currency_symbol = foreign_currency_record.symbol or ""
-            if view_type == "form":
-                view_id = self.env.ref(
-                    "l10n_ve_accountant.view_account_move_form_l10n_ve_accountant"
-                ).id
-                doc = etree.XML(res["arch"])
-                page = doc.xpath("//page[@name='foreign_currency']")
-                if page:
-                    page[0].set(
-                        "string", _("Foreign Currency ") + " " + foreign_currency_symbol
-                    )
-                    res["arch"] = etree.tostring(doc, encoding="unicode")
-        return res
-
     @api.model_create_multi
     def create(self, vals_list):
         """
