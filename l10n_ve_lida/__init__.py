@@ -22,3 +22,10 @@ def post_init_hook(env):
         return
     _logger.info("Moving everything from l10n_ve_binaural_pre to l10n_ve_lida")
     util.merge_module(env.cr, "l10n_ve_binaural_pre", "l10n_ve_lida")
+
+    account_tax_group = env['account.tax.group']
+
+    for record in account_tax_group.search([('l10n_ve_type', '=', False)]):
+        if not record.l10n_ve_type: 
+            record.l10n_ve_type = 'VAT'
+    _logger.info("[account.tax.group] revisar db")

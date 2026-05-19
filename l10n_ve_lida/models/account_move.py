@@ -72,8 +72,7 @@ class AccountMove(models.Model):
         Limpia el número de documento al volver un documento a borrador
         """
         res = super(AccountMove, self).button_draft()
-        for move in self.filtered(lambda x: not x.posted_before):
-            move.l10n_latam_document_number = False
+        self.filtered(lambda x: not x.posted_before).write({'name': False, 'l10n_latam_document_number': False})
         return res
 
     def button_cancel(self):
