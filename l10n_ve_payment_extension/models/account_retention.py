@@ -608,7 +608,7 @@ class AccountRetention(models.Model):
 
         for retention in self:
 
-        self._set_active_tax_unit()
+            self._set_active_tax_unit()
 
         for retention in self:
             if (

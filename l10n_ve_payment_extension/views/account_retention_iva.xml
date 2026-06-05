@@ -18,6 +18,14 @@
                         <field name="state" widget="statusbar" nolabel="1" />
                     </header>
                     <sheet>
+                        <div class="oe_title">
+                            <label for="number" />
+                            <h1>
+                                <field name="number" 
+                                readonly="type == 'in_invoice' or state in ['emitted', 'cancel']"
+                                required="type == 'out_invoice'" ></field>
+                            </h1>
+                        </div>
                         <group colspan="4" col="4">
                             <!-- Invisible fields -->
                             <field name="original_lines_per_invoice_counter" invisible="1" />
