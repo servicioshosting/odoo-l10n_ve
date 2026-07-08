@@ -964,30 +964,16 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                         cell_format
                     )
 
-                if field.get("format") == "number" and line.get("transaction_type") != 'COM': 
-                    summary_total += line.get(field.get("field"))
-                
-                if field.get("field") == "iva_retained" and line.get("transaction_type") == 'COM':
-                    summary_total += line.get(field.get("field"))
-                
+                if field.get("format") == "number": 
+                    summary_total += line.get(field.get("field"), 0)
+            
+                if index == len(name_columns)-1:
+                    summary_data = self._fill_sales_summary(summary_data, line)
+
             if field.get("format") == "number":
                 worksheet.write(
                     total_idx, index, summary_total, cell_formats["number"]
                 )
-
-                if field.get("field") == "igtf_base_amount":
-                    summary_data['total_pagos_igtf_base'] = summary_total
-                    summary_data = summary_data
-                
-                if field.get("field") == "igtf_amount":
-                    summary_data['total_pagos_igtf'] = summary_total
-                    summary_data = summary_data
-
-                if field.get("field") == "iva_retained":
-                    summary_data['iva_retenido'] = summary_total
-                    summary_data = summary_data
-
-            summary_data = self._fill_sales_summary(summary_data, line)
 
         self._generate_book_resume(workbook, worksheet, summary_data, total_idx, cell_formats)
 
@@ -1243,17 +1229,17 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
         ]
 
     def _fill_sales_summary(self, summary: dict, line: dict):
-        summary['total_alicuota_general_base'] += line['tax_base_general_aliquot']
-        summary['total_alicuota_general_debito_fiscal'] += line['amount_general_aliquot']
-        summary['total_debito_fiscal'] += line['amount_general_aliquot']
-        summary['total_alicuota_extendida_base'] += line['tax_base_extend_aliquot']
-        summary['total_alicuota_extendida_debito_fiscal'] += line['amount_extend_aliquot']
-        summary['total_debito_fiscal'] += line['amount_extend_aliquot']
-        summary['total_alicuota_reducida_base'] += line['tax_base_reduced_aliquot']
-        summary['total_alicuota_reducida_debito_fiscal'] += line['amount_reduced_aliquot']
-        summary['total_debito_fiscal'] += line['amount_reduced_aliquot']
+        summary['total_alicuota_general_base'] += line.get('tax_base_general_aliquot', 0)
+        summary['total_alicuota_general_debito_fiscal'] += line.get('amount_general_aliquot', 0)
+        summary['total_debito_fiscal'] += line.get('amount_general_aliquot', 0)
+        summary['total_alicuota_extendida_base'] += line.get('tax_base_extend_aliquot')
+        summary['total_alicuota_extendida_debito_fiscal'] += line.get('amount_extend_aliquot', 0)
+        summary['total_debito_fiscal'] += line.get('amount_extend_aliquot', 0)
+        summary['total_alicuota_reducida_base'] += line.get('tax_base_reduced_aliquot', 0)
+        summary['total_alicuota_reducida_debito_fiscal'] += line.get('amount_reduced_aliquot', 0)
+        summary['total_debito_fiscal'] += line.get('amount_reduced_aliquot', 0)
 
-        summary['total_ventas'] += line['total_sales_iva']
+        summary['total_ventas'] += line.get('total_sales_iva', 0)
 
         return summary
 
