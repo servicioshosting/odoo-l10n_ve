@@ -20,6 +20,7 @@
 						class="o_address_state" 
 						placeholder="Municipality"
 						domain="[('state_id', '=', state_id)]"
+						context="{'no_vat_validation': True}"
 						required="1"
 					/>
 					<field 

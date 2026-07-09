@@ -32,9 +32,10 @@ class ResPartner(models.Model):
         if self.env.company.country_code != 'VE':
             return super(ResPartner, self).check_vat()
 
-        l10n_ve_partners = self.filtered(lambda x: x.country_code == 'VE')
-        l10n_ve_partners.l10n_ve_identification_validation()
-        return super(ResPartner, self - l10n_ve_partners).check_vat()
+        # l10n_ve_partners = self.filtered(lambda x: x.country_code == 'VE')
+        # l10n_ve_partners.l10n_ve_identification_validation()
+        # return super(ResPartner, self - l10n_ve_partners).check_vat()
+        self.l10n_ve_identification_validation()
 
     def l10n_ve_identification_validation(self):
         person_vat_pattern = "^[0-9]{1,9}$"
@@ -49,6 +50,8 @@ class ResPartner(models.Model):
             #     raise ValidationError(_("Debe indicar el tipo de CI/RIF"))
             # if not partner.user_ids and not partner.vat:
             #     raise ValidationError(_("Debe indicar el CI/RIF"))
+            if partner.prefix_vat == 'P':
+                continue
 
             if partner.prefix_vat in ('V', 'E'):
                 if partner.vat and not (re.match(person_vat_pattern, partner.vat)):
@@ -89,7 +92,7 @@ class ResPartner(models.Model):
         for partner in self:
             if partner.country_code == 'VE' and partner.prefix_vat and partner.vat:
                 partner.l10n_ve_vat = "%s%s" % (partner.prefix_vat, partner.vat)
-                if len(partner.vat) < 9:
+                if len(partner.vat) < 9 or partner.prefix_vat == 'P':
                     partner.l10n_ve_vat_formatted = "%s-%s" % (partner.prefix_vat, partner.vat)
                 else:
                     partner.l10n_ve_vat_formatted = "%s-%s-%s" % (partner.prefix_vat, partner.vat[:-1], partner.vat[-1])
