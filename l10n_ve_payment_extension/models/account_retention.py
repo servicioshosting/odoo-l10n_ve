@@ -666,7 +666,7 @@ class AccountRetention(models.Model):
                 sequence_number = retention.get_sequence_islr_retention().next_by_id()
             else:
                 sequence_number = retention.get_sequence_municipal_retention().next_by_id()
-            document_number = f"{retention.date_accounting.year}{retention.date_accounting.month:02d}{sequence_number}"
+            document_number = sequence_number
             retention.name = document_number
             retention.number = document_number
 
@@ -934,9 +934,8 @@ class AccountRetention(models.Model):
         else:
             return False
 
-    @api.constrains("number", "type")
+    @api.constrains("number", "type", "state")
     def _check_number(self):
         for record in self:
-            if record.type == "out_invoice" and record.number:
-                if not re.fullmatch(r"\d{14}", record.number):
-                    raise ValidationError(_("The number must be exactly 14 numeric digits."))
+            if record.state == "emitted" and record.number and not re.fullmatch(r"\d{14}", record.number):
+                raise ValidationError(_("The number must be exactly 14 numeric digits."))
