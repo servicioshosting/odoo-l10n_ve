@@ -60,7 +60,7 @@
                                         <field name="invoice_type" column_invisible="True" />
                                         <field name="company_currency_id" column_invisible="True" />
                                         <field name="foreign_currency_id" column_invisible="True" />
-                                        <field name="name" readonly="1" />
+                                        <field name="name" readonly="1" force_save="1" />
                                         <field
                                             name="move_id"
                                             domain="[('id', 'in', parent.allowed_lines_move_ids), ('municipal_voucher_number', '=', False)]"
@@ -78,11 +78,13 @@
                                             widget="monetary"
                                             options="{'currency_field': 'company_currency_id'}"
                                             readonly="1"
+                                            force_save="1"
                                             column_invisible="not parent.base_currency_is_vef"/>
                                         <field
                                             name="invoice_amount"
                                             widget="monetary"
                                             readonly="1"
+                                            force_save="1"
                                             options="{'currency_field': 'company_currency_id'}"
                                             column_invisible="not parent.base_currency_is_vef"/>
                                         <field

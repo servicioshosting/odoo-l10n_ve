@@ -295,7 +295,7 @@ class AccountRetentionLine(models.Model):
         )
 
         for record in municipal_retention_lines_with_economic_activity_and_invoice:
-            if not record.retention_id or record.retention_id.type == "in_invoice":
+            if True or not record.retention_id or record.retention_id.type == "in_invoice":
                 # We don't want this fields to be computed when the retention is
                 # created from a customer invoice since they are filled by the user.
                 record.invoice_amount = record.move_id.tax_totals["amount_untaxed"]
@@ -463,3 +463,10 @@ class AccountRetentionLine(models.Model):
                 )
             )
             return invoice_paid_amount_not_related_with_retentions
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        return super().create(vals_list)
+
+    def write(self, vals):
+        return super().write(vals)
