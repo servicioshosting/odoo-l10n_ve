@@ -7,7 +7,7 @@ from datetime import datetime
 from odoo import Command, _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.float_utils import float_round
-from odoo.tools.sql import column_exists, create_column, rename_column
+from odoo.tools.sql import column_exists, create_column, rename_column, table_exists
 
 from ..utils.utils_retention import load_retention_lines, search_invoices_with_taxes
 
@@ -170,6 +170,9 @@ class AccountRetention(models.Model):
     )
 
     def _auto_init(self):
+        if not table_exists(self.env.cr, "account_retention"):
+            return super()._auto_init()
+
         if not column_exists(self.env.cr, "account_retention", "l10n_ve_control_number"):
             if column_exists(self.env.cr, "account_retention", "correlative"):
                 rename_column(self.env.cr, "account_retention", "correlative", "l10n_ve_control_number")
