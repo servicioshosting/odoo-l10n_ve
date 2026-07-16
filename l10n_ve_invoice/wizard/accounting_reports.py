@@ -1117,7 +1117,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                     total_idx, index, f"=SUM({col}9:{col}{total_idx})", cell_formats.get("number")
                 )
 
-        self._generate_book_resume(workbook, worksheet, summary_data, total_idx, cell_formats)
+        # self._generate_book_resume(workbook, worksheet, summary_data, total_idx, cell_formats)
 
         worksheet.protect(password=password_protection)
 
