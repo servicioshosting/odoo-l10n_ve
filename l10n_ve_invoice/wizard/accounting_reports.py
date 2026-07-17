@@ -347,6 +347,11 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                 "field": "l10n_ve_control_number",
             },
             {
+                "name": "Tipo de Transacción",
+                "field": "transaction_type",
+                "size": 15,
+            },
+            {
                 "name": "N° Factura Afectada",
                 "field": "number_invoice_affected",
                 "size": 15,
@@ -958,15 +963,15 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                 else:
                     cell_format = cell_formats.get(field.get("format"), workbook.add_format({"locked": True}))
                     worksheet.write(
-                        INIT_LINES + index_line, 
-                        index, 
-                        line.get(field["field"], 0 if field.get("format") == "number" else ""), 
+                        INIT_LINES + index_line,
+                        index,
+                        line.get(field["field"], 0 if field.get("format") == "number" else ""),
                         cell_format
                     )
 
-                if field.get("format") == "number": 
+                if field.get("format") == "number":
                     summary_total += line.get(field.get("field"), 0)
-            
+
                 if index == len(name_columns)-1:
                     summary_data = self._fill_sales_summary(summary_data, line)
 
@@ -1023,7 +1028,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
             f"Direccion:  {self.company_id.street}",
             cell_formats['title'],
         )
-        worksheet.merge_range("C3:M3", "Libro de Ventas", cell_formats['title'])
+        worksheet.merge_range("C3:M3", "Libro de Compras", cell_formats['title'])
         worksheet.merge_range(
             "C4:M4",
             (
@@ -1053,7 +1058,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
             worksheet.merge_range(
                 buy_rows,
                 "COMPRAS NACIONALES DEDUCIBLES",
-                merge_format
+                cell_format["merge"]
             )
 
             range_limit_n = len(
@@ -1105,9 +1110,9 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                 else:
                     cell_format = cell_formats.get(field.get("format"), workbook.add_format({"locked": True}))
                     worksheet.write(
-                        INIT_LINES + index_line, 
-                        index, 
-                        line.get(field["field"], 0 if field.get("format") == "number" else ""), 
+                        INIT_LINES + index_line,
+                        index,
+                        line.get(field["field"], 0 if field.get("format") == "number" else ""),
                         cell_format
                     )
 
