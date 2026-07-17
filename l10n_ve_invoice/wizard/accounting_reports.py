@@ -432,11 +432,6 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                 "field": "partner_name",
                 "size": 60,
             },
-            # {
-            #     "name": "Tipo",
-            #     "field": "move_type",
-            #     "size": 6,
-            # },
             {
                 "name": "N° de documento",
                 "field": "document_number",
@@ -459,7 +454,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
             },
             {
                 "name": "Total ventas con IVA",
-                "field": "total_sales_iva",
+                "field": "total_purchases_iva",
                 "format": "number",
                 "size": 15,
             },
@@ -1088,7 +1083,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                     (
                         "COMPRAS NACIONALES SIN DERECHO A CREDITO FISCAL"
                     ),
-                    merge_format,
+                    cell_format["merge"],
                 )
 
         name_columns = self.purchase_book_fields()
@@ -1098,6 +1093,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
 
         worksheet.set_row(7, 50)
         for index, field in enumerate(name_columns):
+            summary_total = 0
             worksheet.set_column(index, index, field.get("size", len(field.get("name")) + 5))
             # worksheet.merge_range(6, index, 7, index, field.get("name"), cell_formats['header'])
             worksheet.write(7, index, field.get("name"), cell_formats['header'])
@@ -1116,13 +1112,18 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                         cell_format
                     )
 
+                if field.get("format") == "number":
+                    summary_total += line.get(field.get("field"), 0)
+
+                if index == len(name_columns)-1:
+                    summary_data = self._fill_purchases_summary(summary_data, line)
+
             if field.get("format") == "number":
-                col = utility.xl_col_to_name(index)
                 worksheet.write(
-                    total_idx, index, f"=SUM({col}9:{col}{total_idx})", cell_formats.get("number")
+                    total_idx, index, summary_total, cell_formats["number"]
                 )
 
-        # self._generate_book_resume(workbook, worksheet, summary_data, total_idx, cell_formats)
+        self._generate_book_resume(workbook, worksheet, summary_data, total_idx, cell_formats)
 
         worksheet.protect(password=password_protection)
 
@@ -1356,7 +1357,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
         is_purchase = self.report == "purchase"
         header_idx = index_to_start + 3
 
-        ws.merge_range(header_idx-1, 3, header_idx-1, 7, "Resumen de Libro de Ventas",
+        ws.merge_range(header_idx-1, 3, header_idx-1, 7, "Resumen de Libro de Ventas" if not is_purchase else "Resumen de Libro de Compras",
                        cell_formats['merge'])
 
         ws.write(header_idx, 3, "Resumen del período", cell_formats.get('subheader'))
