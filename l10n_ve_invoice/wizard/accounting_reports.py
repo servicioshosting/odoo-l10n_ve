@@ -1269,6 +1269,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
             'certificados_debitos_exonerados': 0,
             'total_debitos_fiscales': 0,
             # Resumen IGTF
+            'total_pagos_igtf_base': 0,
             'total_pagos_igtf': 0,
         }
 
@@ -1364,7 +1365,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
         ws.merge_range(header_idx, 4, header_idx, 5, "Base imponible", cell_formats.get('subheader'))
         ws.merge_range(header_idx, 6, header_idx, 7, "Débito fiscal", cell_formats.get('subheader'))
 
-        summary = self._get_sales_summaries()
+        summary = self._get_purchases_summaries() if is_purchase else self._get_sales_summaries()
         row_idx = header_idx
         for row in summary:
             row_idx += 1
