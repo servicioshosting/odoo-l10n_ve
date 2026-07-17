@@ -1342,7 +1342,7 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
         summary['total_alicuota_reducida_debito_fiscal'] += line['amount_reduced_aliquot']
         summary['total_debito_fiscal'] += line['amount_reduced_aliquot']
 
-        summary['total_compras'] += line['total_sales_iva']
+        summary['total_compras'] += line['total_purchases_iva']
 
         return summary
 
