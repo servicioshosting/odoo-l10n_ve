@@ -47,7 +47,7 @@ class AccountWithholdingReport(models.TransientModel):
     quincena = fields.Selection([
         ("01_quincena", "1era Quincena"),
         ("02_quincena", "2da Quincena"),
-    ], "Tipo de retención", required=True, default='iva')
+    ], "Quincena del mes", required=True, default='01_quincena')
     # Lease como "Tipo de (impuesto de la) retención"
     tax_type = fields.Selection([
         ("iva", "IVA"),
