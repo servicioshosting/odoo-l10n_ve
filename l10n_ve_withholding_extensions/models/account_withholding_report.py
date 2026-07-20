@@ -106,29 +106,33 @@ class AccountWithholdingReport(models.TransientModel):
                 rec.date_start = date_utils.start_of(datetime(year, month, 16), 'day')
                 rec.date_end = date_utils.end_of(datetime(year, month, 1), 'month')
 
-    @api.onchange("year", "month")
+    @api.onchange("year", "month", "quincena")
     def _onchange_period(self):
         for rec in self:
             rec._sync_lines()
 
-    @api.constrains("year", "month")
+    @api.constrains("year", "month", "quincena")
     def _constrains_period(self):
         for rec in self:
             rec._sync_lines()
 
     def _sync_lines(self):
         for rec in self:
-            if not rec.year or not rec.month:
+            if not rec.year or not rec.month or not rec.quincena:
                 rec.withholdings_ids = False
                 rec.line_ids = False
                 continue
 
-            rec.update(self._compute_lines(rec.tax_type, rec.year, rec.month, rec.company_id))
+            rec.update(self._compute_lines(rec.tax_type, rec.year, rec.month, rec.quincena, rec.company_id))
 
     @api.model
-    def _compute_lines(self, tax_type, year, month, company):
-        date_start = date_utils.start_of(datetime(int(year), int(month), 1), 'month')
-        date_end = date_utils.end_of(date_start, 'month')
+    def _compute_lines(self, tax_type, year, month, quincena, company):
+        if quincena == '01_quincena':
+            date_start = date_utils.start_of(datetime(int(year), int(month), 1), 'month')
+            date_end = date_utils.end_of(datetime(int(year), int(month), 15), 'day')
+        else:
+            date_start = date_utils.start_of(datetime(int(year), int(month), 16), 'day')
+            date_end = date_utils.end_of(datetime(int(year), int(month), 1), 'month')
 
         search_domain = [
             ("type", "=", "in_invoice"),
