@@ -5,7 +5,7 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     withholding_type_id = fields.Many2one(default=lambda self: self.env.ref('l10n_ve_payment_extension.account_withholding_type_75'))
-    type_person_id = fields.Many2one(compute='_compute_type_person_id', inverse='_inverse_type_person_id')
+    type_person_id = fields.Many2one(compute='_compute_type_person_id', inverse='_inverse_type_person_id', store=True)
 
     @api.depends('prefix_vat', "vat")
     def _compute_type_person_id(self):

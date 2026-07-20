@@ -1,6 +1,7 @@
 from odoo import SUPERUSER_ID, api
 
 from . import models
+from . import controllers
 
 
 def setup_accounts(env):

@@ -15,5 +15,15 @@
                 </filter>
             </field>
         </record>
+
+        <menuitem
+            id="l10n_ve_payment_extension.menu_retention_municipal_supplier"
+            active="False"
+        />
+
+        <menuitem
+            id="l10n_ve_payment_extension.menu_retention_municipal_sequence"
+            active="False"
+        />
     </data>
 </odoo>
