@@ -33,6 +33,7 @@
                                 <group name="period">
                                     <field name="year" widget="integer" options='{"format": false}' />
                                     <field name="month" />
+                                    <field name="quincena" />
                                 </group>
                             </group>
                             <group>
@@ -135,6 +136,7 @@
             name="Reporte de Retenciones de ISLR"
             parent="l10n_ve_payment_extension.seniat_reports"
             action="action_view_withholding_islr_report"
+            sequence="9"
         />
 
         <menuitem
@@ -142,6 +144,7 @@
             name="Reporte de Retenciones de IVA"
             parent="l10n_ve_payment_extension.seniat_reports"
             action="action_view_withholding_iva_report"
+            sequence="9"
         />
     </data>
 </odoo>

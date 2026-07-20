@@ -44,6 +44,10 @@ class AccountWithholdingReport(models.TransientModel):
         ('11', 'Noviembre'),
         ('12', 'Diciembre'),
     ], "Mes", required=True)
+    quincena = fields.Selection([
+        ("01_quincena", "1era Quincena"),
+        ("02_quincena", "2da Quincena"),
+    ], "Tipo de retención", required=True, default='iva')
     # Lease como "Tipo de (impuesto de la) retención"
     tax_type = fields.Selection([
         ("iva", "IVA"),
@@ -78,17 +82,29 @@ class AccountWithholdingReport(models.TransientModel):
 
         return vals
 
-    @api.depends("year", "month", "tax_type")
+    @api.depends("year", "month", "tax_type", "quincena")
     def _compute_period(self):
         today = fields.Datetime.today()
+
+        tax_type_strings = dict(self._fields['tax_type'].selection)
+        quincena_strings = dict(self._fields['quincena'].selection)
 
         for rec in self:
             year = int(rec.year or today.year)
             month = int(rec.month or today.month)
             rec.period = "{:0>4d}{:0>2d}".format(year, month)
-            rec.name = "Retenciones de {} {}".format('ISLR' if rec.tax_type == 'islt' else 'IVA', rec.period)
-            rec.date_start = date_utils.start_of(datetime(year, month, 1), 'month')
-            rec.date_end = date_utils.end_of(rec.date_start, 'month')
+            rec.name = "Retenciones de {} {} {}".format(
+                tax_type_strings.get(rec.tax_type), 
+                rec.period, 
+                quincena_strings.get(rec.quincena)
+            )
+
+            if rec.quincena == '01_quincena':
+                rec.date_start = date_utils.start_of(datetime(year, month, 1), 'month')
+                rec.date_end = date_utils.end_of(datetime(year, month, 15), 'day')
+            else:
+                rec.date_start = date_utils.start_of(datetime(year, month, 16), 'day')
+                rec.date_end = date_utils.end_of(datetime(year, month, 1), 'month')
 
     @api.onchange("year", "month")
     def _onchange_period(self):
