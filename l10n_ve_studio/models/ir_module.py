@@ -5,7 +5,7 @@ from odoo.exceptions import UserError
 class IrModuleModule(models.Model):
     _inherit = "ir.module.module"
 
-    RESTRICTED_MODULES = ["web_studio"]
+    RESTRICTED_MODULES = ["stock"]
 
     def _check_restricted(self):
         restricted = self.filtered(lambda m: m.name in self.RESTRICTED_MODULES)
