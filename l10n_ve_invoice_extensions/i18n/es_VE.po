@@ -1,0 +1,100 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_ve_invoice_extensions
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-13 22:30+0000\n"
+"PO-Revision-Date: 2025-09-13 22:30+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_ve_invoice_extensions
+#: model:ir.model,name:l10n_ve_invoice_extensions.model_res_company
+msgid "Companies"
+msgstr "Empresas"
+
+#. module: l10n_ve_invoice_extensions
+#: model:ir.model,name:l10n_ve_invoice_extensions.model_res_config_settings
+msgid "Config Settings"
+msgstr "Ajustes de configuración"
+
+#. module: l10n_ve_invoice_extensions
+#. odoo-python
+#: code:addons/l10n_ve_invoice_extensions/models/account_move.py:0
+#, python-format
+msgid ""
+"El número de control generado no cumple con el patrón secuencia '00-00000'"
+msgstr ""
+"El número de control generado no cumple con el patrón secuencia '00-00000'"
+
+#. module: l10n_ve_invoice_extensions
+#: model:ir.model.fields,field_description:l10n_ve_invoice_extensions.field_res_company__group_sales_invoicing_series
+#: model:ir.model.fields,field_description:l10n_ve_invoice_extensions.field_res_config_settings__group_sales_invoicing_series
+msgid "Group Sales Invoicing Series"
+msgstr "Grupo para series de ventas"
+
+#. module: l10n_ve_invoice_extensions
+#: model:ir.model.fields,field_description:l10n_ve_invoice_extensions.field_account_bank_statement_line__is_debit
+#: model:ir.model.fields,field_description:l10n_ve_invoice_extensions.field_account_move__is_debit
+#: model:ir.model.fields,field_description:l10n_ve_invoice_extensions.field_account_payment__is_debit
+msgid "Is Debit"
+msgstr "Es Débito"
+
+#. module: l10n_ve_invoice_extensions
+#: model:ir.model,name:l10n_ve_invoice_extensions.model_account_journal
+msgid "Journal"
+msgstr "Diario"
+
+#. module: l10n_ve_invoice_extensions
+#: model:ir.model,name:l10n_ve_invoice_extensions.model_account_move
+msgid "Journal Entry"
+msgstr "Asiento contable"
+
+#. module: l10n_ve_invoice_extensions
+#: model:ir.model.fields,field_description:l10n_ve_invoice_extensions.field_ir_sequence__journals_using_sequence_as_correlative_series_ids
+msgid "Journals using this sequence as correlative series"
+msgstr "Diarios utilizando esta serie como secuencia de números de control"
+
+#. module: l10n_ve_invoice_extensions
+#: model_terms:ir.ui.view,arch_db:l10n_ve_invoice_extensions.view_account_journal_form
+msgid "Números iniciales de documentos"
+msgstr "Números iniciales de documentos"
+
+#. module: l10n_ve_invoice_extensions
+#: model:ir.model,name:l10n_ve_invoice_extensions.model_ir_sequence
+msgid "Sequence"
+msgstr "Secuencia"
+
+#. module: l10n_ve_invoice_extensions
+#: model:res.groups,name:l10n_ve_invoice_extensions.group_sales_invoicing_series
+msgid "Series Invoicing Group"
+msgstr "Grupo de serie de facturación"
+
+#. module: l10n_ve_invoice_extensions
+#. odoo-python
+#: code:addons/l10n_ve_invoice_extensions/models/account_move.py:0
+#, python-format
+msgid "The sale's series sequence must be in the selected journal."
+msgstr "La secuencia de ventas debe estar en el diario seleccionado"
+
+#. module: l10n_ve_invoice_extensions
+#: model:ir.model,name:l10n_ve_invoice_extensions.model_wizard_accounting_reports
+msgid "Wizard para generar reportes de libro de compra y ventas"
+msgstr "Wizard para generar reportes de libro de compra y ventas"
+
+#. module: l10n_ve_invoice_extensions
+#. odoo-python
+#: code:addons/l10n_ve_invoice_extensions/models/account_journal.py:0
+#, python-format
+msgid ""
+"You can not change %s journal's configuration if it already has validated "
+"invoices"
+msgstr ""
+"No puedes modificar las configuraciones del diario [%s] si ya tiene movimientos validados"

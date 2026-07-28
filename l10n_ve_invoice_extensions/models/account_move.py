@@ -15,6 +15,7 @@ PREPRINTED_CORRELATIVE_PATTERN = re.compile('^\d{2}[-]\d{1,8}$')
 
 class AccountMove(models.Model):
     _inherit = "account.move"
+    _name = "account.move"
 
     l10n_ve_doc_type_internal_type = fields.Selection(related='l10n_latam_document_type_id.internal_type', store=True)
 
