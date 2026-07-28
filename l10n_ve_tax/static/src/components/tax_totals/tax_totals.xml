@@ -6,11 +6,14 @@
         t-inherit="account.TaxGroupComponent" 
         t-inherit-mode="extension" 
         owl="1">
+        <!-- Evitamos mostrar la opción de edición -->
         <xpath expr="//tr/td[2]/t[@t-if]/t[@t-else]/span/span" position="replace">
             <span class="o_tax_group_amount_value o_list_monetary">
                 <t t-out="props.taxGroup.formatted_tax_group_amount"/>
             </span>
         </xpath>
+        
+        <!-- Agregamos la base a todos los impuestos -->
         <xpath expr="//tr" position="before">
             <tr>
                 <td class="o_td_label">
@@ -27,6 +30,7 @@
     </t>
 
     <t t-name="l10n_ve_tax.TaxTotalsField" t-inherit="account.TaxTotalsField" t-inherit-mode="extension" owl="1">
+        <!-- Agregamos el renglón del subtotal -->
         <xpath expr="//table[1]/tbody[1]/t[1]" position="before">
             <tr t-if="totals.discount_amount and totals.show_discount">
                 <td class="o_td_label">
