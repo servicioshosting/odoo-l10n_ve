@@ -45,6 +45,11 @@ class ResCurrencyRate(models.Model):
             ]
         )
         if not rates:
+            rates = self.env['res.currency.rate'].search([
+                ("currency_id", "=", foreign_currency_id),
+                ("company_id", "=", self.env.company.id),
+            ], order='name asc', limit=1)
+        if not rates:
             return {}
 
         rate = rates.filtered(lambda r: r.name == rate_date) or rates[0]
