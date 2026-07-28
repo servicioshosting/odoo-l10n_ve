@@ -5,6 +5,27 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
+            <xpath expr="//button[@id='create_invoice'][1]" position="replace">
+                <button id="create_invoice" name="action_create_invoice"
+                    string="Create Invoice"
+                    type="object" class="btn-primary" data-hotkey="q"
+                    invisible="invoice_status != 'to invoice'"
+                    groups="!l10n_ve_sale.create_invoice_sale_order_group" />
+            </xpath>
+
+            <xpath expr="//button[@id='create_invoice_percentage'][1]" position="replace">
+                <button id="create_invoice_percentage"
+                    name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
+                    type="action" context="{'default_advance_payment_method': 'percentage'}"
+                    data-hotkey="q"
+                    invisible="invoice_status != 'no' or state != 'sale'"
+                    groups="!l10n_ve_sale.create_invoice_sale_order_group" />
+            </xpath>
+
+            <button name="action_unlock" position="attributes">
+                <attribute name="groups">account.group_account_manager</attribute>
+            </button>
+
             <field name='partner_id' position="replace">
                 <field name="partner_id_domain" invisible="1" />
                 <field name="filter_partner"
@@ -39,6 +60,12 @@
 
             <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
                 <attribute name="readonly">1</attribute>
+            </xpath>
+
+            <xpath expr="//notebook/page[@name='order_lines']//tree" position="attributes">
+                <attribute name="create">state == 'draft'</attribute>
+                <attribute name="edit">state == 'draft'</attribute>
+                <!-- <attribute name="delete">state == 'draft'</attribute> -->
             </xpath>
 
             <xpath expr="//notebook" position="inside">
@@ -133,6 +160,10 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_quotation_tree" />
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="write_uid" string="Responsable" widget="many2one_avatar_user" />
+            </xpath>
+
             <xpath expr="//field[@name='amount_total']" position="after">
                 <field name="foreign_currency_id" column_invisible="True" />
                 <field
@@ -150,6 +181,10 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_tree" />
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="write_uid" string="Responsable" widget="many2one_avatar_user" />
+            </xpath>
+
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="vat" optional="hide" />
                 <field name="address" optional="hide" />

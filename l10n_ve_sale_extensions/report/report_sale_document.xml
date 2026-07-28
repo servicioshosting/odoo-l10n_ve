@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <template id="report_sale_document_l10n_ve_sale" inherit_id="l10n_ve_sale.report_sale_document_l10n_ve_sale">
+    <!-- <xpath expr="//div[@id='total']" position="replace">
+    </xpath> -->
+    
+    <xpath expr="//div[hasclass('page')]" position="inside">
+      <t t-set="address">
+        <div t-field="doc.partner_id"
+          t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
+        <p t-if="doc.partner_id.vat">
+          <t t-if="doc.company_id.account_fiscal_country_id.vat_label"
+            t-out="doc.company_id.account_fiscal_country_id.vat_label" />
+                <t t-else="">RIF o CI</t>: <span
+            t-field="doc.partner_id.l10n_ve_vat_formatted" />
+        </p>
+      </t>
+    </xpath>
+  </template>
+</odoo>

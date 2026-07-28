@@ -7,7 +7,7 @@
     "author": "binaural-dev",
     "website": "https://binauraldev.com/",
     "category": "Sales/Sales",
-    "version": "17.0.1.1.17",
+    "version": "17.0.1.2.0",
     # any module necessary for this one to work correctly
     "depends": [
         "base",
@@ -25,14 +25,16 @@
         "l10n_ve_base",
     ],
     "data": [
+        "data/ir_cron.xml",
         "security/ir.model.access.csv",
         "security/res_groups.xml",
-        "data/ir_cron.xml",
-        "report/report_sale_document.xml",
+        "views/account_move_views.xml",
+        "views/menuitems.xml",
+        "views/product_pricelist_item_views.xml",
         "views/res_config_settings.xml",
         "views/sale_order.xml",
-        "views/product_pricelist_item_views.xml",
-        "views/menuitems.xml",
+        "report/report_sale_document.xml",
+        "wizard/sale_order_discount_views.xml"
     ],
     "images": ["static/description/icon.png"],
     "application": True,

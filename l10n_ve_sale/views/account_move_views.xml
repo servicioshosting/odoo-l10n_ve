@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- View account.move form -->
+    <record id="view_account_move_form" model="ir.ui.view">
+        <field name="name">view.account.move.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="l10n_ve_invoice.view_account_move_form_l10n_ve_invoice" />
+        <field name="arch" type="xml">
+            <field position="attributes" name="invoice_origin">
+              <attribute name="readonly">state != 'draft' or sale_order_count &gt; 0</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>

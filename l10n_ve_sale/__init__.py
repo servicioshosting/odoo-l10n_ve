@@ -1,4 +1,5 @@
 from . import models
+from . import wizard
 
 old_module = "binaural_sale"
 new_module = "l10n_ve_sale"

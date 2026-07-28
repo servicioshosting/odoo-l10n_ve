@@ -216,6 +216,14 @@ class SaleOrder(models.Model):
                 vat = str(rec.partner_id.vat)
             rec.vat = vat.upper()
 
+    @api.onchange("partner_id")
+    def _onchange_partner_id(self):
+        """
+        Ensure the foreign_rate and foreign_inverse_rate are computed when the order is still not
+        created.
+        """
+        self._compute_rate()
+
     @api.onchange("name")
     def _onchange_name(self):
         """
@@ -510,3 +518,8 @@ class SaleOrder(models.Model):
         )
         for order in orders:
             order.action_cancel()
+
+    def action_create_invoice(self):
+        self.ensure_one()
+        invoices = self._create_invoices()
+        return self.action_view_invoice(invoices=invoices)
