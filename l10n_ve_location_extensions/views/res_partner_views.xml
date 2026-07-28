@@ -11,7 +11,7 @@
 						name="municipality"
 						class="o_address_street"
 						placeholder="Municipality"
-						required="country_id and country_id.code == 've'"
+						required="1"
 					/>
 				</xpath>
 				<field name="city_id" position="attributes">
