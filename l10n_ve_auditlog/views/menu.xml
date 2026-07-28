@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem
+            id="l10n_ve_auditlog_menu"
+            name="Auditoria"
+            sequence="61"
+            web_icon="l10n_ve_auditlog,static/description/icon.png"
+            groups="auditlog.group_auditlog_user">
+            
+            <menuitem id="menu_auditlog_fiscalevent" name="Eventos Fiscales" action="action_auditlog_fiscalevent" sequence="40" />
+            
+            <menuitem id="menu_audit_logs" name="Logs" action="auditlog.action_auditlog_log_tree" sequence="100" />
+
+            <menuitem id="menu_user_login_attempts" name="Intentos de acceso" action="action_users_login_attempts" sequence="101" />
+
+            <menuitem
+                id="menu_auditlog_fiscalevent_tag"
+                name="Etiquetas de Eventos Fiscales"
+                action="action_auditlog_fiscalevent_tag"
+                sequence="200"
+                groups="base.group_no_one" />
+        
+        </menuitem>
+    
+    </data>
+
+</odoo>
