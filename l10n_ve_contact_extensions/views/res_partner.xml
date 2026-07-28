@@ -11,5 +11,16 @@
                 </field>
             </field>
         </record>
+
+        <record id="res_partner_contacts_form" model="ir.ui.view">
+            <field name="name">res_partner_contacts_form_ext</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="l10n_ve_contact.res_partner_l10n_ve_form_contacts" />
+            <field name="arch" type="xml">
+                <field name="identity_document" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+            </field>
+        </record>
     </data>
 </odoo>

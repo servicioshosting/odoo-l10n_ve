@@ -1,5 +1,5 @@
 {
-    "name": "Extensiones de Venezuela - Contactos",
+    "name": "Venezuela - Contactos extensiones",
     "summary": """
        Módulo para información de contactos de Venezuela
     """,
@@ -7,7 +7,7 @@
     "author": "LIDALabs",
     "website": "https://lidalabs.com",
     "category": "Contacts/Contacts",
-    "version": "17.0.1.0.7",
+    "version": "17.0.1.1.0",
     "depends": ["base_vat", "l10n_ve_contact"],
     "auto_install": True,
     "data": [
