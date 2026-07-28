@@ -11,7 +11,7 @@
                             string="Print municipal retention XLSX" />
                         <button name="action_draft" type="object"
                             string="Convert to draft" invisible="type != 'out_invoice' or state != 'cancel'"/>
-                        <button name="action_post" type="object" invisible="state != 'draft'" string="Approve"
+                        <button name="action_post" type="object" invisible="not id or state != 'draft'" string="Approve"
                             class="oe_highlight" />
                         <button name="action_cancel" type="object" invisible="state != 'emitted'" string="Cancel"
                             confirm="Are you sure you want to cancel this voucher? The associated accounting entries will be reversed" />

@@ -25,7 +25,6 @@
                         <field name="invoice_amount" />
                         <field name="iva_amount" />
                         <field name="retention_amount" />
-                        <field name="is_retention_client" invisible="1"/>
                     </group>
                 </form>
             </field>

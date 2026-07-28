@@ -1,7 +1,8 @@
-from dateutil.relativedelta import relativedelta
-from odoo import fields, models, _
-from odoo.exceptions import UserError
 from datetime import date
+
+from dateutil.relativedelta import relativedelta
+from odoo import _, fields, models
+from odoo.exceptions import UserError
 
 
 class TxtWizard(models.TransientModel):
@@ -45,17 +46,24 @@ class TxtWizard(models.TransientModel):
         data = []
         for line in retentions.mapped("retention_line_ids"):
             line_data = {}
-            line_data["RIF del agente de retención"] = line.retention_id.company_id.partner_id.vat
+            line_data["RIF del agente de retención"] = line.retention_id.company_id.partner_id.l10n_ve_vat
             line_data["Período impositivo"] = line.retention_id.date.strftime("%Y%m")
             line_data["Fecha de factura"] = line.move_id.invoice_date.strftime("%Y-%m-%d")
             line_data["Tipo de operación"] = "C"
-            line_data["Tipo de documento"] = document_types[line.move_id.move_type]
+
+            if line.move_id.journal_id.is_debit:
+                line_data["Tipo de documento"] = document_types["in_debit"]
+                line_data["Número del documento afectado"] = line.move_id.debit_origin_id.l10n_latam_document_number or "0"
+            else:
+                line_data["Tipo de documento"] = document_types[line.move_id.move_type]
+                line_data["Número del documento afectado"] = line.move_id.reversed_entry_id.l10n_latam_document_number or "0"
+
             line_data["RIF de proveedor"] = (
-                line.move_id.partner_id.prefix_vat + line.move_id.partner_id.vat
+                line.move_id.partner_id.l10n_ve_vat
             )
-            line_data["Número de documento"] = line.move_id.name
+            line_data["Número de documento"] = line.move_id.l10n_latam_document_number
             line_data["Número de control"] = line.move_id.l10n_ve_control_number
-            line_data["Número del documento afectado"] = line.move_id.reversed_entry_id.name or "0"
+            line_data["Número del documento afectado"] = line.move_id.debit_origin_id.l10n_latam_document_number if line.move_id.journal_id.is_debit else line.move_id.reversed_entry_id.l10n_latam_document_number or "0"
             line_data["Número de comprobante de retención"] = (
                 int(line.retention_id.number) if line.retention_id.number else 0
             )

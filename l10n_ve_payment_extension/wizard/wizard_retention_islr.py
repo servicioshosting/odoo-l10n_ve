@@ -22,7 +22,8 @@ class RetentionIslrReport(models.TransientModel):
 
     report = fields.Selection(
         [
-            ("islr", "Islr Retention"),
+            ("xlsx", "Reporte en Excel"),
+            ("xml", "Reporte en XML"),
         ],
         "Report type",
         required=True,
@@ -34,16 +35,6 @@ class RetentionIslrReport(models.TransientModel):
     file = fields.Binary(readonly=True)
     filename = fields.Char()
     company_id = fields.Many2one("res.company", default=lambda self: self.env.user.company_id.id)
-
-    def download_format(self):
-        ext = ""
-        if self.report == "islr":
-            # ext = '.xlsx'
-            # macro
-            ext = ".xlsm"
-        else:
-            ext = ".xlsx"
-        return ext
 
     def _get_domain(self, current_company_id=False):
         search_domain = []
@@ -58,33 +49,47 @@ class RetentionIslrReport(models.TransientModel):
     def print_report(self):
         current_company = self.env.company
         report = self.report
-        filecontent = "5"
 
         report_obj = request.env["wizard.retention.islr"]
 
         table = report_obj._table_retention_islr(int(self.id))
-        name = "XML Retencion de ISLR"
+        name = "Retenciones de ISLR"
         start = str(self.date_start)
         end = str(self.date_end)
         if not table.empty and name:
-            if report == "islr":
+            if report == "xlsx":
                 filecontent = report_obj._excel_file_retention_islr(
                     table, name, start, end, current_company
                 )
-        if not filecontent:
-            raise UserError(_("No data to export"))
-        return {
-            "type": "ir.actions.act_url",
-            "url": "/web/download_islr_report?report=%s&wizard=%s&start=%s&end=%s&current_company_id=%s"
-            % (
-                self.report,
-                self.id,
-                str(self.date_start),
-                str(self.date_end),
-                str(current_company.id),
-            ),
-            "target": "self",
-        }
+                return {
+                    "type": "ir.actions.act_url",
+                    "url": "/web/download_islr_report?report=%s&wizard=%s&start=%s&end=%s&current_company_id=%s"
+                    % (
+                        self.report,
+                        self.id,
+                        str(self.date_start),
+                        str(self.date_end),
+                        str(current_company.id),
+                    ),
+                    "target": "self",
+                }
+            if report == "xml":
+                filecontent = report_obj._excel_file_retention_islr(
+                    table, name, start, end, current_company
+                )
+                return {
+                    "type": "ir.actions.act_url",
+                    "url": "/web/download_islr_report?report=%s&wizard=%s&start=%s&end=%s&current_company_id=%s"
+                    % (
+                        self.report,
+                        self.id,
+                        str(self.date_start),
+                        str(self.date_end),
+                        str(current_company.id),
+                    ),
+                    "target": "self",
+                }
+        raise UserError(_("No data to export"))
 
     def _excel_file_retention_islr(self, table, name, start, end, current_company):
         company = current_company
@@ -94,7 +99,9 @@ class RetentionIslrReport(models.TransientModel):
             {"bold": 1, "border": 1, "align": "center", "valign": "vcenter", "fg_color": "gray"}
         )
         datos = table
-        company_vat = company.vat if company.vat else ""
+        # --- MODIFICATION
+        company_vat = company.partner_id.l10n_ve_vat if company.partner_id.l10n_ve_vat else ""
+        # --- MODIFICATION
         range_month = datetime.strptime(start, "%Y-%m-%d").strftime("%Y%m")
 
         worksheet2 = workbook.add_worksheet(name)
@@ -132,86 +139,53 @@ class RetentionIslrReport(models.TransientModel):
         data2 = data2.getvalue()
         return data2
 
-    @api.model
-    def _get_retention_islr_excel_model_row(self):
+    def _make_xml_file_retention_islr(self, table: pd.DataFrame, name, start, end, current_company):
+        import xml.etree.ElementTree as et
+        from xml import etree
 
-        new_model_row = OrderedDict(
-            [
-                ("ID Sec", 0),
-                ("RIF Retenido", ""),
-                ("Número factura", ""),
-                ("Control Número", ""),
-                ("Fecha Operación", ""),
-                ("Código Concepto", ""),
-                ("Monto Operación", 0.00),
-                ("Porcentaje de retención", 0.00),
-            ]
-        )
+        range_month = datetime.strptime(start, "%Y-%m-%d").strftime("%Y%m")
 
-        return new_model_row
+        root = et.Element("RelacionRetencionesISLR", {
+            "RifAgente": current_company.partner_id.l10n_ve_vat,
+            "Periodo": range_month,
+        })
+        for index, row in table.iterrows():
+            detalle = et.SubElement(root, "DetalleRetencion")
+            rif = et.SubElement(detalle, "RifRetenido")
+            rif.text = row["RIF Retenido"]
 
-    @api.model
-    def _get_retention_islr_excel_row(self, row_idx, ret_line_id, is_vef_currency):
+            doc_num = et.SubElement(detalle, "NumeroFactura")
+            doc_num.text = row["Número factura"]
 
-        new_row = self._get_retention_islr_excel_model_row()
+            doc_corr = et.SubElement(detalle, "NumeroControl")
+            doc_corr.text = row["Control Número"]
 
-        ret_id = ret_line_id.retention_id
+            fecha = et.SubElement(detalle, "FechaOperacion")
+            fecha.text = row["Fecha Operación"]
 
-        new_row["ID Sec"] = row_idx
+            concepto = et.SubElement(detalle, "CodigoConcepto")
+            concepto.text = str(row["Código Concepto"]).rjust(3, "0")
 
-        new_row["RIF Retenido"] = ret_id.partner_id.prefix_vat + ret_id.partner_id.vat
+            monto = et.SubElement(detalle, "MontoOperacion")
+            monto.text = "{0:.2f}".format(row["Monto Operación"])
+            # monto.text = row["Monto Operación"]
 
-        pi = str(ret_id.date_accounting)
+            porc = et.SubElement(detalle, "PorcentajeRetencion")
+            porc.text = "{0:.0f}".format(row["Porcentaje de retención"])
+            # porc.text = row["Porcentaje de retención"]
 
-        fpi = datetime.strptime(pi, "%Y-%m-%d")
+        et.indent(root)
 
-        document_number = str(ret_line_id.move_id.l10n_latam_document_number or ret_line_id.move_id.name)
-        if " " in document_number:
-            s = str().split(" ", 2)
-            document_number = s[1]
-        if len(document_number) > 10:
-            document_number = document_number[-10:]
-        new_row["Número factura"] = document_number
+        return et.tostring(root, encoding='iso8859-1', xml_declaration=True)
 
-        l10n_ve_control_number = str(ret_line_id.move_id.l10n_ve_control_number)
-        if len(l10n_ve_control_number) > 10:
-            l10n_ve_control_number = l10n_ve_control_number[-10:]
-        new_row["Control Número"] = l10n_ve_control_number
+    def _retention_islr_excel(self, current_company=False):
+        table_rows, table_rows_count = self._get_retention_islr_excel_rows([], 0, current_company)
 
-        new_row["Fecha Operación"] = fpi.strftime("%d/%m/%Y")
+        table_rows = self._get_table_rows_sorted(table_rows)
 
-        concept = ""
-        alicuota = ""
+        table = pd.DataFrame(table_rows)
 
-        for l_pay_concept_id in ret_line_id.payment_concept_id.line_payment_concept_ids:
-            if l_pay_concept_id.type_person_id.name == ret_id.partner_id.type_person_id.name:
-                concept = l_pay_concept_id.code
-                alicuota = l_pay_concept_id.tariff_id.percentage if l_pay_concept_id.tariff_id else ""
-                break
-
-        new_row["Código Concepto"] = concept
-
-        if is_vef_currency:
-            new_row["Monto Operación"] = round(ret_line_id.foreign_invoice_amount - ret_line_id.related_amount_subtract_fees, 2)
-        else:
-            new_row["Monto Operación"] = ret_line_id.invoice_amount - ret_line_id.related_amount_subtract_fees
-
-        new_row["Porcentaje de retención"] = alicuota
-
-        return new_row
-
-    def _get_retention_ids(self, current_company=False):
-        search_domain = self._get_domain(current_company)
-
-        search_domain += [
-            ("type", "in", ["in_invoice"]),
-            ("type_retention", "in", ["islr"]),
-            ("state", "in", ["emitted"]),
-        ]
-
-        retention_ids = self.env["account.retention"].search(search_domain, order="id asc")
-
-        return retention_ids
+        return table
 
     def _get_retention_islr_excel_rows(self, table_rows, row_idx, current_company=False):
         is_vef_currency = self.env.ref("base.VEF").id == self.env.company.currency_foreign_id.id
@@ -232,19 +206,92 @@ class RetentionIslrReport(models.TransientModel):
 
         return table_rows, row_idx
 
+    def _get_retention_ids(self, current_company=False):
+        search_domain = self._get_domain(current_company)
+
+        search_domain += [
+            ("type", "in", ["in_invoice"]),
+            ("type_retention", "in", ["islr"]),
+            ("state", "in", ["emitted"]),
+        ]
+
+        retention_ids = self.env["account.retention"].search(search_domain, order="id asc")
+
+        return retention_ids
+
+    @api.model
+    def _get_retention_islr_excel_row(self, row_idx, ret_line_id, is_vef_currency):
+
+        new_row = self._get_retention_islr_excel_model_row()
+
+        ret_id = ret_line_id.retention_id
+
+        new_row["ID Sec"] = row_idx
+
+        new_row["RIF Retenido"] = ret_id.partner_id.prefix_vat + ret_id.partner_id.vat
+
+        pi = str(ret_id.date_accounting)
+
+        fpi = datetime.strptime(pi, "%Y-%m-%d")
+
+        # CAMBIOS LIDA/SH
+        document_number = str(ret_line_id.move_id.l10n_latam_document_number or ret_line_id.move_id.name).replace('-', '')
+        if " " in document_number:
+            s = str().split(" ", 2)
+            document_number = s[1]
+        if len(document_number) > 10:
+            document_number = document_number[-10:]
+        new_row["Número factura"] = document_number
+
+        control_number = str(ret_line_id.move_id.l10n_ve_control_number).replace('-', '')
+        if len(control_number) > 10:
+            control_number = control_number[-10:]
+        new_row["Control Número"] = control_number
+        # CAMBIOS LIDA/SH
+
+        new_row["Fecha Operación"] = fpi.strftime("%d/%m/%Y")
+
+        concept = ""
+        alicuota = ""
+
+        for l_pay_concept_id in ret_line_id.payment_concept_id.line_payment_concept_ids:
+            if l_pay_concept_id.type_person_id.name == ret_id.partner_id.type_person_id.name:
+                concept = l_pay_concept_id.code
+                alicuota = l_pay_concept_id.tariff_id.percentage if l_pay_concept_id.tariff_id else ""
+                break
+
+        new_row["Código Concepto"] = concept
+
+        new_row["Monto Operación"] = (
+            round(ret_line_id.foreign_invoice_amount, 2) if is_vef_currency else ret_line_id.invoice_amount
+        )
+
+        new_row["Porcentaje de retención"] = alicuota
+
+        return new_row
+
     def _get_table_rows_sorted(self, table_rows):
         table_rows = sorted(table_rows, key=lambda row: datetime.strptime(row['Fecha Operación'], "%d/%m/%Y"))
 
         return table_rows
 
-    def _retention_islr_excel(self, current_company=False):
-        table_rows, table_rows_count = self._get_retention_islr_excel_rows([], 0, current_company)
+    @api.model
+    def _get_retention_islr_excel_model_row(self):
 
-        table_rows = self._get_table_rows_sorted(table_rows)
+        new_model_row = OrderedDict(
+            [
+                ("ID Sec", 0),
+                ("RIF Retenido", ""),
+                ("Número factura", ""),
+                ("Control Número", ""),
+                ("Fecha Operación", ""),
+                ("Código Concepto", ""),
+                ("Monto Operación", 0.00),
+                ("Porcentaje de retención", 0.00),
+            ]
+        )
 
-        table = pd.DataFrame(table_rows)
-
-        return table
+        return new_model_row
 
     def _table_retention_islr(self, wizard=False, current_company=False):
         if wizard:

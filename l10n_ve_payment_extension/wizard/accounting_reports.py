@@ -55,32 +55,32 @@ class WizardAccountingReports(models.TransientModel):
 
         return retention_resume_lines
 
-    # def _resume_sale_book_fields(self, moves):
-    #     res_book = super()._resume_sale_book_fields(moves)
-    #     res_book.extend(
-    #         [
-    #             {
-    #                 "name": "Total Retenciones",
-    #                 "format": "number",
-    #                 "values": self._determinate_resume_retention_books(moves),
-    #             }
-    #         ]
-    #     )
+    def _resume_sale_book_fields(self, moves):
+        res_book = super()._resume_sale_book_fields(moves)
+        res_book.extend(
+            [
+                {
+                    "name": "Total Retenciones",
+                    "format": "number",
+                    "values": self._determinate_resume_retention_books(moves),
+                }
+            ]
+        )
 
-    #     return res_book
+        return res_book
 
-    # def _resume_purchase_book_fields(self, moves):
-    #     res_book = super()._resume_purchase_book_fields(moves)
-    #     res_book.extend(
-    #         [
-    #             {
-    #                 "name": "Total Retenciones",
-    #                 "format": "number",
-    #                 "values": self._determinate_resume_retention_books(moves),
-    #             }
-    #         ]
-    #     )
-    #     return res_book
+    def _resume_purchase_book_fields(self, moves):
+        res_book = super()._resume_purchase_book_fields(moves)
+        res_book.extend(
+            [
+                {
+                    "name": "Total Retenciones",
+                    "format": "number",
+                    "values": self._determinate_resume_retention_books(moves),
+                }
+            ]
+        )
+        return res_book
 
     def sale_book_fields(self):
         fields = super().sale_book_fields()
@@ -89,7 +89,7 @@ class WizardAccountingReports(models.TransientModel):
                 {
                     "name": "Fecha Retención",
                     "field": "date_retention",
-                    "size": 12,
+                    "size": 20,
                 },
                 {
                     "name": "N° Retención",
@@ -108,7 +108,7 @@ class WizardAccountingReports(models.TransientModel):
                 {
                     "name": "Fecha Retención",
                     "field": "date_retention",
-                    "size": 12,
+                    "size": 20,
                 },
                 {
                     "name": "N° Retención",
@@ -137,139 +137,101 @@ class WizardAccountingReports(models.TransientModel):
         ]
         return domain
 
-    # def search_moves(self):
-    #     res_moves = super().search_moves()
+    def search_moves(self):
+        retention = self.env["account.retention"]
+        res_moves = super().search_moves()
 
-    #     # retention = self.env["account.retention"]
-    #     # domain = self._get_retention_domain()
-    #     # retention_ids = retention.search(domain)
-    #     # moves = retention_ids.mapped("retention_line_ids.move_id")
-    #     # res_moves |= moves
+        domain = self._get_retention_domain()
+        retention_ids = retention.search(domain)
+        moves = retention_ids.mapped("retention_line_ids.move_id")
+        res_moves |= moves
 
-    #     # return res_moves.sorted(lambda m: f"{m.invoice_date} {m.correlative}")
-    #     return res_moves
-
-    def _sort_book_data(self, lines_data: list):
-        return sorted(
-            lines_data, 
-            key=lambda x: f"{x['_sort_document_date']}-{x['_sort_document_number']}-{x['_sort_order']}"
-        )
+        return res_moves.sorted('date')
 
     def parse_sale_book_data(self):
-        retention = self.env["account.retention"]
-        domain = self._get_retention_domain()
-        retention_ids = retention.search(domain)
-        retention_lines = retention_ids.retention_line_ids
-
-        withholdings_data = []
-        for rl in retention_lines:
-            move = rl.move_id
-            multiplier = -1 if move.move_type == "out_refund" else 1
-            withholdings_data.append(
-                {
-                    "_id": move.id,
-                    "_sort_document_date": move.invoice_date,
-                    "_sort_document_number": move.l10n_latam_document_number if move.is_invoice() else move.name,
-                    "_sort_order": 20,
-                    "document_date": self._format_date(move.invoice_date),
-                    "accounting_date": self._format_date(move.date),
-                    "vat": move.vat,
-                    "partner_name": move.invoice_partner_display_name,
-                    "document_number": "-",
-                    "move_type": self._determinate_type_for_move(move),
-                    "transaction_type": "COM",
-                    "number_invoice_affected": move.l10n_latam_document_number if move.is_invoice() else move.name,
-                    "correlative": '-',
-                    "reduced_aliquot": 0,
-                    "general_aliquot": 0,
-                    "extend_aliquot":  0,
-                    "total_sales_iva": 0,
-                    "total_sales_not_iva": 0,
-                    "amount_reduced_aliquot": 0,
-                    "amount_general_aliquot": 0,
-                    "amount_extend_aliquot": 0,
-                    "tax_base_reduced_aliquot": 0,
-                    "tax_base_general_aliquot": 0,
-                    "tax_base_extend_aliquot": 0,
-                    "date_retention": self._format_date(rl.retention_id.date),
-                    "number_retention": rl.retention_id.number,
-                    "iva_retained": rl.retention_amount * multiplier,
-                })
-
         data = super().parse_sale_book_data()
+        for move in data:
+            date = move.get("accounting_date", False)
+            if move.get("vat", "") != "RESUMEN" and (
+                not date
+                or self._check_future_retention_dates(
+                    datetime.strptime(move.get("accounting_date"), "%d/%m/%Y").date()
+                )
+            ):
+                move.update(
+                    {
+                        "move_type": 'RET',
+                        "total_sales_iva": 0,
+                        "total_sales_not_iva": 0,
+                        "amount_reduced_aliquot": 0,
+                        "amount_general_aliquot": 0,
+                        "amount_extend_aliquot": 0,
+                        "tax_base_reduced_aliquot": 0,
+                        "tax_base_general_aliquot": 0,
+                        "tax_base_extend_aliquot": 0,
+                    }
+                )
+            retention_data = self.get_retention_iva_values(move.get("_id"))
+            move.update(retention_data)
 
-        for record in data:
-            record.update({
-                "date_retention": "",
-                "number_retention": "",
-                "iva_retained": 0,
-            })
-
-        return self._sort_book_data(data + withholdings_data)
+        return data
 
     def parse_purchase_book_data(self):
-        retention = self.env["account.retention"]
-        domain = self._get_retention_domain()
-        retention_ids = retention.search(domain)
-        retention_lines = retention_ids.retention_line_ids
-
-        withholdings_data = []
-        for rl in retention_lines:
-            move = rl.move_id
-            multiplier = -1 if move.move_type == "in_refund" else 1
-            withholdings_data.append(
-                {
-                    "_id": move.id,
-                    "_sort_document_date": move.invoice_date,
-                    "_sort_document_number": move.l10n_latam_document_number if move.is_invoice() else move.name,
-                    "_sort_order": 20,
-                    "document_date": self._format_date(move.invoice_date),
-                    "accounting_date": self._format_date(move.date),
-                    "vat": move.vat,
-                    "partner_name": move.invoice_partner_display_name,
-                    "document_number": "-",
-                    "move_type": self._determinate_type_for_move(move),
-                    "transaction_type": "COM",
-                    "number_invoice_affected": move.l10n_latam_document_number if move.is_invoice() else move.name,
-                    "correlative": '-',
-                    "reduced_aliquot": 0,
-                    "general_aliquot": 0,
-                    "extend_aliquot":  0,
-                    "total_purchases_iva": 0,
-                    "total_purchases_not_iva": 0,
-                    "amount_reduced_aliquot": 0,
-                    "amount_general_aliquot": 0,
-                    "amount_extend_aliquot": 0,
-                    "tax_base_reduced_aliquot": 0,
-                    "tax_base_general_aliquot": 0,
-                    "tax_base_extend_aliquot": 0,
-                    "date_retention": self._format_date(rl.retention_id.date),
-                    "number_retention": rl.retention_id.number,
-                    "iva_retained": rl.retention_amount * multiplier,
-                })
-
         data = super().parse_purchase_book_data()
+        for move in data:
+            move_date = datetime.strptime(move.get("accounting_date"), "%d/%m/%Y").date()
+            if self._check_future_retention_dates(move_date):
+                move.update(
+                    {
+                        "move_type": 'RET',
+                        "total_purchases_iva": 0,
+                        "total_purchases_not_iva": 0,
+                        "amount_reduced_aliquot": 0,
+                        "amount_general_aliquot": 0,
+                        "amount_extend_aliquot": 0,
+                        "tax_base_reduced_aliquot": 0,
+                        "tax_base_general_aliquot": 0,
+                        "tax_base_extend_aliquot": 0,
+                    }
+                )
+            retention_data = self.get_retention_iva_values(move.get("_id"))
+            move.update(retention_data)
 
-        for record in data:
-            record.update({
-                "date_retention": "",
-                "number_retention": "",
-                "iva_retained": 0,
-            })
+        return data
 
-        return self._sort_book_data(data + withholdings_data)
+    def get_retention_iva_values(self, move_id):
+        move = self.env["account.move"].browse(move_id)
+        is_purchase = self.report == "purchase"
+        multiplier = -1 if move.move_type in ["out_refund", "in_refund"] else 1
+        ret_lines = (
+            move.retention_iva_line_ids.filtered(lambda x: x.retention_id.state == "emitted")
+            if move.state == "posted"
+            else move.retention_iva_line_ids
+        )
+        retention = ret_lines.mapped("retention_id")
+        ret_vals = {
+            "date_retention": "",
+            "number_retention": "",
+            "iva_retained": 0,
+        }
 
-    def _fill_sales_summary(self, summary: dict, line: dict):
-        summary = super()._fill_sales_summary(summary, line)
-        summary['iva_retenido'] = summary['iva_retenido'] + line['iva_retained']
+        if not ret_lines:
+            return ret_vals
 
-        return summary
+        for ret_line in ret_lines:
 
-    def _fill_purchases_summary(self, summary: dict, line: dict):
-        summary = super()._fill_purchases_summary(summary, line)
-        summary['iva_retenido'] = summary['iva_retenido'] + line['iva_retained']
+            if ret_line and self._check_future_retention_dates(ret_line.retention_id.date_accounting):
+                continue
 
-        return summary
+            ret_vals["date_retention"] = self._format_date(ret_line.mapped("retention_id").date)
+            ret_vals["number_retention"] = move.iva_voucher_number
+            ret_vals["iva_retained"] = ret_vals["iva_retained"] + (
+                self._sum_retention_total(ret_line) * multiplier
+                if ret_line.move_id.state != "cancel"
+                else 0
+            )
+
+        return ret_vals
 
     def _sum_retention_total(self, lines):
         is_check_currency_system = self.currency_system

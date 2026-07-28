@@ -86,7 +86,7 @@ class AccountPayment(models.Model):
                 + f"-{payment.retention_line_ids[0].move_id.name}"
             )
             if payment.retention_id.type_retention == "islr":
-                move_name += f"-{payment.retention_line_ids[0].payment_concept_id.name[:5]}"
+                move_name += "-{:0>3}".format(str(payment.retention_line_ids[0].code))
 
             vals_to_change = {"name": move_name}
             move.write(vals_to_change)
