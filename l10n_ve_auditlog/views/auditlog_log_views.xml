@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <odoo>
+      
+    <!-- View auditlog.log form -->
+    <record id="view_auditlog_log_form" model="ir.ui.view">
+        <field name="name">view.auditlog.log.form.inherit</field>
+        <field name="model">auditlog.log</field>
+        <field name="inherit_id" ref="auditlog.view_auditlog_log_form"/>
+        <field name="arch" type="xml">
+            <field name='http_session_id' position='attributes'>
+              <attribute name='readonly'>1</attribute>
+            </field>
+
+            <field name='http_request_id' position='attributes'>
+              <attribute name='readonly'>1</attribute>
+            </field>
+        </field>
+    </record>
+
+  </odoo>

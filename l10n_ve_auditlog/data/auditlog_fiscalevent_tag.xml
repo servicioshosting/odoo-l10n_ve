@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="fiscalevent_tag_facturacion" model="auditlog.fiscalevent.tag">
+            <field name="name">facturacion</field>
+        </record>
+        <record id="fiscalevent_tag_retenciones" model="auditlog.fiscalevent.tag">
+            <field name="name">retenciones</field>
+        </record>
+        <record id="fiscalevent_tag_precio_referencial" model="auditlog.fiscalevent.tag">
+            <field name="name">precio referencial</field>
+        </record>
+        <record id="fiscalevent_tag_igtf" model="auditlog.fiscalevent.tag">
+            <field name="name">igtf</field>
+        </record>
+        <record id="fiscalevent_tag_imprenta_digital" model="auditlog.fiscalevent.tag">
+            <field name="name">imprenta digital</field>
+        </record>
+    </data>
+</odoo>

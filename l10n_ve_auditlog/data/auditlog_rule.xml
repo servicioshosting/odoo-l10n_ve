@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Template for rules -->
+    <!-- Audit Rules -->
+    <!-- <record id="account_move_auditlog_rule" model="auditlog.rule">
+        <field name="name">Auditar todos los movimientos de cuentas</field>
+        <field name="model_id" ref="account.model_account_move" />
+        <field name="state">subscribed</field>
+        <field name="log_read">0</field>
+        <field name="log_write">1</field>
+        <field name="log_unlink">1</field>
+        <field name="log_create">1</field>
+        <field name="log_type">full</field>
+        <field name="capture_record">1</field>
+    </record> -->
+    <!-- Aseguramos que sean adecuadamente activadas -->
+    <!-- <function model="auditlog.rule" name="unsubscribe">
+        <value eval="[ref('account_retention_auditlog_rule')]" />
+    </function> -->
+    <!-- <function model="auditlog.rule" name="subscribe">
+        <value model="auditlog.rule" eval="ref('account_retention_auditlog_rule').ids" />
+    </function> -->
+    <record id="base.group_system" model="res.groups">
+        <field
+            name="implied_ids"
+            eval="[Command.unlink(ref('auditlog.group_auditlog_manager')), Command.link(ref('auditlog.group_auditlog_user'))]" />
+    </record>
+
+    <record id="base.group_no_one" model="res.groups">
+        <field name="implied_ids" eval="[Command.link(ref('auditlog.group_auditlog_manager'))]" />
+    </record>
+</odoo>

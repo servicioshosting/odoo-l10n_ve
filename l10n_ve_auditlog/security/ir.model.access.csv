@@ -1,0 +1,6 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_users_login_attempts_user,users_login_attempts_user,model_users_login_attempts,auditlog.group_auditlog_user,1,0,0,0
+access_auditlog_fiscalevent_user,auditlog_fiscalevent_user,model_auditlog_fiscalevent,auditlog.group_auditlog_user,1,0,0,0
+access_auditlog_fiscalevent_tag_user,auditlog_fiscalevent_tag_user,model_auditlog_fiscalevent_tag,auditlog.group_auditlog_user,1,0,0,0
+
+access_users_login_attempts_manager,users_login_attempts_manager,model_users_login_attempts,auditlog.group_auditlog_manager,1,1,1,1

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View users.login.attempts View Tree -->
+    <record id="view_users_login_attempts_tree" model="ir.ui.view">
+        <field name="name">view.users.login.attempts.tree</field>
+        <field name="model">users.login.attempts</field>
+        <field name="arch" type="xml">
+            <tree default_order="name desc">
+                <field name="name"/>
+                <field name="username"/>
+                <field name="method"/>
+                <field name="ip"/>
+                <field name="user_agent"/>
+                <field name="successful"/>
+                <field name="user_id" invisible="not successful"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- View users.login.attempts form -->
+    <record id="view_users_login_attempts_form" model="ir.ui.view">
+        <field name="name">view.users.login.attempts.form</field>
+        <field name="model">users.login.attempts</field>
+        <field name="arch" type="xml">
+            <form string="Users Login Attempts" readonly="1">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <field name="username"/>
+                        <field name="method"/>
+                        <field name="ip"/>
+                        <field name="user_agent"/>
+                        <field name="successful"/>
+                        <field name="user_id" invisible="not successful"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- View users.login.attempts search -->
+    <record id="view_users_login_attempts_search" model="ir.ui.view">
+        <field name="name">view.users.login.attempts.search</field>
+        <field name="model">users.login.attempts</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <!-- <group expand="1" string="Group By"> -->
+                    <!-- <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/> -->
+                <!-- </group> -->
+            </search>
+        </field>
+    </record>
+
+    <!-- Action users.login.attempts -->
+    <record id="action_users_login_attempts" model="ir.actions.act_window">
+        <field name="name">Users Login Attempts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">users.login.attempts</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <!-- <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                There is no examples click here to add new Users Login Attempts.
+            </p>
+        </field> -->
+    </record>
+
+</odoo>

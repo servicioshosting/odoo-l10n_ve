@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View auditlog.fiscalevent.tag View Tree -->
+    <record id="view_auditlog_fiscalevent_tag_tree" model="ir.ui.view">
+        <field name="name">view.auditlog.fiscalevent.tag.tree</field>
+        <field name="model">auditlog.fiscalevent.tag</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- View auditlog.fiscalevent.tag form -->
+    <record id="view_auditlog_fiscalevent_tag_form" model="ir.ui.view">
+        <field name="name">view.auditlog.fiscalevent.tag.form</field>
+        <field name="model">auditlog.fiscalevent.tag</field>
+        <field name="arch" type="xml">
+            <form string="Etiqueta de eventos fiscales">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- View auditlog.fiscalevent.tag search -->
+    <record id="view_auditlog_fiscalevent_tag_search" model="ir.ui.view">
+        <field name="name">view.auditlog.fiscalevent.tag.search</field>
+        <field name="model">auditlog.fiscalevent.tag</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="event_count"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action auditlog.fiscalevent.tag -->
+    <record id="action_auditlog_fiscalevent_tag" model="ir.actions.act_window">
+        <field name="name">Etiquetas de eventos fiscales</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">auditlog.fiscalevent.tag</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <!-- <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                There is no examples click here to add new Auditlog Fiscalevent Tag.
+            </p>
+        </field> -->
+    </record>
+
+</odoo>

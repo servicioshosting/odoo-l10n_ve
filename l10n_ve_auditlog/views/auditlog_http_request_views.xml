@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- View auditlog.http.request form -->
+    <record id="view_auditlog_http_request_form" model="ir.ui.view">
+        <field name="name">view.auditlog.http.request.form.inherit</field>
+        <field name="model">auditlog.http.request</field>
+        <field name="inherit_id" ref="auditlog.view_auditlog_http_request_form" />
+        <field name="arch" type="xml">
+            <field position="attributes" name="root_url">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <field position="attributes" name="name">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <field position="attributes" name="user_context">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <field position="attributes" name="http_session_id">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <xpath expr="//form/sheet/group[2]" position="replace">
+                <group string="Logs">
+                    <field name="log_ids" string="" readonly="1" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <!-- View auditlog.http.request tree -->
+    <!-- <record id="view_auditlog_http_request_tree" model="ir.ui.view">
+        <field name="name">view.auditlog.http.request.tree.inherit</field>
+        <field name="model">auditlog.http.request</field>
+        <field name="inherit_id" ref="auditlog.view_auditlog_http_request_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']">
+            </xpath>
+        </field>
+    </record> -->
+</odoo>
