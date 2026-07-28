@@ -6,7 +6,7 @@
     "icon": "/account/static/description/l10n.png",
     "countries": ["ve"],
     "license": "LGPL-3",
-    "version": "17.0.1.0.5",
+    "version": "17.0.1.0.6",
     "description": """
         Plantilla de plan de cuentas de servicio donde se agregan las
         cuentas contables y diarios para tipo de empresa servicio
@@ -17,7 +17,7 @@
         "account_accountant",
         "sale",
         "contacts",
-        # "l10n_ve_auditlog",
+        "l10n_ve_auditlog",
         "l10n_latam_invoice_document",
     ],
     "data": [
