@@ -180,7 +180,7 @@ msgstr "B.I./Descuento"
 #. module: l10n_ve_accountant
 #: model:ir.model,name:l10n_ve_accountant.model_account_bank_statement_line
 msgid "Bank Statement Line"
-msgstr "Línea de estado de cuenta bancario"
+msgstr "Línea de un estado de cuenta bancario"
 
 #. module: l10n_ve_accountant
 #: model:ir.model.fields,field_description:l10n_ve_accountant.field_account_payment_register__base_currency_is_vef
@@ -276,7 +276,7 @@ msgstr "Creado en"
 #. module: l10n_ve_accountant
 #: model:ir.model,name:l10n_ve_accountant.model_res_currency
 msgid "Currency"
-msgstr "Moneda"
+msgstr "Divisa"
 
 #. module: l10n_ve_accountant
 #: model_terms:ir.ui.view,arch_db:l10n_ve_accountant.view_account_payment_search_inherit_l10n_ve_accountant

@@ -331,6 +331,8 @@ class AccountMove(models.Model):
         """
         computes the foreign debit and foreign credit of the line_ids fields (journal entries) when
         the move is edited.
+
+        if vals has 'journal_id' inside, then call _update_invoice_lines_with_new_journal to update the line_ids to update the account_id.
         """
         if 'name' in vals and vals['name'] != "/":
             for move in self:
