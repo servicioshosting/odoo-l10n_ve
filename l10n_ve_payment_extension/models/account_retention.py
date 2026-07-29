@@ -171,7 +171,7 @@ class AccountRetention(models.Model):
         )
     )
 
-    @api.depends("id", "name", "state")
+    @api.depends("name", "state")
     def _compute_display_name(self):
         for record in self:
             name = ""
