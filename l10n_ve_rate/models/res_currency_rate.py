@@ -42,7 +42,7 @@ class ResCurrencyRate(models.Model):
                 ("currency_id", "=", foreign_currency_id),
                 ("company_id", "=", self.env.company.id),
                 ("name", "<=", rate_date),
-            ]
+            ], order='name desc', limit=1
         )
         if not rates:
             rates = self.env['res.currency.rate'].search([
@@ -52,7 +52,7 @@ class ResCurrencyRate(models.Model):
         if not rates:
             return {}
 
-        rate = rates.filtered(lambda r: r.name == rate_date) or rates[0]
+        rate = rates[0]
         base_vef_id = self.env["ir.model.data"]._xmlid_to_res_id(
             "base.VEF", raise_if_not_found=False
         )

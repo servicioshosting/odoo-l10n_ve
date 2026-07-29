@@ -56,7 +56,7 @@
                             </div>
                         </div>
                     </block>
-                    <block title="Configuration Taxes: Non-Deductible " name="l10n_ve_tax_block_non_deductible" >
+                    <!-- <block title="Configuration Taxes: Non-Deductible " name="l10n_ve_tax_block_non_deductible" >
                         <div class="col-12 col-lg-6 o_setting_box" id="l10n_ve_tax_div_deductibility">
                             <div class="o_setting_right_pane">
                                 <separator string="Deductibility"/>
@@ -75,7 +75,7 @@
                                 </group>
                             </div>
                         </div>
-                    </block>
+                    </block> -->
                     <block title="Configuration: Accountant Books" name="l10n_ve_tax_block_books">
                         <div class="col-12 col-lg-6 o_setting_box" id="l10n_ve_tax_div_sales_book">
                             <div class="o_setting_right_pane">

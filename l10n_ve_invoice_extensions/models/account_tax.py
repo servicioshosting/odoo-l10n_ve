@@ -11,6 +11,17 @@ class AccountTax(models.Model):
     _inherit = 'account.tax'
 
     def _compute_taxes_for_single_line(self, base_line, handle_price_include=True, include_caba_tags=False, early_pay_discount_computation=None, early_pay_discount_percentage=None):
+        """Modifica la forma en la que se calculan los precios de los renglones de facturas
+
+        La forma nativa no se ajusta a las exigencias del SENIAT. De forma nativa:
+        - al precio unitario se le aplican descuentos, **NO** se redondea y se calculan los impuestos.
+
+        Acá lo modificamos para que sea:
+        - al precio unitario se le aplican descuentos, se redondea DESPUÉS se calculan los impuestos.
+
+        Se debe hacer de esta manera para garantizar que el precio unitario pueda ser utilizado en las operaciones de 
+        retenciones.
+        """
         orig_price_unit_after_discount = base_line['price_unit'] * (1 - (base_line['discount'] / 100.0))
         taxes = base_line['taxes']._origin
         currency = base_line['currency'] or self.env.company.currency_id

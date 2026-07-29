@@ -171,7 +171,7 @@ class AccountRetention(models.Model):
         )
     )
 
-    @api.depends("name", "state")
+    @api.depends("id", "name", "state")
     def _compute_display_name(self):
         for record in self:
             name = ""
@@ -190,6 +190,7 @@ class AccountRetention(models.Model):
             else:
                 # name += f"{record.partner_id.l10n_ve_vat}-{record.name}"
                 name += f"{record.name}"
+            record.display_name = name
 
     def _auto_init(self):
         if not table_exists(self.env.cr, "account_retention"):
@@ -438,13 +439,12 @@ class AccountRetention(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         res = super().create(vals_list)
-        res._create_payments_from_retention_lines()
+        # res._create_payments_from_retention_lines()
         return res
 
     def write(self, vals):
         res = super().write(vals)
-        if vals.get("retention_line_ids", False):
-            self._create_payments_from_retention_lines()
+        # if vals.get("retention_line_ids", False):
         return res
 
     def unlink(self):
@@ -640,7 +640,7 @@ class AccountRetention(models.Model):
 
         self.payment_ids.write({"date": self.date_accounting})
         self._reconcile_all_payments()
-        self.write({"state": "emitted"})
+        self.write({"state": "emitted", "posted_before": True})
 
     def set_voucher_number_in_invoice(self, move, retention):
         if retention.type_retention == "iva":
@@ -749,6 +749,11 @@ class AccountRetention(models.Model):
             The payments created for the retention.
         """
         self.ensure_one()
+
+        if self.type_retention == 'iva':
+            self._create_payments_from_retention_lines()
+            return self.payment_ids
+
         Payment = self.env["account.payment"]
         journals = {
             ("islr", "in_invoice"): self.env.company.islr_supplier_retention_journal_id,
@@ -926,14 +931,12 @@ class AccountRetention(models.Model):
                 "foreign_iva_amount": foreign_tax_group["tax_group_amount"],
                 "foreign_invoice_total": invoice_id.tax_totals["foreign_amount_total"],
             }
-            if invoice_id.move_type == "out_invoice":
-                line_data["retention_amount"] = 0.0
-                line_data["foreign_retention_amount"] = 0.0
-            else:
-                line_data["retention_amount"] = retention_amount
-                line_data["foreign_retention_amount"] = line_data["foreign_iva_amount"] * (
-                    withholding_amount / 100
-                )
+            # if invoice_id.move_type == "out_invoice":
+            #     line_data["retention_amount"] = 0.0
+            #     line_data["foreign_retention_amount"] = 0.0
+            # else:
+            #     line_data["retention_amount"] = retention_amount
+            #     line_data["foreign_retention_amount"] = line_data["foreign_iva_amount"] * (partner_withholding_perc / 100)
             lines_data.append(line_data)
         return lines_data
 
