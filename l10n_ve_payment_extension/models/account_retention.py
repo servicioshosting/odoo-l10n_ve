@@ -55,7 +55,7 @@ class AccountRetention(models.Model):
         help="Status of the withholding voucher",
         tracking=True,
     )
-    posted_before = fields.Boolean("Emitida", help="Indica que el documento ya fue confirmado en algún momento, independientemente del estado actual.")
+    posted_before = fields.Boolean("Emitida previamente", help="Indica que el documento ya fue confirmado en algún momento, independientemente del estado actual.")
     type_retention = fields.Selection(
         [
             ("iva", "IVA"),

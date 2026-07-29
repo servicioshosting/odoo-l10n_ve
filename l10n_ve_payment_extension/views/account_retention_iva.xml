@@ -38,14 +38,14 @@
                             <field name="type" invisible="1" />
                             <field name="company_id" invisible="1"/>
                             <field name="company_withholding_type_id"
-                                invisible="type == 'out_invoice'"
+                                invisible="type != 'out_invoice'"
                                 readonly="1" />
                             <field name="partner_id"
                                 select="1"
                                 invisible="not type"
                                 readonly="state in ['emitted', 'cancel']" />
                             <field name="partner_withholding_type_id"
-                                invisible="type == 'in_invoice'"
+                                invisible="type != 'in_invoice'"
                                 readonly="1" />
                             <field name="date_accounting" select="1"
                                 readonly="type == 'in_invoice' or state in ['emitted', 'cancel']" force_save="1" />
