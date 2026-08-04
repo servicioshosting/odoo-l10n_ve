@@ -33,7 +33,7 @@
                                 <group name="period">
                                     <field name="year" widget="integer" options='{"format": false}' />
                                     <field name="month" />
-                                    <field name="quincena" />
+                                    <field name="quincena" invisible="tax_type == 'islr'" />
                                 </group>
                             </group>
                             <group>
@@ -60,8 +60,8 @@
                                         <field name="tax_type" column_invisible="True" />
                                         <field name="withholding_date" />
                                         <field name="withholding_number" />
-                                        <field name="document_id" options="{'no_create': true, 'no_open': false}" />
-                                        <field name="partner_id" options="{'no_create': true, 'no_open': false}" />
+                                        <field name="document_id" widget="many2one_avatar" options="{'no_create': true, 'no_open': false}" />
+                                        <field name="partner_id" widget="many2one_avatar" options="{'no_create': true, 'no_open': false}" />
                                         <field name="partner_vat" />
                                         <field name="document_number" optional="show" />
                                         <field name="document_control_number" optional="show" />

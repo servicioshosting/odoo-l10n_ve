@@ -93,25 +93,30 @@ class AccountWithholdingReport(models.TransientModel):
             year = int(rec.year or today.year)
             month = int(rec.month or today.month)
             rec.period = "{:0>4d}{:0>2d}".format(year, month)
+
+ 
             rec.name = "Retenciones de {} {} {}".format(
                 tax_type_strings.get(rec.tax_type), 
                 rec.period, 
-                quincena_strings.get(rec.quincena)
-            )
+                quincena_strings.get(rec.quincena) if rec.tax_type == 'iva' else ""
+            ).strip()
 
-            if rec.quincena == '01_quincena':
+            if rec.tax_type == 'islr':
+                rec.date_start = date_utils.start_of(datetime(year, month, 1), 'month')
+                rec.date_end = date_utils.end_of(rec.date_start, 'month')
+            elif rec.quincena == '01_quincena':
                 rec.date_start = date_utils.start_of(datetime(year, month, 1), 'month')
                 rec.date_end = date_utils.end_of(datetime(year, month, 15), 'day')
             else:
                 rec.date_start = date_utils.start_of(datetime(year, month, 16), 'day')
                 rec.date_end = date_utils.end_of(datetime(year, month, 1), 'month')
 
-    @api.onchange("year", "month", "quincena")
+    @api.onchange("date_start", "date_end")
     def _onchange_period(self):
         for rec in self:
             rec._sync_lines()
 
-    @api.constrains("year", "month", "quincena")
+    @api.constrains("date_start", "date_end")
     def _constrains_period(self):
         for rec in self:
             rec._sync_lines()
@@ -123,17 +128,10 @@ class AccountWithholdingReport(models.TransientModel):
                 rec.line_ids = False
                 continue
 
-            rec.update(self._compute_lines(rec.tax_type, rec.year, rec.month, rec.quincena, rec.company_id))
+            rec.update(self._compute_lines(rec.tax_type, rec.date_start, rec.date_end, rec.company_id))
 
     @api.model
-    def _compute_lines(self, tax_type, year, month, quincena, company):
-        if quincena == '01_quincena':
-            date_start = date_utils.start_of(datetime(int(year), int(month), 1), 'month')
-            date_end = date_utils.end_of(datetime(int(year), int(month), 15), 'day')
-        else:
-            date_start = date_utils.start_of(datetime(int(year), int(month), 16), 'day')
-            date_end = date_utils.end_of(datetime(int(year), int(month), 1), 'month')
-
+    def _compute_lines(self, tax_type, date_start, date_end, company):
         search_domain = [
             ("type", "=", "in_invoice"),
             ("type_retention", "=", tax_type),
@@ -146,6 +144,18 @@ class AccountWithholdingReport(models.TransientModel):
         withholdings_ids = self.env['account.retention'].search(search_domain)
         line_ids = [Command.clear()]
         if withholdings_ids:
+            if tax_type == 'islr':
+                for wrl in withholdings_ids.mapped('retention_line_ids').filtered(lambda wrl: not wrl.code or wrl.code == ''):
+                    payment_concepts = wrl.payment_concept_id.line_payment_concept_ids
+                    for line in payment_concepts:
+                        if not wrl.move_id.partner_id.type_person_id:
+                            continue
+
+                        if wrl.move_id.partner_id.type_person_id.id == line.type_person_id.id:
+                            # compare the type_person_id of the partner with the type_person_id of the
+                            # payment concept and set the related fields.
+                            wrl.code = line.code
+
             line_ids.extend(
                 Command.create({
                     'withholding_id': w.retention_id._origin.id,

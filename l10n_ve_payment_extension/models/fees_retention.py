@@ -11,6 +11,7 @@ class FeesRetention(models.Model):
     name = fields.Char(string="Description", required=True, store=True)
     percentage = fields.Float(string="Fees percentage", store=True)
     subtract_money = fields.Float(string="Quantity to subtract to fees", store=True)
+    # TODO: borrar, el calculo se hace on the fly
     amount_subtract = fields.Float(
         string="Subtract mount", compute="_compute_amount_subtract", store=True
     )

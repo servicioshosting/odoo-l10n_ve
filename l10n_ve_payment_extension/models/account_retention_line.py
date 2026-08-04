@@ -272,11 +272,6 @@ class AccountRetentionLine(models.Model):
             if line.move_id and line.id in line.move_id.retention_municipal_line_ids.ids:
                 line.economic_activity_id = line.move_id.partner_id.economic_activity_id
 
-    def unlink(self):
-        for record in self:
-            record.payment_id.unlink()
-        return super().unlink()
-
     @api.onchange("payment_concept_id")
     @api.depends("payment_concept_id", "move_id", "retention_id.tax_unit_id")
     def _compute_related_fields(self):
@@ -309,8 +304,8 @@ class AccountRetentionLine(models.Model):
                     record.related_pay_from = tax_unit.value * SENIAT_FACTOR_PN
                     record.related_percentage_tax_base = line.percentage_tax_base
                     record.related_percentage_fees = line.tariff_id.percentage
-                    # FIXME: Al cambiar la unidad tributaria, no se cambia de este sustraendo automáticamente
-                    record.related_amount_subtract_fees = line.tariff_id.amount_subtract
+                    record.related_amount_subtract_fees = tax_unit.value * SENIAT_FACTOR_PN * record.related_percentage_fees / 100 \
+                        if line.tariff_id.apply_subtracting else 0
                     record.foreign_currency_rate = record.move_id.foreign_rate
 
                     # if not record.retention_id or record.retention_id.type == "in_invoice":

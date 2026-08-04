@@ -16,7 +16,7 @@ _logger = logging.getLogger(__name__)
 
 class AccountRetention(models.Model):
     _name = "account.retention"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.activity.mixin", "mail.thread.main.attachment"]
     _description = "Retention"
     _check_company_auto = True
 
