@@ -518,19 +518,19 @@ class AccountRetentionLine(models.Model):
                     )
                     raise ValidationError(_("No puede agregar un renglón con monto cero a una retención."))
                 
-            is_vef_the_base_currency = self.env.company.currency_id == self.env.ref("base.VEF")
-            is_client_retention = record.retention_id.type == "out_invoice"
-            if (
-                is_vef_the_base_currency
-                and is_client_retention
-                and record.retention_amount > record.move_id.amount_residual
-            ):
-                raise ValidationError(
-                    _(
-                        "The total amount of the retention is greater than the residual amount of"
-                        " the invoice."
-                    )
-                )
+            # is_vef_the_base_currency = self.env.company.currency_id == self.env.ref("base.VEF")
+            # is_client_retention = record.retention_id.type == "out_invoice"
+            # if (
+            #     is_vef_the_base_currency
+            #     and is_client_retention
+            #     and record.retention_amount > record.move_id.amount_residual
+            # ):
+            #     raise ValidationError(
+            #         _(
+            #             "The total amount of the retention is greater than the residual amount of"
+            #             " the invoice."
+            #         )
+            #     )
 
     def get_invoice_paid_amount_not_related_with_retentions(self):
         """
