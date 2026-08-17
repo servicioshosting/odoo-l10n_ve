@@ -63,7 +63,7 @@
                                         <field name="name" readonly="1" force_save="1" />
                                         <field
                                             name="move_id"
-                                            domain="[('id', 'in', parent.allowed_lines_move_ids), ('municipal_voucher_number', '=', False)]"
+                                            domain="[('id', 'in', parent.allowed_lines_move_ids)]"
                                         />
                                         <field name="company_id" optional="hide"
                                             groups="base.group_multi_company" />
