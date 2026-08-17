@@ -6,11 +6,10 @@
     "author": "binaural-dev",
     "website": "https://binauraldev.com/",
     "category": "Accounting/Accounting",
-    "version": "17.0.0.0.5",
+    "version": "17.0.0.0.6",
     "depends": [
         "base",
         "account",
-        "l10n_ve_rate",
         "l10n_ve_lida",
         "l10n_ve_accountant",
         "l10n_ve_invoice",

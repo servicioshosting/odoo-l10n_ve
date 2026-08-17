@@ -7,12 +7,11 @@
     "author": "Servitepuy, C.A., binaural-dev",
     "website": "https://servicioshosting.com/",
     "category": "Accountant/Accountant",
-    "version": "17.0.0.1.0",
+    "version": "17.0.0.1.1",
     "depends": [
         "base",
         "account",
         # "product",
-        "l10n_ve_rate",
         "l10n_ve_accountant",
         "l10n_ve_invoice",
         "l10n_ve_location",

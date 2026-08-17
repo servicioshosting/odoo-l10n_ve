@@ -7,7 +7,7 @@
     "author": "binaural-dev",
     "website": "https://binauraldev.com/",
     "category": "Accounting/Localizations/Account Chart",
-    "version": "17.0.0.1.11",
+    "version": "17.0.0.1.12",
     "depends": [
         "base",
         "web",
@@ -15,7 +15,6 @@
         "account_reports",
         "l10n_ve_lida",
         "l10n_ve_contact",
-        "l10n_ve_rate",
     ],
     "data": [
         "security/res_groups.xml",

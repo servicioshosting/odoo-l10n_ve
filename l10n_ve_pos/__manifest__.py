@@ -8,12 +8,12 @@
     "support": "contacto@binaural.dev",
     "category": "Point of Sale",
     "website": "https://binauraldev.com/",
-    "version": "17.0.0.0.2",
+    "version": "17.0.0.0.3",
     # any module necessary for this one to work correctly
     "depends": [
         "base",
         "point_of_sale",
-        "l10n_ve_rate",
+        "l10n_ve_lida",
         "l10n_ve_contact",
         "l10n_ve_stock",
         "l10n_ve_location",

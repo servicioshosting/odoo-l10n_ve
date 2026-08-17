@@ -7,12 +7,11 @@
     "author": "binaural-dev",
     "website": "https://www.binauraldev.com",
     "category": "Stock",
-    "version": "17.0.0.0.3",
+    "version": "17.0.0.0.4",
     "depends": [
         "stock",
         "l10n_ve_lida",
         "product",
-        "l10n_ve_rate",
         "stock_delivery",
         "l10n_ve_base",
     ],

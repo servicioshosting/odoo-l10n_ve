@@ -5,8 +5,8 @@
     "author": "binaural-dev",
     "website": "https://binauraldev.com/",
     "category": "Accounting/Accounting",
-    "version": "17.0.0.0.2",
-    "depends": ["base", "l10n_ve_rate", "l10n_ve_lida"],
+    "version": "17.0.0.0.3",
+    "depends": ["base", "l10n_ve_lida"],
     "data": [
         "views/res_partner.xml",
     ],
