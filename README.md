@@ -51,8 +51,8 @@ Esta localización incluye los siguientes módulos, diseñados para cumplir con 
 - **l10n_ve_accounting**
   Gestión contable adaptada a los estándares locales. Incluye configuraciones específicas para cuentas y planes contables venezolanos, permitiendo cumplir con los requerimientos fiscales nacionales.
 
-- **l10n_ve_tax**  
-   Manejo de impuestos nacionales como IVA, retenciones y contribuyentes especiales. Asegura que los cálculos y reportes sean conformes con las leyes fiscales de Venezuela.
+- **l10n_ve_lida**  
+   Plan de cuentas venezolano e impuestos del IVA. Incluye la configuración de alícuotas de impuestos (exentas, general, reducida, extendida) para compras y ventas, junto con el control de impuestos deducibles para la localización de Venezuela.
 
 - **l10n_ve_rate**  
    Gestión de tasas de cambio oficiales. Actualización automática de las tasas de cambio, con la posibilidad de configurarlas por compañía y la opción de un fallback a la última tasa registrada en caso de no haber actualización oficial.
@@ -109,7 +109,7 @@ Esta localización incluye los siguientes módulos, diseñados para cumplir con 
    Extensión del módulo Studio para personalización de campos y vistas. Permite crear y adaptar rápidamente campos, formularios y vistas para ajustarse a las necesidades de cada negocio.
 
 - **l10n_ve_tax**  
-   Gestión de impuestos, retenciones y tributos locales en Odoo. Permite la configuración de impuestos locales, como el IVA, y facilita la generación de reportes fiscales conforme a la ley venezolana.
+   Módulo de compatibilidad (obsoleto). Su contenido fue migrado a **l10n_ve_lida** (configuración de impuestos y alícuotas) y **l10n_ve_accountant** (cálculo de totales de impuestos en moneda alterna).
 
 - **l10n_ve_tax_payer**  
    Registro y control de contribuyentes fiscales en Venezuela. Gestiona los datos de los contribuyentes y facilita el seguimiento de sus obligaciones fiscales.

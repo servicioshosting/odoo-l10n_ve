@@ -7,13 +7,13 @@
     "author": "binaural-dev",
     "website": "https://binauraldev.com/",
     "category": "Accounting/Localizations/Account Chart",
-    "version": "17.0.0.1.10",
+    "version": "17.0.0.1.11",
     "depends": [
         "base",
         "web",
         "account",
         "account_reports",
-        "l10n_ve_tax",
+        "l10n_ve_lida",
         "l10n_ve_contact",
         "l10n_ve_rate",
     ],
@@ -49,5 +49,8 @@
     ],
     "images": ["static/description/icon.png"],
     "application": True,
+    "assets": {
+        "web.assets_backend": ["l10n_ve_accountant/static/src/components/**/*"],
+    },
     "pre_init_hook": "pre_init_hook"
 }

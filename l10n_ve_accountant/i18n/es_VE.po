@@ -719,6 +719,13 @@ msgid ""
 msgstr ""
 
 #. module: l10n_ve_accountant
+#. odoo-python
+#: code:addons/l10n_ve_accountant/models/account_tax.py:0
+#, python-format
+msgid "No foreign currency configured in the company"
+msgstr "No hay moneda extranjera configurada en la empresa"
+
+#. module: l10n_ve_accountant
 #: model:ir.model.fields,field_description:l10n_ve_accountant.field_account_move_line__not_foreign_recalculate
 msgid "Not Foreign Recalculate"
 msgstr "No es extranjero Recalcular"
@@ -917,6 +924,11 @@ msgstr "Usuario de Soporte (Diarios)"
 #: model:ir.ui.menu,name:l10n_ve_accountant.l10n_ve_account_support_views
 msgid "Support views"
 msgstr "Soporte"
+
+#. module: l10n_ve_accountant
+#: model:ir.model,name:l10n_ve_accountant.model_account_tax
+msgid "Tax"
+msgstr "Impuesto"
 
 #. module: l10n_ve_accountant
 #: model:ir.model,name:l10n_ve_accountant.model_tax_unit

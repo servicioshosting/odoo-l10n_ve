@@ -7,16 +7,10 @@
     "author": "binaural-dev",
     "website": "https://binauraldev.com/",
     "category": "Accounting/Localizations/Account Chart",
-    "version": "17.0.0.0.2",
-    # any module necessary for this one to work correctly
-    "depends": ["base", "account", "l10n_ve_base", "l10n_ve_rate"],
-    "data": [
-        "views/res_config_settings.xml",
-        "views/account_move.xml",
-    ],
-    "images": ["static/description/icon.png"],
-    "application": True,
-    "assets": {
-        "web.assets_backend": ["l10n_ve_tax/static/src/components/**/*"],
-    },
+    "version": "17.0.0.0.3",
+    "description": """
+        Módulo vacío de compatibilidad. Todo el contenido de l10n_ve_tax
+        fue migrado a l10n_ve_lida y l10n_ve_accountant.
+    """,
+    "depends": ["base", "account", "l10n_ve_base", "l10n_ve_rate", "l10n_ve_lida", "l10n_ve_accountant"],
 }
