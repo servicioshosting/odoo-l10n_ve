@@ -873,7 +873,7 @@ class AccountRetention(models.Model):
 
         elif payment.payment_type == "inbound":
             cxc_reconciliations = cxc_lines.matched_credit_ids.filtered(lambda r: r.credit_move_id.move_id.payment_id)
-            cxc_other_payment_lines = cxc_reconciliations.credit_move_id.sorted('credit')
+            cxc_other_payment_lines = cxc_reconciliations.credit_move_id.sorted('credit', reverse=True)
             cxc_reconciliations.unlink()
             
             lines = payment.move_id.line_ids.filtered(lambda l: l.account_id.account_type == "asset_receivable" and l.credit > 0)
