@@ -10,17 +10,18 @@ def migrate(cr, version):
     env = api.Environment(cr, SUPERUSER_ID, {})
 
     modules_to_uninstall = [
-        'l10n_ve_stock',
+        'l10n_ve_pos_mf',
         'l10n_ve_stock_account',
         'l10n_ve_stock_purchase',
         'l10n_ve_stock_reports',
-        'l10n_ve_pos_mf',
+        'l10n_ve_stock',
+        'stock',
     ]
 
     for old_module in modules_to_uninstall:
-        # if not util.module_installed(env.cr, old_module):
-        #     _logger.info(f"[backport compatibility] {old_module} no esta instalado...")
-        #     continue
+        if not util.module_installed(env.cr, old_module):
+            _logger.info(f"[backport compatibility] {old_module} no esta instalado...")
+            continue
         
         _logger.info(f"[backport compatibility] Desinstalando {old_module}...")
         util.uninstall_module(env.cr, old_module)
