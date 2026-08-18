@@ -5,11 +5,10 @@
     "author": "binaural-dev",
     "website": "https://binauraldev.com/",
     "category": "Accounting/Accounting",
-    "version": "17.0.0.0.3",
+    "version": "17.0.0.0.4",
+    "description": """
+        Módulo vacío de compatibilidad. Todo el contenido de l10n_ve_tax_payer
+        fue migrado a l10n_ve_lida.
+    """,
     "depends": ["base", "l10n_ve_lida"],
-    "data": [
-        "views/res_partner.xml",
-    ],
-    "images": ["static/description/icon.png"],
-    "application": True,
 }

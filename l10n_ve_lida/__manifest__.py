@@ -6,7 +6,7 @@
     "icon": "/account/static/description/l10n.png",
     "countries": ["ve"],
     "license": "LGPL-3",
-    "version": "17.0.1.0.8",
+    "version": "17.0.1.0.9",
     "description": """
         Plantilla de plan de cuentas de servicio donde se agregan las
         cuentas contables y diarios para tipo de empresa servicio
@@ -32,6 +32,7 @@
         "views/res_config_settings.xml",
         "views/res_config_settings_currency.xml",
         "views/res_currency_views.xml",
+        "views/res_partner.xml",
     ],
     "demo": [
         "demo/demo_company.xml",

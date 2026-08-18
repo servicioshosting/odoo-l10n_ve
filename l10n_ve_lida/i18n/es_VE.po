@@ -63,6 +63,11 @@ msgid "Configuration: Currency"
 msgstr "Configuración: Moneda"
 
 #. module: l10n_ve_lida
+#: model:ir.model,name:l10n_ve_lida.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: l10n_ve_lida
 #: model_terms:ir.ui.view,arch_db:l10n_ve_lida.view_res_config_settings_l10n_ve_taxes
 msgid "Core Settings"
 msgstr "Configuración Principal"
@@ -157,6 +162,11 @@ msgid "Extended Aliquot"
 msgstr "Alícuota extendida"
 
 #. module: l10n_ve_lida
+#: model:ir.model.fields.selection,name:l10n_ve_lida.selection__res_partner__taxpayer_type__formal
+msgid "Formal"
+msgstr ""
+
+#. module: l10n_ve_lida
 #: model_terms:ir.ui.view,arch_db:l10n_ve_lida.view_res_config_settings_l10n_ve_taxes
 msgid "General Aliquot"
 msgstr "Alícuota general"
@@ -241,6 +251,11 @@ msgid "Not Show Reduced Aliquot Sale"
 msgstr "No mostrar alícuota reducida (Ventas)"
 
 #. module: l10n_ve_lida
+#: model:ir.model.fields.selection,name:l10n_ve_lida.selection__res_partner__taxpayer_type__ordinary
+msgid "Ordinary"
+msgstr "Ordinario"
+
+#. module: l10n_ve_lida
 #: model_terms:ir.ui.view,arch_db:l10n_ve_lida.view_res_config_settings_l10n_ve_taxes
 msgid "Purchase Book"
 msgstr "Libro de Compras"
@@ -292,6 +307,11 @@ msgid "Set foreign currency"
 msgstr "Establecer moneda alterna"
 
 #. module: l10n_ve_lida
+#: model:ir.model.fields.selection,name:l10n_ve_lida.selection__res_partner__taxpayer_type__special
+msgid "Special"
+msgstr "Especial"
+
+#. module: l10n_ve_lida
 #. odoo-javascript
 #: code:addons/l10n_ve_lida/static/src/components/tax_totals/tax_totals.xml:0
 #: code:addons/l10n_ve_lida/static/src/components/tax_totals/tax_totals.xml:0
@@ -309,6 +329,12 @@ msgstr "Mostrar descuento en facturas"
 #: model_terms:ir.ui.view,arch_db:l10n_ve_lida.view_res_config_settings_l10n_ve_taxes
 msgid "Tax is mandatory on order and invoice lines, only one tax allowed"
 msgstr "El impuesto es obligatorio en las líneas de pedido y factura, solo se permite un impuesto"
+
+#. module: l10n_ve_lida
+#: model:ir.model.fields,field_description:l10n_ve_lida.field_res_partner__taxpayer_type
+#: model:ir.model.fields,field_description:l10n_ve_lida.field_res_users__taxpayer_type
+msgid "Taxpayer Type"
+msgstr "Tipo de contribuyente"
 
 #. module: l10n_ve_lida
 #. odoo-python

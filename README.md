@@ -52,7 +52,7 @@ Esta localización incluye los siguientes módulos, diseñados para cumplir con 
   Gestión contable adaptada a los estándares locales. Incluye configuraciones específicas para cuentas y planes contables venezolanos, permitiendo cumplir con los requerimientos fiscales nacionales.
 
 - **l10n_ve_lida**  
-   Plan de cuentas venezolano e impuestos del IVA. Incluye la configuración de alícuotas de impuestos (exentas, general, reducida, extendida) para compras y ventas, junto con el control de impuestos deducibles para la localización de Venezuela. También incluye la gestión de tasas de cambio oficiales, con configuración por compañía, la opción de una moneda alterna y cálculos de conversión (antes provista por `l10n_ve_rate`).
+   Plan de cuentas venezolano e impuestos del IVA. Incluye la configuración de alícuotas de impuestos (exentas, general, reducida, extendida) para compras y ventas, junto con el control de impuestos deducibles para la localización de Venezuela. También incluye la gestión de tasas de cambio oficiales, con configuración por compañía, la opción de una moneda alterna y cálculos de conversión (antes provista por `l10n_ve_rate`), y el tipo de contribuyente de los contactos (antes provisto por `l10n_ve_tax_payer`).
 
 - **l10n_ve_rate**  
    Módulo vacío de compatibilidad. Todo su contenido fue migrado a `l10n_ve_lida`.
@@ -112,7 +112,7 @@ Esta localización incluye los siguientes módulos, diseñados para cumplir con 
    Módulo de compatibilidad (obsoleto). Su contenido fue migrado a **l10n_ve_lida** (configuración de impuestos y alícuotas) y **l10n_ve_accountant** (cálculo de totales de impuestos en moneda alterna).
 
 - **l10n_ve_tax_payer**  
-   Registro y control de contribuyentes fiscales en Venezuela. Gestiona los datos de los contribuyentes y facilita el seguimiento de sus obligaciones fiscales.
+   Módulo vacío de compatibilidad. Su contenido (tipo de contribuyente en contactos) fue migrado a **l10n_ve_lida**.
 
 ## Módulos de terceros requeridos/recomendados:
 
