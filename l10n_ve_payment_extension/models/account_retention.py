@@ -873,7 +873,7 @@ class AccountRetention(models.Model):
 
         elif payment.payment_type == "inbound":
             cxc_reconciliations = cxc_lines.matched_credit_ids.filtered(lambda r: r.credit_move_id.move_id.payment_id)
-            cxc_other_payment_lines = cxc_reconciliations.credit_move_id.sorted('credit', reverse=True)
+            cxc_other_payment_lines = cxc_reconciliations.credit_move_id.sorted('credit')
             cxc_reconciliations.unlink()
             
             lines = payment.move_id.line_ids.filtered(lambda l: l.account_id.account_type == "asset_receivable" and l.credit > 0)
@@ -881,9 +881,11 @@ class AccountRetention(models.Model):
             if not lines:
                 raise ValidationError(_("No registered lines found in the move to reconcile."))
             line_to_reconcile = lines[0]
+            cxc_lines.flush_model()
 
-            payment.retention_line_ids.move_id.js_assign_outstanding_line(line_to_reconcile.id)
-            (cxc_lines | cxc_other_payment_lines).reconcile()
+            document.js_assign_outstanding_line(line_to_reconcile.id)
+            for line in cxc_other_payment_lines:
+                (cxc_lines | line).reconcile()
 
     @api.model
     def compute_retention_lines_data(self, invoice_id, payment=None):
