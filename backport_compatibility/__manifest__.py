@@ -7,6 +7,7 @@
     'description': """ """,
 
     'author': "Servitepuy, C.A.",
+    'license': "Other proprietary",
     'website': "https://servicioshosting.com",
     'category': 'Other',
     'version': '17.0.0.0.1',

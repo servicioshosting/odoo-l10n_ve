@@ -6,7 +6,7 @@ from datetime import datetime
 
 from odoo import Command, _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools.float_utils import float_round
+from odoo.tools.float_utils import float_compare
 from odoo.tools.sql import column_exists, create_column, rename_column, table_exists
 
 from ..utils.utils_retention import load_retention_lines, search_invoices_with_taxes
@@ -1057,7 +1057,7 @@ class AccountRetention(models.Model):
                 for line in retention_lines:
                     total_per_move[line.move_id.id] += line.invoice_amount
                 for move_id, invoice_amount_total in total_per_move.items():
-                    if invoice_amount_total > moves[move_id].amount_untaxed:
+                    if record.company_currency_id.compare_amounts(invoice_amount_total, moves[move_id].amount_untaxed) == 1:
                         move = moves[move_id]
                         msg = f"otra retención de ISLR al documento [{move.display_name}] porque la" \
                             " suma de todas las retenciones aplicadas (incluyendo las de este documento) es mayor a la base imponible del documento."
