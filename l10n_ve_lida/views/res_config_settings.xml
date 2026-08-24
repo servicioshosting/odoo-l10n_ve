@@ -1,11 +1,16 @@
 <odoo>
-    <data>
-        <record id="view_res_config_settings_l10n_ve_taxes" model="ir.ui.view">
-            <field name="name">res.config.settings.l10n.ve.taxes</field>
-            <field name="model">res.config.settings</field>
-            <field name="inherit_id" ref="l10n_ve_base.l10n_ve_base_view_res_config_settings"/>
-            <field name="arch" type="xml">
-                <xpath expr="//app[@name='l10n_ve_base']" position="inside">
+    <record id="l10n_ve_lida_view_res_config_settings" model="ir.ui.view">
+        <field name="name">l10n.ve.lida.view.res.config.settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="VE Configuraciones" string="LIDA VE Configuraciones" name="l10n_ve_lida">
+                    <block name="l10n_ve_lida_block">
+                        <setting name="l10n_ve_lida_setting"/>
+                    </block>
+
+                    <!-- Taxes -->
                     <block title="Configuration Taxes: IGTF" name="l10n_ve_tax_block_igtf" >
                         <separator string="Core Settings"/>
                         <div class="col-12 col-lg-6 o_setting_box" id="l10n_ve_tax_div_config_igtf_unique_tax">
@@ -96,8 +101,27 @@
                             </div>
                         </div>
                     </block>
-                </xpath>
-            </field>
-        </record>
-    </data>
+                    
+                    <!-- Currency -->
+                     <block title="Configuration: Currency" name="l10n_ve_rate_block">
+                        <separator string="Set foreign currency" />
+                        <setting name="l10n_ve_rate_setting">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="currency_foreign_id" class="col-lg-6 o_light_label"/>
+                                    <field name="currency_foreign_id" options="{'no_create_edit': True, 'no_open': True}" />
+                                </div>
+                                <div class="mt8">
+                                    <div class="text-muted">
+                                        Select the alternate currency that the system will use to make an accounting copy in the selected currency
+                                    </div>
+                                    <button type="action" name="%(base.action_currency_form)d" string="Currencies" class="btn-link" icon="oi-arrow-right"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
 </odoo>

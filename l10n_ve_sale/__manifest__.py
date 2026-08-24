@@ -7,12 +7,11 @@
     "author": "binaural-dev",
     "website": "https://binauraldev.com/",
     "category": "Sales/Sales",
-    "version": "17.0.1.2.2",
+    "version": "17.0.1.2.3",
     # any module necessary for this one to work correctly
     "depends": [
         "base",
         "sale",
-        "l10n_ve_base",
         "l10n_ve_lida",
         "l10n_ve_accountant",
         "sale_management",
@@ -22,7 +21,7 @@
     ],
     'auto_install': [
         "sale",
-        "l10n_ve_base",
+        "l10n_ve_lida",
     ],
     "data": [
         "data/ir_cron.xml",

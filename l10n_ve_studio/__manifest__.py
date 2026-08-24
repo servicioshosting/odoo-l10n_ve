@@ -9,7 +9,7 @@
     "category": "Base",
     "version": "17.0.0.0.2",
     # any module necessary for this one to work correctly
-    "depends": ["l10n_ve_base"],
+    "depends": ["l10n_ve_lida"],
     "data": [],
     "images": ["static/description/icon.png"],
     "application": True,
