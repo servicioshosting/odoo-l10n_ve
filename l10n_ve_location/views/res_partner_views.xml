@@ -9,7 +9,6 @@
 					<field name="city_id" placeholder="Ciudad" required="1"/>
 					<field name="city" invisible="1" />
 				</field>
-
 				<xpath expr="//sheet/notebook/page[@name='contact_addresses']/field[@name='child_ids']/form//field[@name='city']" position="replace">
 					<field name="city_id" placeholder="Ciudad" />
 					<field name="city" invisible="1" />
@@ -29,6 +28,14 @@
 						placeholder="Parroquia"
 						required="1"
 					/>
+				</xpath>
+				<field name="city_id" position="attributes">
+					<attribute name="required">0</attribute>
+					<attribute name="invisible">1</attribute>
+				</field>
+				<xpath expr="//sheet/group/group/div/field[@name='parish_id']" position="attributes">
+					<attribute name="required">0</attribute>
+					<attribute name="invisible">1</attribute>
 				</xpath>
 				<xpath expr="//sheet/notebook/page[@name='contact_addresses']/field[@name='child_ids']/form//field[@name='street2']" position="after">
 					<field 
@@ -57,8 +64,17 @@
 				<xpath expr="//sheet/notebook/page[@name='contact_addresses']/field[@name='child_ids']/form//field[@name='state_id']" position="attributes">
 						<attribute name="required">type not in ['contact']</attribute>
 				</xpath>
-				<xpath expr="//sheet/notebook/page[@name='contact_addresses']/field[@name='child_ids']/form//field[@name='city_id']" position="attributes">
-						<attribute name="required">type not in ['contact']</attribute>
+				<xpath
+					expr="//sheet/notebook/page[@name='contact_addresses']/field[@name='child_ids']/form//field[@name='city_id']"
+					position="attributes">
+					<attribute name="required">0</attribute>
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath
+					expr="//sheet/notebook/page[@name='contact_addresses']/field[@name='child_ids']/form//field[@name='parish_id']"
+					position="attributes">
+					<attribute name="required">0</attribute>
+					<attribute name="invisible">1</attribute>
 				</xpath>
 			</field>
 			
