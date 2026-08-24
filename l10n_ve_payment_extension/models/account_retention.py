@@ -315,7 +315,7 @@ class AccountRetention(models.Model):
             ("partner_id", "=", self.partner_id.id),
             ("state", "=", "posted"),
             ("move_type", "in", ("out_refund", "out_invoice")),
-            # ("amount_residual", ">", 0),
+            ("amount_residual", ">", 0),
         ]
         invoices_with_taxes = search_invoices_with_taxes(
             self.env["account.move"], search_domain
@@ -836,6 +836,7 @@ class AccountRetention(models.Model):
                 self._reconcile_customer_payment(payment)
 
     def _reconcile_supplier_payment(self, payment):
+
         if payment.payment_type == "outbound":
 
             lines = payment.move_id.line_ids.filtered(lambda l: l.account_id.account_type == "liability_payable" and l.debit > 0)
@@ -855,14 +856,9 @@ class AccountRetention(models.Model):
             payment.retention_line_ids.move_id.js_assign_outstanding_line(line_to_reconcile.id)
 
     def _reconcile_customer_payment(self, payment):
-        # payment = self.env['account.payment']
-
-        # payment.retention_line_ids debería ser un singleton
-        document = payment.retention_line_ids.move_id
-        # asset_receivable se debita en las facturas de venta
-        cxc_lines = document.line_ids.filtered(lambda l: l.account_id.account_type == "asset_receivable" and l.debit > 0)
 
         if payment.payment_type == "outbound":
+
             lines = payment.move_id.line_ids.filtered(lambda l: l.account_id.account_type == "asset_receivable" and l.debit > 0)
 
             if not lines:
@@ -872,10 +868,6 @@ class AccountRetention(models.Model):
             payment.retention_line_ids.move_id.js_assign_outstanding_line(line_to_reconcile.id)
 
         elif payment.payment_type == "inbound":
-            cxc_reconciliations = cxc_lines.matched_credit_ids.filtered(lambda r: r.credit_move_id.move_id.payment_id)
-            cxc_other_payment_lines = cxc_reconciliations.credit_move_id.sorted('credit', reverse=True)
-            cxc_reconciliations.unlink()
-            
             lines = payment.move_id.line_ids.filtered(lambda l: l.account_id.account_type == "asset_receivable" and l.credit > 0)
 
             if not lines:
@@ -883,7 +875,6 @@ class AccountRetention(models.Model):
             line_to_reconcile = lines[0]
 
             payment.retention_line_ids.move_id.js_assign_outstanding_line(line_to_reconcile.id)
-            (cxc_lines | cxc_other_payment_lines).reconcile()
 
     @api.model
     def compute_retention_lines_data(self, invoice_id, payment=None):
@@ -947,7 +938,6 @@ class AccountRetention(models.Model):
             #     line_data["retention_amount"] = retention_amount
             #     line_data["foreign_retention_amount"] = line_data["foreign_iva_amount"] * (partner_withholding_perc / 100)
             lines_data.append(line_data)
-
         return lines_data
 
     def get_signature(self):

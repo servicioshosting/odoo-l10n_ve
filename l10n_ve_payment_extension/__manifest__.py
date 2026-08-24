@@ -7,7 +7,7 @@
     "author": "Servitepuy, C.A., binaural-dev",
     "website": "https://servicioshosting.com/",
     "category": "Accountant/Accountant",
-    "version": "17.0.0.1.2",
+    "version": "17.0.0.1.3",
     "depends": [
         "base",
         "account",
@@ -16,7 +16,7 @@
         "l10n_ve_invoice",
         "l10n_ve_location",
         "l10n_ve_contact",
-        "l10n_ve_contact_extensions",
+        "l10n_ve_contact",
         "l10n_ve_lida",
         "l10n_ve_auditlog",
     ],
@@ -52,6 +52,7 @@
         "views/account_payment.xml",
         "views/res_partner.xml",
         "views/account_move.xml",
+        "views/account_withholding_report_views.xml",
         "wizard/account_payment_register.xml",
         "wizard/arcv_report.xml",
         "wizard/municipal_retention_xlsx_report.xml",
@@ -62,5 +63,6 @@
     ],
     "images": ["static/description/icon.png"],
     "application": True,
-    "pre_init_hook": "pre_init_hook"
+    "pre_init_hook": "pre_init_hook",
+    "post_init_hook": "setup_accounts",
 }

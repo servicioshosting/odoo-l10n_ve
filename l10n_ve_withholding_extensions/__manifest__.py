@@ -2,26 +2,24 @@
 {
     "name": "Venezuela - Retenciones extensiones",
     "summary": """Extiende el Módulo de Retenciones Venezuela""",
+    "description": """
+        Módulo vacío de compatibilidad. Todo el contenido de l10n_ve_withholding_extensions
+        fue migrado a l10n_ve_payment_extension.
+    """,
     "author": "LIDALabs",
     "website": "https://lidalabs.com",
     "category": "Accountant/Accountant",
-    "version": "17.0.2.0.0",
+    "version": "17.0.2.0.1",
     "license": "LGPL-3",
     "depends": [
         "account",
-        "l10n_ve_invoice_extensions",
         "l10n_ve_payment_extension"
     ],
-    "auto_install": True,
-    "application": False,
     "data": [
-        "security/ir.model.access.csv",
-        "views/account_move_views.xml",
-        "views/retention_line_report_views.xml",
-        "views/account_withholding_report_views.xml",
-        "wizard/account_payment_register.xml",
+        # "security/ir.model.access.csv",
+        # "views/account_move_views.xml",
+        # "views/retention_line_report_views.xml",
+        # "views/account_withholding_report_views.xml",
+        # "wizard/account_payment_register.xml",
     ],
-    "demo": [
-    ],
-    "post_init_hook": "setup_accounts",
 }

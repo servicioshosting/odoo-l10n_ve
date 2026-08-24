@@ -8,18 +8,20 @@
                 <xpath expr="//field[@name='partner_shipping_id']" position="after">
                     <field
                         name="generate_iva_retention"
-                        invisible="move_type not in ('in_invoice', 'in_receipt', 'in_refund')"
+                        invisible="1"
                     />
-                    <field name="iva_voucher_number" readonly="1"/>
-                    <field name="islr_voucher_number" readonly="1"/>
-                    <field name="municipal_voucher_number" readonly="1"/>
+                    <field name="iva_voucher_number" invisible="1" readonly="1"/>
+                    <field name="islr_voucher_number" invisible="1" readonly="1"/>
+                    <field name="municipal_voucher_number" invisible="1" readonly="1"/>
                     <field name="base_currency_is_vef" invisible="1"/>
                     <field name="company_currency_id" invisible="1"/>
                     <field name="foreign_currency_id" invisible="1"/>
                 </xpath>
 
                 <xpath expr="//notebook" position="inside">
-                    <page name="iva_retention" string="IVA Retentions">
+                    <page name="iva_retention" 
+                        invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund') or not posted_before or not retention_iva_line_ids"
+                        string="IVA Retentions">
                         <field name="retention_iva_line_ids" nolabel="1" readonly="1">
                             <tree editable='bottom'>
                                 <!-- Invisible Fields -->
@@ -85,11 +87,14 @@
                             </tree>
                         </field>
                     </page>
-                    <page name="islr_retention" string="ISLR Retentions">
+                    <page name="islr_retention" 
+                        string="ISLR Retentions"
+                        invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund') or not posted_before or not retention_islr_line_ids"
+                    >
                         <field
                             name="retention_islr_line_ids"
                             nolabel="1"
-                            readonly="move_type not in ('in_invoice', 'in_refund') or state != 'draft'"
+                            readonly="1"
                         >
                             <tree editable='bottom'>
                                 <!-- Invisible Fields -->
@@ -154,11 +159,14 @@
                             </tree>
                         </field>
                     </page>
-                    <page name="municipal_retention" string="Municipal Retentions">
+                    <page 
+                        name="municipal_retention" 
+                        invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund') or not posted_before or not retention_municipal_line_ids"
+                        string="Municipal Retentions">
                         <field
                             name="retention_municipal_line_ids"
                             nolabel="1"
-                            readonly="move_type not in ('in_invoice', 'in_refund') or state != 'draft'"
+                            readonly="1"
                         >
                             <tree editable='bottom'>
                                 <field name="name" force_save="1" readonly="1"/>

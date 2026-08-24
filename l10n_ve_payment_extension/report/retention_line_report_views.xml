@@ -11,6 +11,11 @@
 				<separator/>
 				<filter string="Customer Retention" name="filter_type_customer" domain="[('type','=','out_invoice')]"/>
 				<filter string="Supplier Retention" name="filter_type_supplier" domain="[('type','=','in_invoice')]"/>
+				<separator />
+				<filter string="Período contable"
+                        name="filter_retention_date_accounting"
+                        date="retention_date_accounting"
+                        default_period="this_month,last_month,antepenultimate_month" />
 			</search>
 		</field>
 	</record>
