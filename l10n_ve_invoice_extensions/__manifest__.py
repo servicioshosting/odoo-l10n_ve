@@ -14,7 +14,7 @@
         "l10n_ve_auditlog",
         "l10n_ve_lida",
         "l10n_ve_accountant",
-        "l10n_ve_contact_extensions",
+        "l10n_ve_contact",
         "l10n_ve_invoice",
         "l10n_latam_invoice_document"
     ],

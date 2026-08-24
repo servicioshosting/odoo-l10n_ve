@@ -1,30 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="res_partner_l10n_ve_form_contacts" model="ir.ui.view">
-        <field name="name">res_partner_l10n_ve_form_contacts</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form" />
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='vat']" position="replace">
-            </xpath>
-            <xpath expr="//h1/field[1]" position="before">
-                <group>
-                    <field name="prefix_vat" nolabel="1" />
-                    <field name="vat" required="1" nolabel="1" placeholder="CI/RIF: 12345678" />
-                    <field name="identity_document" />
-                </group>
-            </xpath>
-            <xpath expr="//field[@name='street']" position="attributes">
-                <attribute name="required">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='country_id']" position="attributes">
-                <attribute name="required">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='state_id']" position="attributes">
-                <attribute name="required">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='zip']" position="attributes">
-                <attribute name="required">1</attribute>
-            </xpath>
-        </field>
-    </record>
+    <data>
+        <record id="res_partner_l10n_ve_form_contacts" model="ir.ui.view">
+            <field name="name">res_partner_l10n_ve_form_contacts</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='vat']" position="replace">
+                </xpath>
+                <xpath expr="//h1/field[1]" position="before">
+                    <group>
+                        <field name="prefix_vat" nolabel="1" />
+                        <field name="vat" required="1" nolabel="1" placeholder="CI/RIF: 12345678" />
+                        <field name="identity_document" />
+                    </group>
+                </xpath>
+                <xpath expr="//field[@name='street']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='country_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='state_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='zip']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="view_res_partner_filter" model="ir.ui.view">
+            <field name="name">res.partner.select.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter" />
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="l10n_ve_vat" string="CI/RIF" filter_domain="[('l10n_ve_vat', 'ilike', self)]" />
+                </field>
+            </field>
+        </record>
+
+        <record id="res_partner_contacts_form" model="ir.ui.view">
+            <field name="name">res_partner_contacts_form_ext</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="l10n_ve_contact.res_partner_l10n_ve_form_contacts" />
+            <field name="arch" type="xml">
+                <field name="identity_document" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+            </field>
+        </record>
+    </data>
 </odoo>
