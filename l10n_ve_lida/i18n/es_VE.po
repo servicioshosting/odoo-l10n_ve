@@ -21,6 +21,11 @@ msgid "Companies"
 msgstr "Empresas"
 
 #. module: l10n_ve_lida
+#: model:ir.model.fields,field_description:l10n_ve_lida.field_res_config_settings__company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: l10n_ve_lida
 #: model:ir.model.fields,field_description:l10n_ve_lida.field_account_move_line__config_deductible_tax
 #: model:ir.model.fields,field_description:l10n_ve_lida.field_res_company__config_deductible_tax
 #: model:ir.model.fields,field_description:l10n_ve_lida.field_res_config_settings__config_deductible_tax
@@ -53,9 +58,46 @@ msgid "Configuration: Accountant Books"
 msgstr "Configuración: Libros Contables"
 
 #. module: l10n_ve_lida
+#: model_terms:ir.ui.view,arch_db:l10n_ve_lida.res_config_settings_l10n_ve_rate
+msgid "Configuration: Currency"
+msgstr "Configuración: Moneda"
+
+#. module: l10n_ve_lida
+#: model:ir.model,name:l10n_ve_lida.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: l10n_ve_lida
 #: model_terms:ir.ui.view,arch_db:l10n_ve_lida.view_res_config_settings_l10n_ve_taxes
 msgid "Core Settings"
 msgstr "Configuración Principal"
+
+#. module: l10n_ve_lida
+#: model_terms:ir.ui.view,arch_db:l10n_ve_lida.res_config_settings_l10n_ve_rate
+msgid "Currencies"
+msgstr "Monedas"
+
+#. module: l10n_ve_lida
+#: model:ir.model,name:l10n_ve_lida.model_res_currency
+msgid "Currency"
+msgstr "Divisa"
+
+#. module: l10n_ve_lida
+#: model:ir.model.fields,field_description:l10n_ve_lida.field_res_company__currency_foreign_id
+#: model:ir.model.fields,field_description:l10n_ve_lida.field_res_config_settings__currency_foreign_id
+msgid "Currency Foreign"
+msgstr "Moneda alterna"
+
+#. module: l10n_ve_lida
+#: model:ir.model.fields,help:l10n_ve_lida.field_res_company__currency_foreign_id
+#: model:ir.model.fields,help:l10n_ve_lida.field_res_config_settings__currency_foreign_id
+msgid "Currency Foreign for the company"
+msgstr "Moneda alterna de la compañía"
+
+#. module: l10n_ve_lida
+#: model:ir.model,name:l10n_ve_lida.model_res_currency_rate
+msgid "Currency Rate"
+msgstr "Tasa de cambio"
 
 #. module: l10n_ve_lida
 #: model_terms:ir.ui.view,arch_db:l10n_ve_lida.view_res_config_settings_l10n_ve_taxes
@@ -118,6 +160,11 @@ msgstr "Alícuota extendida ventas"
 #: model_terms:ir.ui.view,arch_db:l10n_ve_lida.view_res_config_settings_l10n_ve_taxes
 msgid "Extended Aliquot"
 msgstr "Alícuota extendida"
+
+#. module: l10n_ve_lida
+#: model:ir.model.fields.selection,name:l10n_ve_lida.selection__res_partner__taxpayer_type__formal
+msgid "Formal"
+msgstr ""
 
 #. module: l10n_ve_lida
 #: model_terms:ir.ui.view,arch_db:l10n_ve_lida.view_res_config_settings_l10n_ve_taxes
@@ -204,6 +251,11 @@ msgid "Not Show Reduced Aliquot Sale"
 msgstr "No mostrar alícuota reducida (Ventas)"
 
 #. module: l10n_ve_lida
+#: model:ir.model.fields.selection,name:l10n_ve_lida.selection__res_partner__taxpayer_type__ordinary
+msgid "Ordinary"
+msgstr "Ordinario"
+
+#. module: l10n_ve_lida
 #: model_terms:ir.ui.view,arch_db:l10n_ve_lida.view_res_config_settings_l10n_ve_taxes
 msgid "Purchase Book"
 msgstr "Libro de Compras"
@@ -241,6 +293,25 @@ msgid "Sales Tax Rates"
 msgstr "Tasas de Impuestos de Ventas"
 
 #. module: l10n_ve_lida
+#: model_terms:ir.ui.view,arch_db:l10n_ve_lida.res_config_settings_l10n_ve_rate
+msgid ""
+"Select the alternate currency that the system will use to make an accounting"
+" copy in the selected currency"
+msgstr ""
+"Seleccione la moneda alterna que el sistema utilizara para hacer realizar\n"
+"una copia contable en la moneda seleccionada"
+
+#. module: l10n_ve_lida
+#: model_terms:ir.ui.view,arch_db:l10n_ve_lida.res_config_settings_l10n_ve_rate
+msgid "Set foreign currency"
+msgstr "Establecer moneda alterna"
+
+#. module: l10n_ve_lida
+#: model:ir.model.fields.selection,name:l10n_ve_lida.selection__res_partner__taxpayer_type__special
+msgid "Special"
+msgstr "Especial"
+
+#. module: l10n_ve_lida
 #. odoo-javascript
 #: code:addons/l10n_ve_lida/static/src/components/tax_totals/tax_totals.xml:0
 #: code:addons/l10n_ve_lida/static/src/components/tax_totals/tax_totals.xml:0
@@ -258,6 +329,31 @@ msgstr "Mostrar descuento en facturas"
 #: model_terms:ir.ui.view,arch_db:l10n_ve_lida.view_res_config_settings_l10n_ve_taxes
 msgid "Tax is mandatory on order and invoice lines, only one tax allowed"
 msgstr "El impuesto es obligatorio en las líneas de pedido y factura, solo se permite un impuesto"
+
+#. module: l10n_ve_lida
+#: model:ir.model.fields,field_description:l10n_ve_lida.field_res_partner__taxpayer_type
+#: model:ir.model.fields,field_description:l10n_ve_lida.field_res_users__taxpayer_type
+msgid "Taxpayer Type"
+msgstr "Tipo de contribuyente"
+
+#. module: l10n_ve_lida
+#. odoo-python
+#: code:addons/l10n_ve_lida/models/res_company.py:0
+#, python-format
+msgid ""
+"The currency already has accounting movements, you cannot deactivate this "
+"foreign currency"
+msgstr ""
+"Seleccione la moneda alterna que usara el sistema para realizar una\n"
+"                                copia contable en la moneda seleccionada"
+
+#. module: l10n_ve_lida
+#. odoo-python
+#: code:addons/l10n_ve_lida/models/res_config_settings.py:0
+#: code:addons/l10n_ve_lida/models/res_config_settings.py:0
+#, python-format
+msgid "The currency foreign must be different from the currency of the company"
+msgstr "La moneda alterna debería ser diferente a la moneda base"
 
 #. module: l10n_ve_lida
 #: model:ir.model.fields,field_description:l10n_ve_lida.field_res_company__unique_tax

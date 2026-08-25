@@ -7,11 +7,10 @@
     "author": "binaural-dev",
     "website": "https://binauraldev.com/",
     "category": "Technical",
-    "version": "17.0.0.0.3",
-    # any module necessary for this one to work correctly
-    "depends": ["base", "l10n_ve_base"],
-    "data": [
-        "views/res_config_settings.xml",
-        "views/res_currency_views.xml"
-    ],
+    "version": "17.0.0.0.4",
+    "description": """
+        Módulo vacío de compatibilidad. Todo el contenido de l10n_ve_rate
+        fue migrado a l10n_ve_lida.
+    """,
+    "depends": ["base", "l10n_ve_lida"],
 }
