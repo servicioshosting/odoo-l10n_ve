@@ -8,7 +8,7 @@ def migrate(cr, version):
     env = api.Environment(cr, SUPERUSER_ID, {})
 
     modules_to_merge = [
-        { "old": "l10n_ve_withholding_extensions", "into": "l10n_ve_payment_extension" },
+        { "old": "l10n_ve_withholding_extensions", "into": "l10n_ve_withholding" },
     ]
 
     for module in modules_to_merge: 

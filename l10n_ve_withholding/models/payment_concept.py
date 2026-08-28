@@ -27,7 +27,7 @@ class PaymentConcept(models.Model):
 
     @api.model
     def _handle_payment_concept_one(self):
-        id_concept = 'l10n_ve_payment_extension.payment_concept_one_l10n_ve_payment_extension'
+        id_concept = 'l10n_ve_withholding.payment_concept_one_l10n_ve_payment_extension'
         name_concept = 'Honorarios Profesionales Pagados a'
         
         concept_lines = [
@@ -35,29 +35,29 @@ class PaymentConcept(models.Model):
                 'code': 2,
                 'pay_from': 0.13,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_substrat_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_substrat_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_l10n_ve_payment_extension').id
             },
             {
                 'code': 4,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_three_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_three_l10n_ve_payment_extension').id
             },
             {
                 'code': 3,
                 'pay_from': 0.00,
                 'percentage_tax_base': 90,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_two_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_two_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_two_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_two_l10n_ve_payment_extension').id
             },
             {
                 'code': 5,
                 'pay_from': 0.00,
                 'percentage_tax_base': 90,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_five_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_four_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_five_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_four_l10n_ve_payment_extension').id
             }
         ]
         
@@ -70,7 +70,7 @@ class PaymentConcept(models.Model):
 
     @api.model
     def _handle_payment_concept_two(self):
-        id_concept = 'l10n_ve_payment_extension.payment_concept_two_l10n_ve_payment_extension'
+        id_concept = 'l10n_ve_withholding.payment_concept_two_l10n_ve_payment_extension'
         name_concept = 'Gastos de Transporte (Fletes) Pagados a'
         
         concept_lines = [
@@ -78,15 +78,15 @@ class PaymentConcept(models.Model):
                 'code': 71,
                 'pay_from': 0.13,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_substrat_second_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_substrat_second_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_l10n_ve_payment_extension').id
             },
             {
                 'code': 72,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_four_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_three_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_four_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_three_l10n_ve_payment_extension').id
             }
         ]
         
@@ -99,7 +99,7 @@ class PaymentConcept(models.Model):
         
     @api.model
     def _handle_payment_concept_three(self):
-        id_concept = 'l10n_ve_payment_extension.payment_concept_three_l10n_ve_payment_extension'
+        id_concept = 'l10n_ve_withholding.payment_concept_three_l10n_ve_payment_extension'
         name_concept = '(Contratista) Ejecución de obras y prestación de servicios en Venezuela pagadas a:'
         
         concept_lines = [
@@ -107,29 +107,29 @@ class PaymentConcept(models.Model):
                 'code': 53,
                 'pay_from': 0.13,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_substrat_second_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_l10n_ve_payment_extension').id 
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_substrat_second_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_l10n_ve_payment_extension').id 
             },
             {
                 'code': 55,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_l10n_ve_percentage_three_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_three_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_l10n_ve_percentage_three_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_three_l10n_ve_payment_extension').id
             },
             {
                 'code': 54,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_two_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_two_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_two_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_two_l10n_ve_payment_extension').id
             },
             {
                 'code': 56,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_five_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_four_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_five_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_four_l10n_ve_payment_extension').id
             }      
         ]
         
@@ -142,7 +142,7 @@ class PaymentConcept(models.Model):
         
     @api.model
     def _handle_payment_concept_four(self):
-        id_concept = 'l10n_ve_payment_extension.payment_concept_four_l10n_ve_payment_extension'
+        id_concept = 'l10n_ve_withholding.payment_concept_four_l10n_ve_payment_extension'
         name_concept = 'Arrendamiento de bienes muebles pagado a:'
         
         concept_lines = [
@@ -150,29 +150,29 @@ class PaymentConcept(models.Model):
                 'code': 61,
                 'pay_from': 0.13,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_substrat_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_l10n_ve_payment_extension').id 
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_substrat_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_l10n_ve_payment_extension').id 
             },
             {
                 'code': 63,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_three_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_three_l10n_ve_payment_extension').id
             },
             {
                 'code': 62,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_two_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_two_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_two_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_two_l10n_ve_payment_extension').id
             },
             {
                 'code': 64,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_four_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_four_l10n_ve_payment_extension').id
             } 
         ]
         
@@ -185,7 +185,7 @@ class PaymentConcept(models.Model):
 
     @api.model
     def _handle_payment_concept_five(self):
-        id_concept = 'l10n_ve_payment_extension.payment_concept_five_l10n_ve_payment_extension'
+        id_concept = 'l10n_ve_withholding.payment_concept_five_l10n_ve_payment_extension'
         name_concept = 'Arrendamiento o cesión de uso de bienes inmuebles, pagados al arrendador por personas jurídicas, comunidades o los administradores:'
         
         concept_lines = [
@@ -193,29 +193,29 @@ class PaymentConcept(models.Model):
                 'code': 57,
                 'pay_from': 0.13,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_substrat_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_l10n_ve_payment_extension').id 
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_substrat_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_l10n_ve_payment_extension').id 
             },
             {
                 'code': 59,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_three_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_three_l10n_ve_payment_extension').id
             },
             {
                 'code': 58,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_two_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_two_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_two_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_two_l10n_ve_payment_extension').id
             },
             {
                 'code': 60,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_five_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_four_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_five_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_four_l10n_ve_payment_extension').id
             }
         ]
         
@@ -228,7 +228,7 @@ class PaymentConcept(models.Model):
 
     @api.model
     def _handle_payment_concept_six(self):
-        id_concept = 'l10n_ve_payment_extension.payment_concept_six_l10n_ve_payment_extension'
+        id_concept = 'l10n_ve_withholding.payment_concept_six_l10n_ve_payment_extension'
         name_concept = 'Publicidad, propaganda y venta de espacios pagadas a'
         
         concept_lines = [
@@ -236,29 +236,29 @@ class PaymentConcept(models.Model):
                 'code': 83,
                 'pay_from': 0.13,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_substrat_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_l10n_ve_payment_extension').id 
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_substrat_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_l10n_ve_payment_extension').id 
             },
             {
                 'code': 84,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_three_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_three_l10n_ve_payment_extension').id
             },
             {
                 'code': 85,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_four_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_four_l10n_ve_payment_extension').id
             },
             {
                 'code': 86,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_four_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_seven_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_four_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_seven_l10n_ve_payment_extension').id
             }
         ]
         
@@ -271,7 +271,7 @@ class PaymentConcept(models.Model):
 
     @api.model
     def _handle_payment_concept_seven(self):
-        id_concept = 'l10n_ve_payment_extension.payment_concept_seven_l10n_ve_payment_extension'
+        id_concept = 'l10n_ve_withholding.payment_concept_seven_l10n_ve_payment_extension'
         name_concept = 'Comisiones pagadas a'
         
         concept_lines = [
@@ -279,29 +279,29 @@ class PaymentConcept(models.Model):
                 'code': 14,
                 'pay_from': 0.13,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_substrat_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_l10n_ve_payment_extension').id 
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_substrat_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_l10n_ve_payment_extension').id 
             },
             {
                 'code': 16,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_three_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_three_l10n_ve_payment_extension').id
             },
             {
                 'code': 15,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_two_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_two_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_two_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_two_l10n_ve_payment_extension').id
             },
             {
                 'code': 17,
                 'pay_from': 0.00,
                 'percentage_tax_base': 100,
-                'tariff_id': self.env.ref('l10n_ve_payment_extension.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
-                'type_person_id': self.env.ref('l10n_ve_payment_extension.type_person_four_l10n_ve_payment_extension').id
+                'tariff_id': self.env.ref('l10n_ve_withholding.fees_retention_data_percentage_one_l10n_ve_payment_extension').id,
+                'type_person_id': self.env.ref('l10n_ve_withholding.type_person_four_l10n_ve_payment_extension').id
             }
         ]
         

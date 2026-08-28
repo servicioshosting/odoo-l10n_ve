@@ -4,7 +4,7 @@
     "summary": """Extiende el Módulo de Retenciones Venezuela""",
     "description": """
         Módulo vacío de compatibilidad. Todo el contenido de l10n_ve_withholding_extensions
-        fue migrado a l10n_ve_payment_extension.
+        fue migrado a l10n_ve_withholding.
     """,
     "author": "LIDALabs",
     "website": "https://lidalabs.com",
@@ -13,7 +13,7 @@
     "license": "LGPL-3",
     "depends": [
         "account",
-        "l10n_ve_payment_extension"
+        "l10n_ve_withholding"
     ],
     "data": [
         # "security/ir.model.access.csv",

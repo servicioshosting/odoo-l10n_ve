@@ -31,7 +31,7 @@ class AccountRetentionTestCommon(AccountTestInvoicingCommon):
                 "vat": "123456789",
                 "taxpayer_type": "formal",
                 "type_person_id": cls.env.ref(
-                    "l10n_ve_payment_extension.type_person_three_binaural_payment_extension"
+                    "l10n_ve_withholding.type_person_three_binaural_payment_extension"
                 ).id,
             }
         )
@@ -43,7 +43,7 @@ class AccountRetentionTestCommon(AccountTestInvoicingCommon):
                 "vat": "22233344",
                 "taxpayer_type": "formal",
                 "type_person_id": cls.env.ref(
-                    "l10n_ve_payment_extension.type_person_three_binaural_payment_extension"
+                    "l10n_ve_withholding.type_person_three_binaural_payment_extension"
                 ).id,
             }
         )
@@ -71,14 +71,14 @@ class AccountRetentionTestCommon(AccountTestInvoicingCommon):
         cls.partner_a.write(
             {
                 "withholding_type_id": cls.env.ref(
-                    "l10n_ve_payment_extension.account_withholding_type_75"
+                    "l10n_ve_withholding.account_withholding_type_75"
                 ).id,
             }
         )
         cls.partner_b.write(
             {
                 "withholding_type_id": cls.env.ref(
-                    "l10n_ve_payment_extension.account_withholding_type_100"
+                    "l10n_ve_withholding.account_withholding_type_100"
                 ).id,
             }
         )

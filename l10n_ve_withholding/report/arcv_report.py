@@ -2,7 +2,7 @@ from odoo import models, api
 
 
 class ArcvReport(models.AbstractModel):
-    _name = "report.l10n_ve_payment_extension.report_template_arcv"
+    _name = "report.l10n_ve_withholding.report_template_arcv"
     _description = "AR-CV Report"
 
     @api.model

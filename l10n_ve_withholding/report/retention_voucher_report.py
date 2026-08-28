@@ -3,7 +3,7 @@ from odoo.exceptions import ValidationError
 
 
 class PaymentExtensionRetentionIvaVoucher(models.AbstractModel):
-    _name = "report.l10n_ve_payment_extension.retention_voucher_template"
+    _name = "report.l10n_ve_withholding.retention_voucher_template"
 
     @api.model
     def _get_report_values(self, docids, data=None):

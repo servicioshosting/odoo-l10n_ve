@@ -39,7 +39,7 @@ class TestIslrRetentionBs(AccountRetentionTestCommon):
                     Command.create(
                         {
                             "name": "Retencion ISLR",
-                            "payment_concept_id": self.env.ref("l10n_ve_payment_extension.payment_concept_one_binaural_payment_extension").id,
+                            "payment_concept_id": self.env.ref("l10n_ve_withholding.payment_concept_one_binaural_payment_extension").id,
                             
                         }
                     ),
@@ -69,7 +69,7 @@ class TestIslrRetentionBs(AccountRetentionTestCommon):
                         {
                             # "name": "Retencion ISLR",
                             "move_id": self.account_move.id,
-                            "payment_concept_id": self.env.ref("l10n_ve_payment_extension.payment_concept_one_binaural_payment_extension").id,
+                            "payment_concept_id": self.env.ref("l10n_ve_withholding.payment_concept_one_binaural_payment_extension").id,
                         }
                     ),
                 ],

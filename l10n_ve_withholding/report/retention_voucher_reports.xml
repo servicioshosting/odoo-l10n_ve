@@ -4,10 +4,10 @@
             <field name="name">Retention Voucher</field>
             <field name="model">account.retention</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">l10n_ve_payment_extension.retention_voucher_template</field>
-            <field name="report_file">l10n_ve_payment_extension.retention_voucher_template</field>
+            <field name="report_name">l10n_ve_withholding.retention_voucher_template</field>
+            <field name="report_file">l10n_ve_withholding.retention_voucher_template</field>
             <field name="print_report_name">"%s-%s-%s" % (object.partner_id.l10n_ve_vat,object.type_retention,object.number)</field>
-            <field name="paperformat_id" ref="l10n_ve_payment_extension.paper_format_retention_iva_voucher"/>
+            <field name="paperformat_id" ref="l10n_ve_withholding.paper_format_retention_iva_voucher"/>
             <field name="binding_model_id" ref="model_account_retention"/>
             <field name="binding_type">report</field>
         </record>

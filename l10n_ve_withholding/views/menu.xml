@@ -36,7 +36,7 @@
         <menuitem
             name="Economic activity"
             id="menu_economic_activity"
-            parent="l10n_ve_payment_extension.master_configuration"
+            parent="l10n_ve_withholding.master_configuration"
             action="action_economic_activity"
             sequence="3"
         />
@@ -44,7 +44,7 @@
         <menuitem
             name="Economic branch"
             id="menu_economic_branch"
-            parent="l10n_ve_payment_extension.master_configuration"
+            parent="l10n_ve_withholding.master_configuration"
             action="action_economic_branch"
             sequence="3"
         />
@@ -52,21 +52,21 @@
         <menuitem
             name="Fees"
             id="menu_retention_fees_retention"
-            parent="l10n_ve_payment_extension.retention_configuration"
+            parent="l10n_ve_withholding.retention_configuration"
             action="action_fees"
         />
 
         <menuitem
             name="Payment concept menu"
             id="menu_payment_concept"
-            parent="l10n_ve_payment_extension.retention_configuration"
+            parent="l10n_ve_withholding.retention_configuration"
             action="action_payment_concept_l10n_ve_payment_extension"
         />
 
         <menuitem
             id="menu_retention_signature_config"
             name="signature"
-            parent="l10n_ve_payment_extension.retention_configuration"
+            parent="l10n_ve_withholding.retention_configuration"
             action="action_configurate_signature"
         />
 
@@ -74,7 +74,7 @@
         <menuitem
             name="IVA Retention percentage"
             id="menu_retention_type_withholdings"
-            parent="l10n_ve_payment_extension.retention_configuration"
+            parent="l10n_ve_withholding.retention_configuration"
             action="action_type_withholding"
         />
 
@@ -171,21 +171,21 @@
         <menuitem
             action="action_generate_txt"
             id="txt_report"
-            parent="l10n_ve_payment_extension.seniat_reports"
+            parent="l10n_ve_withholding.seniat_reports"
             groups="account.group_account_manager"
         />
 
         <menuitem
             id="xml_retention_islr"
             name="XML ISLR Retention"
-            parent="l10n_ve_payment_extension.seniat_reports"
+            parent="l10n_ve_withholding.seniat_reports"
             action="action_retention_islr"
         />
 
         <menuitem
             id="menu_arcv_report"
             action="action_arcv_report"
-            parent="l10n_ve_payment_extension.seniat_reports"
+            parent="l10n_ve_withholding.seniat_reports"
             groups="account.group_account_manager"
             name="ARCV Report"
         />
@@ -193,7 +193,7 @@
         <menuitem
             id="wizard_report_municipal_retention_report_patent_menu"
             action="wizard_report_municipal_retention_report_patent_action"
-            parent="l10n_ve_payment_extension.seniat_reports"
+            parent="l10n_ve_withholding.seniat_reports"
             sequence="2"
             name="Municipal Patent Report"
         />
@@ -203,7 +203,7 @@
         <menuitem
             id="municipal_supplier_retention_report_menu"
             action="municipal_supplier_retention_report_action"
-            parent="l10n_ve_payment_extension.seniat_reports"
+            parent="l10n_ve_withholding.seniat_reports"
             sequence="1"
             name="Municipal supplier retention report"
         />

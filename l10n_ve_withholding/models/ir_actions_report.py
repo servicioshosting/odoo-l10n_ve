@@ -12,7 +12,7 @@ class IrActionsReport(models.Model):
     def _render_qweb_pdf(self, report_ref, res_ids=None, data=None):
         if (
             self._get_report(report_ref).report_name
-            == "l10n_ve_payment_extension.retention_voucher_template"
+            == "l10n_ve_withholding.retention_voucher_template"
         ):
             retention_ids = self.env["account.retention"].browse(res_ids)
             for retention in retention_ids:
