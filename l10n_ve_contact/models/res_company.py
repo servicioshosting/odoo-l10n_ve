@@ -14,9 +14,12 @@ class ResCompany(models.Model):
     )
     
     validate_user_creation_general = fields.Boolean(
-        default = False,
+        default = True,
         string='Validate user creation general',
     )
+
+    l10n_ve_vat = fields.Char(related='partner_id.l10n_ve_vat', store=True)
+    l10n_ve_vat_formatted = fields.Char(related='partner_id.l10n_ve_vat_formatted', store=True)
     
     @api.model_create_multi
     def create(self, vals_list):

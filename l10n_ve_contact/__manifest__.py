@@ -7,8 +7,8 @@
     "author": "binaural-dev",
     "website": "https://binauraldev.com/",
     "category": "Contacts/Contacts",
-    "version": "17.0.0.0.5",
-    "depends": ["base", "contacts", "l10n_ve_location"],
+    "version": "17.0.0.0.6",
+    "depends": ["base", "l10n_ve_lida" ,"base_vat", "contacts", "l10n_ve_rate", "l10n_ve_location"],
     "data": [
         "security/ir.model.access.csv",
         "views/res_partner.xml",

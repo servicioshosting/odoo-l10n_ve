@@ -9,3 +9,5 @@ from . import res_partner
 from . import res_currency
 from . import res_config_settings
 from . import account_move_line
+from . import ir_module
+from . import ir_ui_view

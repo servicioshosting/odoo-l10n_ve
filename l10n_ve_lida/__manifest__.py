@@ -6,7 +6,7 @@
     "icon": "/account/static/description/l10n.png",
     "countries": ["ve"],
     "license": "LGPL-3",
-    "version": "17.0.1.0.9",
+    "version": "17.0.1.0.10",
     "description": """
         Plantilla de plan de cuentas de servicio donde se agregan las
         cuentas contables y diarios para tipo de empresa servicio
@@ -18,10 +18,10 @@
         "sale",
         "contacts",
         "l10n_ve_auditlog",
-        "l10n_ve_base",
         "l10n_latam_invoice_document",
     ],
     "data": [
+	"security/ir.model.access.csv",
         "data/decimal_precision.xml",
         "data/l10n_latam.document.type.csv",
         "data/res.bank.csv",
@@ -30,7 +30,6 @@
         "views/account_move_view.xml",
         "views/account_move.xml",
         "views/res_config_settings.xml",
-        "views/res_config_settings_currency.xml",
         "views/res_currency_views.xml",
         "views/res_partner.xml",
     ],
@@ -40,6 +39,9 @@
 
     "post_init_hook": "post_init_hook",
     "assets": {
-        "web.assets_backend": ["l10n_ve_lida/static/src/components/**/*"],
+        "web.assets_backend": [
+		"l10n_ve_lida/static/src/components/**/*",
+		"l10n_ve_lida/static/src/core/**/*",
+	],
     },
 }
