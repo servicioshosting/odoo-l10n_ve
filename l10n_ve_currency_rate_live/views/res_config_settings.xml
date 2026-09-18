@@ -3,7 +3,7 @@
         <record id="res_config_settings_view_form_inherit_currency_rate_live" model="ir.ui.view">
             <field name="name">res.config.settings.binaural.rate.update</field>
             <field name="model">res.config.settings</field>
-            <field name="inherit_id" ref="l10n_ve_lida.res_config_settings_l10n_ve_rate" />
+            <field name="inherit_id" ref="l10n_ve_lida.l10n_ve_lida_view_res_config_settings" />
             <field name="arch" type="xml">
                 <xpath expr="//block[@name='l10n_ve_rate_block']" position="inside">
                     <separator string="Exchange Rate Synchronization" />
