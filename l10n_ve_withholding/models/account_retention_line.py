@@ -494,7 +494,7 @@ class AccountRetentionLine(models.Model):
     )
     def _constraint_amounts(self):
         for record in self:
-            if record.id and record.retention_id:
+            if record.id and record.retention_id and not self.env.context.get("creating_withholding", False):
                 # Validar que todo sea positivo
                 if record.company_currency_id.is_zero(record.invoice_total):
                     self.env['auditlog.fiscalevent'].sudo().record_event(
@@ -518,19 +518,19 @@ class AccountRetentionLine(models.Model):
                     )
                     raise ValidationError(_("No puede agregar un renglón con monto cero a una retención."))
                 
-            is_vef_the_base_currency = self.env.company.currency_id == self.env.ref("base.VEF")
-            is_client_retention = record.retention_id.type == "out_invoice"
-            if (
-                is_vef_the_base_currency
-                and is_client_retention
-                and record.retention_amount > record.move_id.amount_residual
-            ):
-                raise ValidationError(
-                    _(
-                        "The total amount of the retention is greater than the residual amount of"
-                        " the invoice."
-                    )
-                )
+            # is_vef_the_base_currency = self.env.company.currency_id == self.env.ref("base.VEF")
+            # is_client_retention = record.retention_id.type == "out_invoice"
+            # if (
+            #     is_vef_the_base_currency
+            #     and is_client_retention
+            #     and record.retention_amount > record.move_id.amount_residual
+            # ):
+            #     raise ValidationError(
+            #         _(
+            #             "The total amount of the retention is greater than the residual amount of"
+            #             " the invoice."
+            #         )
+            #     )
 
     def get_invoice_paid_amount_not_related_with_retentions(self):
         """
