@@ -2,10 +2,10 @@
     "name": "Venezuela - Localización",
     "summary": "Modelos de ciudades, municipios y parroquias de Venezuela.",
     "license": "LGPL-3",
-    "author": "binaural-dev",
-    "website": "https://binauraldev.com/",
+    "author": "Servitepuy, C.A., binaural-dev",
+    "website": "https://servicioshosting.com",
     "category": "Accounting/Accounting",
-    "version": "17.0.0.0.3",
+    "version": "17.0.0.0.4",
     "depends": ["base", "contacts"],
     "data": [
         "security/ir.model.access.csv",

@@ -4,10 +4,10 @@
        Módulo para información de contactos de Venezuela
     """,
     "license": "LGPL-3",
-    "author": "binaural-dev",
-    "website": "https://binauraldev.com/",
+    "author": "Servitepuy, C.A., binaural-dev",
+    "website": "https://servicioshosting.com",
     "category": "Contacts/Contacts",
-    "version": "17.0.0.0.6",
+    "version": "17.0.0.0.7",
     "depends": ["base", "l10n_ve_lida" ,"base_vat", "contacts", "l10n_ve_rate", "l10n_ve_location"],
     "data": [
         "security/ir.model.access.csv",

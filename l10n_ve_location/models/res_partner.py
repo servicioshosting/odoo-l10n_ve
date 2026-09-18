@@ -14,7 +14,3 @@ class ResCountryParishBinauralLocalizacion(models.Model):
                        related="municipality.name", store=True)
 
     municipality = fields.Many2one("res.country.municipality", "Municipality", domain="[('state_id', '=', state_id)]")
-
-    parish_id = fields.Many2one(
-        "res.country.parish", domain="[('municipality_id', '=', municipality)]"
-    )
