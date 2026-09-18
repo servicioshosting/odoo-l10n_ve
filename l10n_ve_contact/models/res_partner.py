@@ -33,6 +33,7 @@ class ResPartner(models.Model):
 
     l10n_ve_vat = fields.Char('Venezuelan VAT', index=True, compute="_compute_l10n_ve_vat", store=True)
     l10n_ve_vat_formatted = fields.Char('Venezuelan VAT Formatted', index=True, compute="_compute_l10n_ve_vat", store=True)
+    identity_document = fields.Char("Identify Document")
 
     def _default_company_id(self):
         company_id = self.env.company.id
