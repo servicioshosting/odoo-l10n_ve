@@ -315,7 +315,7 @@ class AccountRetention(models.Model):
             ("partner_id", "=", self.partner_id.id),
             ("state", "=", "posted"),
             ("move_type", "in", ("out_refund", "out_invoice")),
-            ("amount_residual", ">", 0),
+            # ("amount_residual", ">", 0),
         ]
         invoices_with_taxes = search_invoices_with_taxes(
             self.env["account.move"], search_domain
@@ -856,6 +856,12 @@ class AccountRetention(models.Model):
             payment.retention_line_ids.move_id.js_assign_outstanding_line(line_to_reconcile.id)
 
     def _reconcile_customer_payment(self, payment):
+        # payment = self.env['account.payment']
+
+        # payment.retention_line_ids debería ser un singleton
+        document = payment.retention_line_ids.move_id
+        # asset_receivable se debita en las facturas de venta
+        cxc_lines = document.line_ids.filtered(lambda l: l.account_id.account_type == "asset_receivable" and l.debit > 0)
 
         if payment.payment_type == "outbound":
 
