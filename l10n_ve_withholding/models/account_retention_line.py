@@ -494,7 +494,10 @@ class AccountRetentionLine(models.Model):
     )
     def _constraint_amounts(self):
         for record in self:
-            if record.id and record.retention_id and not self.env.context.get("creating_withholding", False):
+            if record.retention_id.sh_withholding_flag: 
+                continue
+            
+            if record.id and record.retention_id:
                 # Validar que todo sea positivo
                 if record.company_currency_id.is_zero(record.invoice_total):
                     self.env['auditlog.fiscalevent'].sudo().record_event(
