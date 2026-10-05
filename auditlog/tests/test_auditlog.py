@@ -746,3 +746,53 @@ class AuditlogFast_excluded_fields(AuditLogRuleCommon):
                 ]
             )
         )
+
+
+class TestAuditlogDisabledContext(AuditLogRuleCommon):
+    """Context flag and users_to_exclude must skip work before snapshots."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.groups_model_id = cls.env.ref("base.model_res_groups").id
+        cls.groups_rule = cls.create_rule(
+            {
+                "name": "testrule auditlog_disabled",
+                "model_id": cls.groups_model_id,
+                "log_read": False,
+                "log_create": True,
+                "log_write": True,
+                "log_unlink": True,
+                "log_type": "full",
+            }
+        )
+        cls.groups_rule.subscribe()
+        cls.auditlog_log = cls.env["auditlog.log"]
+
+    def _log_count(self, method, res_id):
+        return self.auditlog_log.search_count(
+            [
+                ("model_id", "=", self.groups_model_id),
+                ("method", "=", method),
+                ("res_id", "=", res_id),
+            ]
+        )
+
+    def test_create_write_unlink_skipped_with_context(self):
+        Groups = self.env["res.groups"].with_context(auditlog_disabled=True)
+        group = Groups.create({"name": "auditlog disabled group"})
+        self.assertEqual(self._log_count("create", group.id), 0)
+
+        group.write({"name": "auditlog disabled group renamed"})
+        self.assertEqual(self._log_count("write", group.id), 0)
+
+        group.unlink()
+        self.assertEqual(self._log_count("unlink", group.id), 0)
+
+    def test_create_write_still_logged_without_context(self):
+        group = self.env["res.groups"].create({"name": "auditlog enabled group"})
+        self.assertEqual(self._log_count("create", group.id), 1)
+
+        group.write({"name": "auditlog enabled group renamed"})
+        self.assertEqual(self._log_count("write", group.id), 1)
+
