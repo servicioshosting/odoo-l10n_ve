@@ -31,25 +31,17 @@ class AccountFiscalyearClosing(models.Model):
     def _default_company_id(self):
         return self.env.company
 
-    name = fields.Char(
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-    )
-    check_draft_moves = fields.Boolean(
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-    )
+    # Draft-editability enforced in views via readonly="state != 'draft'"
+    # (Field.states removed in Odoo 17+).
+    name = fields.Char()
+    check_draft_moves = fields.Boolean()
     year = fields.Integer(
         help="Introduce here the year to close. If the fiscal year is between "
         "several natural years, you have to put here the last one.",
         default=lambda self: self._default_year(),
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     company_id = fields.Many2one(
         default=lambda self: self._default_company_id(),
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     state = fields.Selection(
         selection=[
@@ -68,34 +60,24 @@ class AccountFiscalyearClosing(models.Model):
     date_start = fields.Date(
         string="From date",
         required=True,
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     date_end = fields.Date(
         string="To date",
         required=True,
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     date_opening = fields.Date(
         string="Opening date",
         required=True,
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     closing_template_id = fields.Many2one(
         comodel_name="account.fiscalyear.closing.template",
         string="Closing template",
         # domain="[('chart_template_ids', '=', chart_template_id)]",
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     move_config_ids = fields.One2many(
         comodel_name="account.fiscalyear.closing.config",
         inverse_name="fyc_id",
         string="Moves configuration",
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     move_ids = fields.One2many(
         comodel_name="account.move",
@@ -303,7 +285,7 @@ class AccountFiscalyearClosing(models.Model):
             "name": _("Fiscal closing moves"),
             "type": "ir.actions.act_window",
             "view_type": "form",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "account.move",
             "domain": [("fyc_id", "in", self.ids)],
         }
@@ -313,7 +295,7 @@ class AccountFiscalyearClosing(models.Model):
             "name": _("Fiscal closing move lines"),
             "type": "ir.actions.act_window",
             "view_type": "form",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "account.move.line",
             "domain": [("move_id.fyc_id", "in", self.ids)],
         }
