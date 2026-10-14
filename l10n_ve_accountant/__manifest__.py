@@ -30,7 +30,7 @@
         "views/account_payment.xml",
         "views/res_partner.xml",
         "views/res_currency_views.xml",
-        "views/ir_property.xml",
+        # ir.property form view removed in Odoo 18 (base.ir_property_view gone)
         "views/res_company_views.xml",
         "views/tax_unit.xml",
         "views/res_config_settings_views.xml",
