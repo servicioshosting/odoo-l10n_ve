@@ -5,7 +5,7 @@
     "author": "Servitepuy, C.A., binaural-dev",
     "website": "https://servicioshosting.com",
     "category": "Accounting/Accounting",
-    "version": "17.0.0.0.4",
+    "version": "18.0.1.0.0",
     "depends": ["base", "contacts"],
     "data": [
         "security/ir.model.access.csv",

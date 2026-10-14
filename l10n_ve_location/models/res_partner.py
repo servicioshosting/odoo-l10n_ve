@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import re
 
 from odoo import _, api, fields, models
