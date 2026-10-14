@@ -51,7 +51,7 @@
 
                             <page string="Detallado">
                                 <field name="line_ids" readonly="1" invisible="tax_type != 'islr'">
-                                    <tree create="0" edit="0">
+                                    <list create="0" edit="0">
                                         <!-- <field name="report_id" /> -->
                                         <!-- <field name="withholding_id" /> -->
                                         <!-- <field name="withholding_line_id" /> -->
@@ -74,11 +74,11 @@
                                         <!-- ISLR -->
                                         <field name="withholding_percentage" />
                                         <field name="withholding_amount" sum="Total Retenido" />
-                                    </tree>
+                                    </list>
                                 </field>
 
                                 <field name="line_ids" readonly="1" invisible="tax_type != 'iva'">
-                                    <tree create="0" edit="0">
+                                    <list create="0" edit="0">
                                         <!-- <field name="report_id" /> -->
                                         <!-- <field name="withholding_id" /> -->
                                         <!-- <field name="withholding_line_id" /> -->
@@ -101,7 +101,7 @@
                                         <!-- IVA -->
                                         <field name="withholding_percentage" />
                                         <field name="withholding_amount" sum="Total Retenido" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>

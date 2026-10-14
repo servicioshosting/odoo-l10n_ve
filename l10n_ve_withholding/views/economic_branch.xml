@@ -3,13 +3,13 @@
     <data>
 
         <record id="view_economic_branch_tree_l10n_ve_payment_extension" model="ir.ui.view">
-            <field name="name">view.economic.branch.tree.l10n.ve.payment.extension</field>
+            <field name="name">view.economic.branch.list.l10n.ve.payment.extension</field>
             <field name="model">economic.branch</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
                     <field name="status" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -48,7 +48,7 @@
             <field name="res_model">economic.branch</field>
             <field name="type">ir.actions.act_window</field>
             <field name="binding_view_types">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
     
     

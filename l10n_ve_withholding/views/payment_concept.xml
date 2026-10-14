@@ -3,13 +3,13 @@
     <data>
     
         <record id="view_payment_concept_tree_l10n_ve_payment_extension" model="ir.ui.view">
-            <field name="name">view.payment.concept.tree.l10n.ve.payment.extension</field>
+            <field name="name">view.payment.concept.list.l10n.ve.payment.extension</field>
             <field name="model">payment.concept</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
                     <field name="status" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -30,13 +30,13 @@
                         <notebook>
                             <page name="line_payment_concept" string="Payment concept line">
                                 <field name="line_payment_concept_ids">
-                                    <tree delete="true" editable="op">
+                                    <list delete="true" editable="op">
                                         <field name="type_person_id" />
                                         <field name="code" />
                                         <field name="percentage_tax_base" />
                                         <field name="tariff_id" />
                                         <field name="pay_from" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>
@@ -60,7 +60,7 @@
             <field name="res_model">payment.concept</field>
             <field name="type">ir.actions.act_window</field>
             <field name="binding_view_types">form</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">list,kanban,form</field>
             <field name="context">{"search_default_status":True}</field>
         </record>
 

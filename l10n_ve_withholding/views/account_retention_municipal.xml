@@ -55,7 +55,7 @@
                                 <field colspan="4" name="retention_line_ids" nolabel="1"
                                     invisible="not partner_id"
                                     readonly="state in ['emitted', 'cancel']" force_save="1">
-                                    <tree string="Retention Lines" editable="bottom">
+                                    <list editable="bottom">
                                         <!-- Invisible fields -->
                                         <field name="invoice_type" column_invisible="True" />
                                         <field name="company_currency_id" column_invisible="True" />
@@ -112,7 +112,7 @@
                                             column_invisible="parent.base_currency_is_vef"
                                             readonly="parent.type == 'in_invoice'"/>
                                         <field name="foreign_currency_rate" optional="hide" />
-                                    </tree>
+                                    </list>
                                 </field>
                                 <group col="2" colspan="2"
                                     invisible="not base_currency_is_vef">
@@ -145,21 +145,17 @@
                                 <field name="payment_ids" nolabel="1"
                                     invisible="not partner_id"
                                     readonly="1">
-                                    <tree string="Payments" editable="bottom">
+                                    <list editable="bottom">
                                         <field name="date" />
                                         <field name="name" />
                                         <field name="amount" />
                                         <field name="state" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>
                     </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" groups="base.group_user"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids" options="{'post_refresh': 'always'}"/>
-                    </div>
+                    <chatter/>
                 </form>
             </field>
         </record>
@@ -168,7 +164,7 @@
             <field name="model">account.retention</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Retention">
+                <list>
                     <field name="number" />
                     <field name="type" />
                     <field name="partner_id" />
@@ -176,7 +172,7 @@
                     <field name="date_accounting" />
                     <field name="company_id" optional="hide" groups="base.group_multi_company" />
                     <field name="state" />
-                </tree>
+                </list>
             </field>
         </record>
         <!--View:
@@ -207,10 +203,10 @@
             <field name="name">Municipal Retention Clients</field>
             <field name="res_model">account.retention</field>
             <field name="binding_view_types">list</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="view_ids"
                 eval="[(5, 0, 0), 
-                        (0, 0, {'view_mode': 'tree', 'view_id': ref('view_retention_municipal_tree_l10n_ve_payment_extension')}),
+                        (0, 0, {'view_mode': 'list', 'view_id': ref('view_retention_municipal_tree_l10n_ve_payment_extension')}),
                         (0, 0, {'view_mode': 'form', 'view_id': ref('view_retention_municipal_form_l10n_ve_payment_extension')})]" />
             <field name="context">{"default_type":'out_invoice',
                 "default_type_retention":'municipal'}</field>
@@ -221,10 +217,10 @@
             <field name="name">Municipal Retention Suppliers</field>
             <field name="res_model">account.retention</field>
             <field name="binding_view_types">list</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="view_ids"
                 eval="[(5, 0, 0), 
-                        (0, 0, {'view_mode': 'tree', 'view_id': ref('view_retention_municipal_tree_l10n_ve_payment_extension')}),
+                        (0, 0, {'view_mode': 'list', 'view_id': ref('view_retention_municipal_tree_l10n_ve_payment_extension')}),
                         (0, 0, {'view_mode': 'form', 'view_id': ref('view_retention_municipal_form_l10n_ve_payment_extension')})]" />
             <field name="context">{"default_type":'in_invoice',
                 "default_type_retention":'municipal'}</field>
