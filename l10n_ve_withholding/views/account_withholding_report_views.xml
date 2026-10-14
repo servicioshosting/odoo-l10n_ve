@@ -124,27 +124,5 @@
             <field name="context" eval="{'default_tax_type': 'iva'}"/>
         </record>
 
-         <!-- <record id="action_view_withholding_iva_report" model="ir.actions.act_window">
-            <field name="name">Reporte de Retenciones de IVA</field>
-            <field name="res_model">account.withholding.report</field>
-            <field name="view_mode">form</field>
-            <field name="context" eval="{'default_tax_type': 'iva'}"/>
-        </record> -->
-
-        <menuitem
-            id="l10n_ve_withholding.xml_retention_islr"
-            name="Reporte de Retenciones de ISLR"
-            parent="l10n_ve_withholding.seniat_reports"
-            action="action_view_withholding_islr_report"
-            sequence="9"
-        />
-
-        <menuitem
-            id="l10n_ve_withholding.txt_retention_iva"
-            name="Reporte de Retenciones de IVA"
-            parent="l10n_ve_withholding.seniat_reports"
-            action="action_view_withholding_iva_report"
-            sequence="9"
-        />
     </data>
 </odoo>

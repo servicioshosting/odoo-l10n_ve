@@ -176,6 +176,22 @@
         />
 
         <menuitem
+            id="l10n_ve_withholding.xml_retention_islr"
+            name="Reporte de Retenciones de ISLR"
+            parent="l10n_ve_withholding.seniat_reports"
+            action="action_view_withholding_islr_report"
+            sequence="9"
+        />
+
+        <menuitem
+            id="l10n_ve_withholding.txt_retention_iva"
+            name="Reporte de Retenciones de IVA"
+            parent="l10n_ve_withholding.seniat_reports"
+            action="action_view_withholding_iva_report"
+            sequence="9"
+        />
+
+        <menuitem
             id="xml_retention_islr"
             name="XML ISLR Retention"
             parent="l10n_ve_withholding.seniat_reports"
