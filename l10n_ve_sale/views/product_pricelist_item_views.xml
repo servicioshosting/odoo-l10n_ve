@@ -23,16 +23,15 @@
         </field>
     </record>
 
+    <!-- Standalone list for Price List Items menu (Odoo 18: no name field on parent) -->
     <record id="product_pricelist_item_tree_view" model="ir.ui.view">
-        <field name="name">product.pricelist.item.list</field>
+        <field name="name">product.pricelist.item.list.standalone</field>
         <field name="model">product.pricelist.item</field>
         <field name="mode">primary</field>
         <field name="inherit_id" ref="product.product_pricelist_item_tree_view_from_product" />
         <field name="arch" type="xml">
-            <field name="name" position="replace">
-            </field>
             <field name="product_tmpl_id" position="attributes">
-                <attribute name="invisible">false</attribute>
+                <attribute name="column_invisible">0</attribute>
             </field>
             <field name="price_with_tax" position="replace" />
             <field name="min_quantity" position="attributes">
