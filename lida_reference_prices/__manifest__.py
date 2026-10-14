@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': "Precios referenciales",
     'summary': "Permite crear listas de precios referenciales",
@@ -7,7 +6,7 @@
     "author": "LIDALabs",
     "website": "https://lidalabs.com",
     "category": "Sales",
-    "version": "17.0.1.1.1",
+    "version": "18.0.1.0.0",
     "depends": [
         "product",
         "sale",
