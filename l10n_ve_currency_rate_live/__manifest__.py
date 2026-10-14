@@ -5,7 +5,7 @@
     "author": "binaural-dev",
     "website": "https://binauraldev.com/",
     "category": "Technical",
-    "version": "17.0.1.1.3",
+    "version": "18.0.1.0.0",
     "depends": ["l10n_ve_lida", "currency_rate_live"],
     "data": [
         "views/res_config_settings.xml",
