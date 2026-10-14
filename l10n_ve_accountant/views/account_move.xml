@@ -132,7 +132,8 @@
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_invoice_tree" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='amount_total_signed']" position="after">
+            <!-- Odoo 18 invoice list uses amount_total_in_currency_signed -->
+            <xpath expr="//field[@name='amount_total_in_currency_signed'][1]" position="after">
                 <field name="foreign_currency_id" column_invisible="True" />
                 <field
                     name="foreign_total_billed"
