@@ -442,48 +442,9 @@ class AccountMoveLine(models.Model):
                 }
             )
 
-    @api.depends(
-        "foreign_inverse_rate",
-        "foreign_currency_id",
-        "foreign_rate",
-        "foreign_price",
-    )
-    def _compute_all_tax(self):
-        res = super(AccountMoveLine, self)._compute_all_tax()
-        for line in self:
-            sign = line.move_id.direction_sign
-
-            if line.display_type == "product" and line.move_id.is_invoice(True):
-                amount_currency = sign * line.foreign_price * (1 - line.discount / 100)
-                handle_price_include = True
-                quantity = line.quantity
-            else:
-                amount_currency = (
-                    line.amount_currency * line.move_id.foreign_inverse_rate
-                )
-                handle_price_include = False
-                quantity = 1
-
-            compute_all_currency = line.tax_ids.compute_all(
-                amount_currency,
-                currency=line.foreign_currency_id,
-                quantity=quantity,
-                product=line.product_id,
-                partner=line.move_id.partner_id or line.partner_id,
-                is_refund=line.is_refund,
-                handle_price_include=handle_price_include,
-                include_caba_tags=line.move_id.always_tax_exigible,
-                fixed_multiplicator=sign,
-            )
-
-            for tax in compute_all_currency["taxes"]:
-                for key in list(line.compute_all_tax.keys()):
-                    if not key.get("tax_repartition_line_id", False):
-                        continue
-
-                    if tax["tax_repartition_line_id"] == key["tax_repartition_line_id"]:
-                        line.compute_all_tax[key]["foreign_balance"] = tax["amount"]
-        return res
+    # Odoo 18 removed account.move.line.compute_all_tax / _compute_all_tax.
+    # Foreign tax injection via that Binary cache must be reimplemented against
+    # the new tax totals / _prepare_tax_lines APIs (parity item D1).
 
     @api.onchange("quantity")
     def _onchange_quantity(self):

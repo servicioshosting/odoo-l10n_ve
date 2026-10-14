@@ -931,12 +931,21 @@ class AccountMove(models.Model):
                     )
         return super().action_post()
 
+    # Odoo 18: compute_all_tax removed from account.move.line (tax engine rewrite).
     @api.depends(
-        "invoice_line_ids.compute_all_tax",
+        "invoice_payment_term_id",
+        "invoice_date",
+        "currency_id",
+        "amount_total_in_currency_signed",
+        "invoice_date_due",
         "invoice_line_ids.price_subtotal",
+        "invoice_line_ids.foreign_subtotal",
+        "invoice_line_ids.foreign_price_total",
         "foreign_inverse_rate",
         "foreign_currency_id",
         "foreign_rate",
+        "foreign_total_billed",
+        "foreign_taxable_income",
     )
     def _compute_needed_terms(self):
         res = super()._compute_needed_terms()
