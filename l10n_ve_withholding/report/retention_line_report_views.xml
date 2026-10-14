@@ -15,7 +15,7 @@
 				<filter string="Período contable"
                         name="filter_retention_date_accounting"
                         date="retention_date_accounting"
-                        default_period="this_month,last_month,antepenultimate_month" />
+                        default_period="month,month-1,month-2" />
 			</search>
 		</field>
 	</record>
