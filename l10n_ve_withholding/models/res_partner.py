@@ -27,9 +27,21 @@ class ResPartner(models.Model):
 
     @api.depends('prefix_vat', "vat")
     def _compute_type_person_id(self):
-        pj_domiciliada = self.env.ref('l10n_ve_withholding.type_person_three_l10n_ve_payment_extension')
-        pn_no_residente = self.env.ref('l10n_ve_withholding.type_person_two_l10n_ve_payment_extension')
-        pn_residente = self.env.ref('l10n_ve_withholding.type_person_l10n_ve_payment_extension')
+        # Data XML may not be loaded yet during module install/_init_column.
+        pj_domiciliada = self.env.ref(
+            "l10n_ve_withholding.type_person_three_l10n_ve_payment_extension",
+            raise_if_not_found=False,
+        )
+        pn_no_residente = self.env.ref(
+            "l10n_ve_withholding.type_person_two_l10n_ve_payment_extension",
+            raise_if_not_found=False,
+        )
+        pn_residente = self.env.ref(
+            "l10n_ve_withholding.type_person_l10n_ve_payment_extension",
+            raise_if_not_found=False,
+        )
+        if not (pj_domiciliada and pn_no_residente and pn_residente):
+            return
 
         for p in self:
             if not p.prefix_vat or not p.vat:
