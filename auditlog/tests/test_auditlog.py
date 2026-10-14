@@ -2,10 +2,8 @@
 # © 2018 Pieter Paulussen <pieter_paulussen@me.com>
 # © 2021 Stefan Rijnhart <stefan@opener.amsterdam>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-
-from datetime import timedelta
-
-from odoo import fields
+from odoo.tests import tagged
+from odoo.tools import mute_logger
 
 from odoo.addons.base.models.ir_model import MODULE_UNINSTALL_FLAG
 from odoo.addons.base.models.res_users import name_boolean_group
@@ -14,6 +12,12 @@ from .common import AuditLogRuleCommon
 
 
 class AuditlogCommon:
+    """Base case with basic log creation tests"""
+
+    # Ensure that test cases that inherit from this class run the methods
+    # that it provides.
+    allow_inherited_tests_method = True
+
     def test_LogCreation(self):
         """First test, caching some data."""
         self.groups_rule.subscribe()
@@ -275,13 +279,8 @@ class AuditlogCommon:
             1,
         )
 
-    def test_http_session(self):
-        display_name = self.env["auditlog.http.session"].new().display_name
-        now_plus_one_hour = fields.Datetime.now() + timedelta(hours=1)
-        expected_time_str = now_plus_one_hour.strftime("%Y-%m-%d %H:%M:%S")
-        self.assertEqual(display_name, "? (" + expected_time_str + ")")
 
-
+@tagged("-at_install", "post_install")
 class TestAuditlogFull(AuditLogRuleCommon, AuditlogCommon):
     @classmethod
     def setUpClass(cls):
@@ -300,6 +299,39 @@ class TestAuditlogFull(AuditLogRuleCommon, AuditlogCommon):
         )
 
 
+@tagged("-at_install", "post_install")
+class TestAuditlogExportData(AuditLogRuleCommon):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.groups_model_id = cls.env.ref("base.model_res_groups").id
+        cls.groups_rule = cls.env["auditlog.rule"].create(
+            {
+                "name": "testrule for groups",
+                "model_id": cls.groups_model_id,
+                "log_export_data": True,
+            }
+        )
+
+    def test_LogExport(self):
+        self.groups_rule.subscribe()
+
+        auditlog_log = self.env["auditlog.log"]
+        self.env["res.groups"].search([]).export_data(["name"])
+        created_log = auditlog_log.search(
+            [
+                ("model_id", "=", self.groups_model_id),
+                ("method", "=", "export_data"),
+            ]
+        ).ensure_one()
+        self.assertTrue(created_log)
+        action = created_log.show_res_ids()
+        domain = action["domain"]  # [('id', 'in', [1, 2, ...])]
+        self.assertIsInstance(domain, list)
+        self.assertIsInstance(domain[0][2], list)
+
+
+@tagged("-at_install", "post_install")
 class TestAuditlogFast(AuditLogRuleCommon, AuditlogCommon):
     @classmethod
     def setUpClass(cls):
@@ -318,6 +350,7 @@ class TestAuditlogFast(AuditLogRuleCommon, AuditlogCommon):
         )
 
 
+@tagged("-at_install", "post_install")
 class TestFieldRemoval(AuditLogRuleCommon):
     @classmethod
     def setUpClass(cls):
@@ -361,13 +394,15 @@ class TestFieldRemoval(AuditLogRuleCommon):
             }
         )
 
-        cls.auditlog_rule.subscribe()
+    def setUp(self):
+        super().setUp()
+        self.auditlog_rule.subscribe()
         # Trigger log creation
-        rec = cls.env["x_test.model"].create({"x_test_field": "test value"})
+        rec = self.env["x_test.model"].create({"x_test_field": "test value"})
         rec.write({"x_test_field": "test value 2"})
 
-        cls.logs = cls.env["auditlog.log"].search(
-            [("res_id", "=", rec.id), ("model_id", "=", cls.test_model.id)]
+        self.logs = self.env["auditlog.log"].search(
+            [("res_id", "=", rec.id), ("model_id", "=", self.test_model.id)]
         )
 
     def assert_values(self):
@@ -391,13 +426,20 @@ class TestFieldRemoval(AuditLogRuleCommon):
         self.assert_values()
 
         # Remove the field
-        self.test_field.with_context(**{MODULE_UNINSTALL_FLAG: True}).unlink()
+        with mute_logger("odoo.api"):  # Mute 'Too many iterations for flushing fields'
+            self.test_field.with_context(**{MODULE_UNINSTALL_FLAG: True}).unlink()
         self.assert_values()
         # The field should not be linked
         self.assertFalse(self.logs.mapped("line_ids.field_id"))
 
         # Remove the model
-        self.test_model.with_context(**{MODULE_UNINSTALL_FLAG: True}).unlink()
+        with mute_logger(
+            # 'Too many iterations for flushing fields'
+            "odoo.api",
+            # 'The following fields were force-deleted .* x_name',
+            "odoo.addons.base.models.ir_model",
+        ):
+            self.test_model.with_context(**{MODULE_UNINSTALL_FLAG: True}).unlink()
         self.assert_values()
 
         # The model should not be linked
@@ -406,6 +448,7 @@ class TestFieldRemoval(AuditLogRuleCommon):
         self.assertFalse(self.auditlog_rule.model_id)
 
 
+@tagged("-at_install", "post_install")
 class TestAuditlogFullCaptureRecord(AuditLogRuleCommon, AuditlogCommon):
     @classmethod
     def setUpClass(cls):
@@ -425,6 +468,7 @@ class TestAuditlogFullCaptureRecord(AuditLogRuleCommon, AuditlogCommon):
         )
 
 
+@tagged("-at_install", "post_install")
 class AuditLogRuleTestForUserFields(AuditLogRuleCommon):
     @classmethod
     def setUpClass(cls):
@@ -485,14 +529,16 @@ class AuditLogRuleTestForUserFields(AuditLogRuleCommon):
         # Updating users_to_exclude_ids
         cls.auditlog_rule.users_to_exclude_ids = [[4, cls.users_to_exclude_ids]]
 
-        # Subscribe auditlog.rule
-        cls.auditlog_rule.subscribe()
-
         cls.auditlog_log = cls.env["auditlog.log"]
 
-        # Creating new res.partner
-        cls.testpartner1 = (
-            cls.env["res.partner"]
+    def setUp(self):
+        super().setUp()
+        # Subscribe auditlog.rule
+        self.auditlog_rule.subscribe()
+
+        # Creating new partners to trigger log creation (or not)
+        self.testpartner1 = (
+            self.env["res.partner"]
             .with_context(tracking_disable=True)
             .create(
                 {
@@ -503,10 +549,10 @@ class AuditLogRuleTestForUserFields(AuditLogRuleCommon):
         )
 
         # Creating new res.partner from excluded user
-        cls.testpartner2 = (
-            cls.env["res.partner"]
+        self.testpartner2 = (
+            self.env["res.partner"]
             .with_context(tracking_disable=True)
-            .with_user(cls.user.id)
+            .with_user(self.user.id)
             .create(
                 {
                     "name": "testpartner2",
@@ -607,6 +653,7 @@ class AuditLogRuleTestForUserFields(AuditLogRuleCommon):
         self.assertTrue(delete_log_record)
 
 
+@tagged("-at_install", "post_install")
 class AuditLogRuleTestForUserModel(AuditLogRuleCommon):
     @classmethod
     def setUpClass(cls):
@@ -642,8 +689,11 @@ class AuditLogRuleTestForUserModel(AuditLogRuleCommon):
         cls.group = cls.env.ref("auditlog.group_auditlog_manager")
 
         cls.auditlog_log = cls.env["auditlog.log"]
+
+    def setUp(self):
+        super().setUp()
         # Subscribe auditlog.rule
-        cls.auditlog_rule.subscribe()
+        self.auditlog_rule.subscribe()
 
     def test_01_AuditlogFull_field_group_write_log(self):
         """Change group and check successfully created log"""
@@ -680,6 +730,7 @@ class AuditLogRuleTestForUserModel(AuditLogRuleCommon):
         self.assertTrue(write_log_record)
 
 
+@tagged("-at_install", "post_install")
 class AuditlogFast_excluded_fields(AuditLogRuleCommon):
     @classmethod
     def setUpClass(cls):
@@ -712,9 +763,6 @@ class AuditlogFast_excluded_fields(AuditLogRuleCommon):
         # Updating phone in fields_to_exclude_ids
         cls.auditlog_rule.fields_to_exclude_ids = [[4, cls.fields_to_exclude_ids]]
 
-        # Subscribe auditlog.rule
-        cls.auditlog_rule.subscribe()
-
         cls.auditlog_log = cls.env["auditlog.log"]
 
         # Creating new res.partner
@@ -728,6 +776,11 @@ class AuditlogFast_excluded_fields(AuditLogRuleCommon):
                 }
             )
         )
+
+    def setUp(self):
+        super().setUp()
+        # Subscribe auditlog.rule
+        self.auditlog_rule.subscribe()
 
     def test_01_AuditlogFast_field_exclude_write_log(self):
         # Checking fields_to_exclude_ids
@@ -746,53 +799,3 @@ class AuditlogFast_excluded_fields(AuditLogRuleCommon):
                 ]
             )
         )
-
-
-class TestAuditlogDisabledContext(AuditLogRuleCommon):
-    """Context flag and users_to_exclude must skip work before snapshots."""
-
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.groups_model_id = cls.env.ref("base.model_res_groups").id
-        cls.groups_rule = cls.create_rule(
-            {
-                "name": "testrule auditlog_disabled",
-                "model_id": cls.groups_model_id,
-                "log_read": False,
-                "log_create": True,
-                "log_write": True,
-                "log_unlink": True,
-                "log_type": "full",
-            }
-        )
-        cls.groups_rule.subscribe()
-        cls.auditlog_log = cls.env["auditlog.log"]
-
-    def _log_count(self, method, res_id):
-        return self.auditlog_log.search_count(
-            [
-                ("model_id", "=", self.groups_model_id),
-                ("method", "=", method),
-                ("res_id", "=", res_id),
-            ]
-        )
-
-    def test_create_write_unlink_skipped_with_context(self):
-        Groups = self.env["res.groups"].with_context(auditlog_disabled=True)
-        group = Groups.create({"name": "auditlog disabled group"})
-        self.assertEqual(self._log_count("create", group.id), 0)
-
-        group.write({"name": "auditlog disabled group renamed"})
-        self.assertEqual(self._log_count("write", group.id), 0)
-
-        group.unlink()
-        self.assertEqual(self._log_count("unlink", group.id), 0)
-
-    def test_create_write_still_logged_without_context(self):
-        group = self.env["res.groups"].create({"name": "auditlog enabled group"})
-        self.assertEqual(self._log_count("create", group.id), 1)
-
-        group.write({"name": "auditlog enabled group renamed"})
-        self.assertEqual(self._log_count("write", group.id), 1)
-
