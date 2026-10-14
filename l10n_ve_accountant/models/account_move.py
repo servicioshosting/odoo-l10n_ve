@@ -558,18 +558,24 @@ class AccountMove(models.Model):
                     continue
 
                 def amount_by_line(lines, balance="debit"):
+                    # Odoo 18: account.tax._compute_amount removed → use compute_all.
                     amount = 0
                     for line in lines:
                         balance_amount = line.foreign_debit
                         if balance == "credit":
                             balance_amount = line.foreign_credit
-                        tax_amount = line.tax_ids._compute_amount(
-                            float_round(
-                                balance_amount,
-                                precision_rounding=line.foreign_currency_id.rounding,
-                            ),
+                        rounded_base = float_round(
                             balance_amount,
+                            precision_rounding=line.foreign_currency_id.rounding,
                         )
+                        tax_res = line.tax_ids.compute_all(
+                            rounded_base,
+                            currency=line.foreign_currency_id,
+                            quantity=1.0,
+                            product=line.product_id,
+                            partner=line.partner_id,
+                        )
+                        tax_amount = tax_res["total_included"] - tax_res["total_excluded"]
                         if (
                             self.env.company.tax_calculation_rounding_method
                             == "round_globally"

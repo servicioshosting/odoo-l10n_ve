@@ -1,16 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <templates xml:space="preserve">
 
     <t t-name="l10n_ve_accountant.TaxForeignTotalsField" owl="1">
-        <table t-if="totals" class="oe_right">
+        <table t-if="totals" class="float-end">
             <tbody>
                 <tr t-if="totals.foreign_discount_amount and totals.show_discount">
                     <td class="o_td_label">
                         <label class="o_form_label o_tax_total_label">Subtotal</label>
                     </td>
-                    <td>
+                    <td class="o_list_monetary">
                         <span
                             name="foreign_amount_untaxed"
                             class="o_tax_group_amount_value o_list_monetary"
+                            dir="ltr"
                             t-out="totals.foreign_formatted_subtotal"
                         />
                     </td>
@@ -23,42 +25,62 @@
                         <span
                             name="foreign_discount_amount"
                             class="o_tax_group_amount_value o_list_monetary"
+                            dir="ltr"
                             t-out="totals.foreign_formatted_discount_amount"
                         />
                     </td>
                 </tr>
-                <t t-foreach="totals.foreign_subtotals" t-as="subtotal" t-key="subtotal['name']">
+
+                <t t-foreach="totals.foreign_subtotals" t-as="subtotal" t-key="subtotal_index">
                     <tr>
                         <td class="o_td_label">
-                            <label class="o_form_label o_tax_total_label" t-esc="subtotal['name']"/>
+                            <label class="o_form_label o_tax_total_label" t-out="subtotal.name"/>
                         </td>
-
                         <td class="o_list_monetary">
-                            <span t-att-name="subtotal['name']" style="white-space: nowrap; font-weight: bold;" t-out="subtotal['formatted_amount']"/>
+                            <span t-att-name="subtotal.name"
+                                  style="white-space: nowrap; font-weight: bold;"
+                                  dir="ltr"
+                                  t-out="formatForeignMonetary(subtotal.base_amount_currency)"/>
                         </td>
                     </tr>
 
-                    <t t-foreach="totals.groups_by_foreign_subtotal[subtotal['name']]" t-as="taxGroup" t-key="taxGroup.group_key">
-                        <TaxGroupComponent
-                            currency="currency"
-                            taxGroup="taxGroup"
-                            isReadonly="readonly"
-                            onChangeTaxGroup.bind="_onChangeTaxValueByTaxGroup"
-                            invalidate.bind="invalidate"
-                        />
+                    <t t-foreach="subtotal.tax_groups" t-as="taxGroup" t-key="taxGroup_index">
+                        <tr>
+                            <td class="o_td_label">
+                                <label class="o_form_label o_tax_total_label"
+                                       t-esc="'Total G ' + taxGroup.group_name"/>
+                            </td>
+                            <td class="o_tax_group">
+                                <span class="o_tax_group_amount_value o_list_monetary" dir="ltr">
+                                    <t t-out="formatForeignMonetary(taxGroup.display_base_amount_currency)"
+                                       style="white-space: nowrap;"/>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="o_td_label">
+                                <label class="o_form_label o_tax_total_label"
+                                       t-out="taxGroup.group_name"/>
+                            </td>
+                            <td class="o_tax_group">
+                                <span class="o_tax_group_amount_value o_list_monetary" dir="ltr">
+                                    <t t-out="formatForeignMonetary(taxGroup.tax_amount_currency)"
+                                       style="white-space: nowrap;"/>
+                                </span>
+                            </td>
+                        </tr>
                     </t>
                 </t>
 
-                <!-- Total amount with all taxes-->
                 <tr>
                     <td class="o_td_label">
                         <label class="o_form_label o_tax_total_label">Total</label>
                     </td>
-
                     <td class="o_list_monetary">
                         <span
                             name="foreign_amount_total"
-                            t-att-class="Object.keys(totals.groups_by_subtotal).length > 0 ? 'oe_subtotal_footer_separator' : ''"
+                            t-att-class="{'oe_subtotal_footer_separator': totals.has_tax_groups}"
+                            dir="ltr"
                             t-out="totals.foreign_formatted_amount_total"
                             style="font-size: 1.3em; font-weight: bold; white-space: nowrap;"
                         />
@@ -67,4 +89,5 @@
             </tbody>
         </table>
     </t>
+
 </templates>
