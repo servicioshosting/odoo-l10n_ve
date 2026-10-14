@@ -4,7 +4,13 @@ from odoo import api, fields, models
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    withholding_type_id = fields.Many2one('account.withholding.type', default=lambda self: self.env.ref('l10n_ve_withholding.account_withholding_type_75'))
+    withholding_type_id = fields.Many2one(
+        "account.withholding.type",
+        default=lambda self: self.env.ref(
+            "l10n_ve_withholding.account_withholding_type_75",
+            raise_if_not_found=False,
+        ),
+    )
     type_person_id = fields.Many2one('type.person', compute='_compute_type_person_id', inverse='_inverse_type_person_id', store=True)
 
     iva_account = fields.Many2one(
