@@ -281,7 +281,7 @@ class AccountMove(models.Model):
             move.is_debit_journal = True
 
     # ADDED
-    @api.depends('reversal_move_id')
+    @api.depends('reversal_move_ids')
     def _compute_credit_count(self):
         credit_data = self.env['account.move']._read_group([('reversed_entry_id', 'in', self.ids), ('l10n_ve_doc_type_internal_type', '=', 'credit_note'), ('state', 'in', ['draft', 'posted'])],
                                                            ['reversed_entry_id'], ['__count'])
@@ -379,7 +379,7 @@ class AccountMove(models.Model):
             "name": "Balances de productos",
             "type": "ir.actions.act_window",
             "res_model": "account.move.product.balance",
-            "view_mode": "tree",
+            "view_mode": "list",
             "domain": [("invoice_id", "in", self.ids)],
         }
 
@@ -406,7 +406,7 @@ class AccountMove(models.Model):
             for line in self.invoice_line_ids if line.display_type == 'product'
         )
 
-        credit_notes = self.reversal_move_id.filtered(lambda n: n.posted_before)
+        credit_notes = self.reversal_move_ids.filtered(lambda n: n.posted_before)
         debit_notes = self.debit_note_ids.filtered(lambda n: n.posted_before)
 
         for line in credit_notes.invoice_line_ids:
@@ -429,7 +429,7 @@ class AccountMove(models.Model):
             "name": "Notas de crédito",
             "type": "ir.actions.act_window",
             "res_model": "account.move",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("reversed_entry_id", "=", self._origin.id)],
         }
 

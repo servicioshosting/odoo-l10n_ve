@@ -53,38 +53,38 @@
                 <attribute name="delete">company_id.account_fiscal_country_id.code != 'VE' or l10n_ve_doc_type_internal_type in ('credit_note', 'debit_note')</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='product_id']" position="after">
+            <xpath expr="//field[@name='invoice_line_ids']/list//field[@name='product_id']" position="after">
                 <field name="l10n_ve_doc_type_internal_type" column_invisible="True" />
             </xpath>
 
-            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='product_id']" position="attributes">
+            <xpath expr="//field[@name='invoice_line_ids']/list//field[@name='product_id']" position="attributes">
                 <attribute name="readonly">id and l10n_ve_doc_type_internal_type in ('credit_note', 'debit_note')</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='name']" position="attributes">
+            <xpath expr="//field[@name='invoice_line_ids']/list//field[@name='name']" position="attributes">
                 <attribute name="readonly">l10n_ve_doc_type_internal_type in ('credit_note', 'debit_note')</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='account_id']" position="attributes">
+            <xpath expr="//field[@name='invoice_line_ids']/list//field[@name='account_id']" position="attributes">
                 <attribute name="readonly">l10n_ve_doc_type_internal_type in ('credit_note', 'debit_note')</attribute>
             </xpath>
-            <xpath expr="//field[@name='line_ids']/tree//field[@name='account_id']" position="attributes">
+            <xpath expr="//field[@name='line_ids']/list//field[@name='account_id']" position="attributes">
                 <attribute name="readonly">parent.l10n_ve_doc_type_internal_type</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='discount']" position="attributes">
+            <xpath expr="//field[@name='invoice_line_ids']/list//field[@name='discount']" position="attributes">
                 <attribute name="readonly">l10n_ve_doc_type_internal_type in ('credit_note', 'debit_note')</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='quantity']" position="attributes">
+            <xpath expr="//field[@name='invoice_line_ids']/list//field[@name='quantity']" position="attributes">
                 <attribute name="readonly">l10n_ve_doc_type_internal_type == 'debit_note'</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='price_unit']" position="attributes">
+            <xpath expr="//field[@name='invoice_line_ids']/list//field[@name='price_unit']" position="attributes">
                 <attribute name="readonly">l10n_ve_doc_type_internal_type == 'credit_note'</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='line_ids']/tree" position="attributes">
+            <xpath expr="//field[@name='line_ids']/list" position="attributes">
                 <attribute name="create">not l10n_ve_doc_type_internal_type</attribute>
                 <attribute name="edit">not l10n_ve_doc_type_internal_type</attribute>
                 <attribute name="delete">not l10n_ve_doc_type_internal_type</attribute>
@@ -152,7 +152,7 @@
     </record>
 
     <record id="view_invoice_tree" model="ir.ui.view">
-        <field name="name">account.move.tree.l10n.ve.invoice</field>
+        <field name="name">account.move.list.l10n.ve.invoice</field>
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_invoice_tree" />
         <field name="arch" type="xml">

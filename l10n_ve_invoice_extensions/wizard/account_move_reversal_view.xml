@@ -21,11 +21,11 @@
                 <footer position="before">
                     <field
                         name="product_balance_ids"
-                        mode="tree"
+                        mode="list"
                         invisible="not is_invoice"
                         readonly="0"
                     >
-                        <tree create="False" edit="True" delete="False" editable="bottom" decoration-warning="quantity &lt; 0.01">
+                        <list create="False" edit="True" delete="False" editable="bottom" decoration-warning="quantity &lt; 0.01">
                             <control></control>
 
                             <field name="id" column_invisible="1" />
@@ -38,7 +38,7 @@
                             <field name="origin_available_quantity" string="Disponible" readonly="1" />
                             <field name="quantity" readonly="0"/>
                             <field name="amount_total" readonly="1" />
-                        </tree>
+                        </list>
                     </field>
                 </footer>
 

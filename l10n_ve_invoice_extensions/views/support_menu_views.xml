@@ -4,7 +4,7 @@
         <record id="action_vat_tax_tree" model="ir.actions.act_window">
             <field name="name">Alícuotas del IVA</field>
             <field name="res_model">account.tax</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <!-- <field name="domain">[('l10n_ve_tax_type', '=', 'VAT')]</field> -->
             <field name="context">{'search_default_l10n_ve_vat': True, 'search_default_sale': True, 'search_default_purchase': True, 'active_test': False, 'create': 1, 'edit': 1, 'delete': 0}</field>
             <field name="view_id" ref="account.view_tax_tree" />
@@ -13,7 +13,7 @@
         <record id="action_igtf_tax_tree" model="ir.actions.act_window">
             <field name="name">Alícuotas del IGTF</field>
             <field name="res_model">account.tax</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <!-- <field name="domain">[('l10n_ve_tax_type', '=', 'IGTF')]</field> -->
             <field name="context">{'search_default_l10n_ve_igtf': True, 'search_default_sale': True, 'search_default_purchase': True, 'active_test': False, 'create': 1, 'edit': 1, 'delete': 0}</field>
             <field name="view_id" ref="account.view_tax_tree" />

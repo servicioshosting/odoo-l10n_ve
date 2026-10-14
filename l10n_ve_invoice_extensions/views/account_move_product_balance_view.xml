@@ -1,17 +1,17 @@
 <odoo>
     <data>
         <record id="view_move_product_balance_tree" model="ir.ui.view">
-            <field name="name">account.move.product.balance.tree</field>
+            <field name="name">account.move.product.balance.list</field>
             <field name="model">account.move.product.balance</field>
             <field name="arch" type="xml">
-                <tree create="False" edit="False" delete="False">
+                <list create="False" edit="False" delete="False">
                     <field name="invoice_id" />
                     <field name="origin_id" optional="hide" />
                     <field name="invoice_line_id" optional="hide" />
                     <field name="product_id" />
                     <field name="quantity" />
                     <field name="unit_price" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -47,7 +47,7 @@
                 "name": "Balances de productos",
                 "type": "ir.actions.act_window",
                 "res_model": "account.move.product.balance",
-                "view_mode": "tree",
+                "view_mode": "list",
                 "domain": [("invoice_id", "=", record.id)],
                 }
             </field>

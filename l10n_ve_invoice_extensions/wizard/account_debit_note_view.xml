@@ -22,11 +22,11 @@
                 <footer position="before">
                     <field
                         name="product_balance_ids"
-                        mode="tree"
+                        mode="list"
                         invisible="not is_invoice"
                         readonly="0"
                     >
-                        <tree create="False" edit="True" delete="False" editable="bottom" decoration-warning="unit_price &lt; currency_rounding">
+                        <list create="False" edit="True" delete="False" editable="bottom" decoration-warning="unit_price &lt; currency_rounding">
                             <control></control>
 
                             <field name="id" column_invisible="1" />
@@ -41,7 +41,7 @@
                             <field name="new_unit_price" string="Nuevo precio unit." />
                             <field name="unit_price" string="Diferencia" />
                             <field name="amount_total" help="Monto con IVA" readonly="1" />
-                        </tree>
+                        </list>
                     </field>
                 </footer>
 

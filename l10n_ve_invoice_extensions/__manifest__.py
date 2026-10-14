@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 {
     "name": "Venezuela - Facturación extensiones",
     "summary": "Usa el modulo nativo l10n_latam_document_type para asignar números de documento.",
     "author": "LIDALabs",
     "website": "https://lidalabs.com",
     "category": "Accountant/Accountant",
-    "version": "17.0.1.3.2",
+    "version": "18.0.1.0.0",
     "license": "LGPL-3",
     "depends": [
         # "product",
