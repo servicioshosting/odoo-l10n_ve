@@ -40,13 +40,13 @@
                 <field name="manually_set_rate" invisible="1"/>
             </field>
 
-            <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_unit']"
+            <xpath expr="//notebook/page/field[@name='order_line']/list/field[@name='price_unit']"
                 position="after">
                 <field name="foreign_price" />
             </xpath>
 
             <xpath
-                expr="//notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']"
+                expr="//notebook/page/field[@name='order_line']/list/field[@name='price_subtotal']"
                 position="after">
                 <field name="foreign_subtotal" />
                 <field name="foreign_rate" optional="hide" readonly="1"/>
@@ -58,11 +58,11 @@
                     readonly="1" />
             </xpath>
 
-            <xpath expr="//notebook/page/field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
+            <xpath expr="//notebook/page/field[@name='order_line']/list/field[@name='tax_id']" position="attributes">
                 <attribute name="readonly">1</attribute>
             </xpath>
 
-            <xpath expr="//notebook/page[@name='order_lines']//tree" position="attributes">
+            <xpath expr="//notebook/page[@name='order_lines']//list" position="attributes">
                 <attribute name="create">state == 'draft'</attribute>
                 <attribute name="edit">state == 'draft'</attribute>
                 <!-- <attribute name="delete">state == 'draft'</attribute> -->
@@ -145,7 +145,7 @@
                     groups="!l10n_ve_sale.payment_terms_sale_order_group" />
             </field>
 
-            <xpath expr="//notebook/page[1]//tree/field[@name='price_unit']" position="replace">
+            <xpath expr="//notebook/page[1]//list/field[@name='price_unit']" position="replace">
                 <field name="price_unit" readonly="1"
                     groups="l10n_ve_sale.edit_product_line_pricing_sale_order_group" />
                 <field name="price_unit"
@@ -156,7 +156,7 @@
     </record>
 
     <record id="view_quotation_tree" model="ir.ui.view">
-        <field name="name">sale.order.tree</field>
+        <field name="name">sale.order.list</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_quotation_tree" />
         <field name="arch" type="xml">
@@ -177,7 +177,7 @@
     </record>
 
     <record id="view_order_tree" model="ir.ui.view">
-        <field name="name">sale.order.tree</field>
+        <field name="name">sale.order.list</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_tree" />
         <field name="arch" type="xml">
