@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import datetime as dt
 import logging
 from collections import defaultdict
@@ -199,7 +198,7 @@ class AuditlogFiscalEvent(models.Model):
             # "name": "Balances de productos",
             "type": "ir.actions.act_window",
             "res_model": self.model_name,
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("id", "=", self.res_id)],
             "context": {"create": 0, "edit": 0, "delete": 0},
         }

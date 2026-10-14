@@ -21,7 +21,7 @@
     </record>
     <!-- View auditlog.http.session tree -->
     <!-- <record id="view_auditlog_http_session_tree" model="ir.ui.view">
-        <field name="name">view.auditlog.http.session.tree.inherit</field>
+        <field name="name">view.auditlog.http.session.list.inherit</field>
         <field name="model">auditlog.http.session</field>
         <field name="inherit_id" ref="auditlog.view_auditlog_http_session_tree"/>
         <field name="arch" type="xml">

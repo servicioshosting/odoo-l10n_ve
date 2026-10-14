@@ -27,7 +27,7 @@
     </record>
     <!-- View auditlog.http.request tree -->
     <!-- <record id="view_auditlog_http_request_tree" model="ir.ui.view">
-        <field name="name">view.auditlog.http.request.tree.inherit</field>
+        <field name="name">view.auditlog.http.request.list.inherit</field>
         <field name="model">auditlog.http.request</field>
         <field name="inherit_id" ref="auditlog.view_auditlog_http_request_tree"/>
         <field name="arch" type="xml">

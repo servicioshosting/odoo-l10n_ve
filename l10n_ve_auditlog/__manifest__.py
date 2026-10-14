@@ -7,7 +7,7 @@
     "author": "Servitepuy, C.A.",
     "website": "https://servicioshosting.com",
     "category": "Technical",
-    "version": "17.0.0.0.0",
+    "version": "18.0.1.0.0",
     'data': [
         "data/auditlog_fiscalevent_tag.xml",
         "data/auditlog_rule.xml",
