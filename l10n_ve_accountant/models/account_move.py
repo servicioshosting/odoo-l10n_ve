@@ -443,7 +443,7 @@ class AccountMove(models.Model):
         is_invoice = self.is_invoice(include_receipts=True)
         receivable_and_payable_account_types = {"asset_receivable", "liability_payable"}
         # self.line_ids.update({"foreign_debit": 0, "foreign_credit": 0})
-        payment = self.payment_id
+        payment = self.origin_payment_id
 
         # If the move is a retention payment we need to use the retention_foreign_amount of the
         # payment to compute the foreign debit/credit.

@@ -96,15 +96,15 @@ class AccountMoveLine(models.Model):
             elif (
                 line.currency_id != line.company_id.currency_id
                 and not line.move_id.is_invoice(True)
-                and line.move_id.payment_id
+                and line.move_id.origin_payment_id
             ):
                 if (
-                    line.move_id.payment_id.foreign_inverse_rate != 0
+                    line.move_id.origin_payment_id.foreign_inverse_rate != 0
                     and line.amount_currency != 0
                 ):
                     line.balance = line.company_id.currency_id.round(
                         line.amount_currency
-                        / line.move_id.payment_id.foreign_inverse_rate
+                        / line.move_id.origin_payment_id.foreign_inverse_rate
                     )
                 else:
                     raise UserError(_("The rate should be greater than zero"))
@@ -204,20 +204,20 @@ class AccountMoveLine(models.Model):
                 continue
 
             if (
-                line.move_id.payment_id
+                line.move_id.origin_payment_id
                 and "retention_foreign_amount" in self.env["account.payment"]._fields
-                and line.move_id.payment_id.is_retention
+                and line.move_id.origin_payment_id.is_retention
             ):
                 # 5 Case: Retention
                 # In this case, we need to set the foreign debit and credit of the retention
                 if not line.currency_id.is_zero(line.debit):
                     line.foreign_debit = (
-                        line.move_id.payment_id.retention_foreign_amount
+                        line.move_id.origin_payment_id.retention_foreign_amount
                     )
                     continue
                 if not line.currency_id.is_zero(line.credit):
                     line.foreign_credit = (
-                        line.move_id.payment_id.retention_foreign_amount
+                        line.move_id.origin_payment_id.retention_foreign_amount
                     )
                     continue
 
@@ -338,15 +338,15 @@ class AccountMoveLine(models.Model):
         """
 
         def is_payment(aml):
-            return aml.move_id.payment_id or aml.move_id.statement_line_id
+            return aml.move_id.origin_payment_id or aml.move_id.statement_line_id
 
         def get_odoo_rate(aml, other_aml, currency):
             if forced_rate := self._context.get("forced_rate_from_register_payment"):
                 return forced_rate
             if other_aml and not is_payment(aml) and is_payment(other_aml):
                 # >>>> Integra
-                if aml.move_id.payment_id:
-                    return aml.move_id.payment_id.foreign_inverse_rate
+                if aml.move_id.origin_payment_id:
+                    return aml.move_id.origin_payment_id.foreign_inverse_rate
                 # <<<< Integra
                 return get_accounting_rate(other_aml, currency)
             if aml.move_id.is_invoice(include_receipts=True):

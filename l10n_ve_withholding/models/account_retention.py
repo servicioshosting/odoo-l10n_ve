@@ -874,7 +874,7 @@ class AccountRetention(models.Model):
             payment.retention_line_ids.move_id.js_assign_outstanding_line(line_to_reconcile.id)
 
         elif payment.payment_type == "inbound":
-            cxc_reconciliations = cxc_lines.matched_credit_ids.filtered(lambda r: r.credit_move_id.move_id.payment_id)
+            cxc_reconciliations = cxc_lines.matched_credit_ids.filtered(lambda r: r.credit_move_id.move_id.origin_payment_id)
             cxc_other_payment_lines = cxc_reconciliations.credit_move_id.sorted('credit')
             cxc_reconciliations.unlink()
             
