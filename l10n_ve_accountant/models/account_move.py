@@ -4,9 +4,10 @@ from collections import defaultdict
 from lxml import etree
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import drop_index, float_compare, index_exists
+from odoo.tools import float_compare
 from odoo.tools.float_utils import float_is_zero, float_round
 from odoo.tools.misc import formatLang
+from odoo.tools.sql import drop_index, index_exists
 
 _logger = logging.getLogger(__name__)
 
