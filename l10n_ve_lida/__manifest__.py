@@ -2,11 +2,11 @@
 {
     "name": "Venezuela - Plan de cuentas",
     "category": "Accounting/Localizations/Account Charts",
-    "website": "https://www.odoo.com/documentation/17.0/applications/finance/fiscal_localizations.html",
+    "website": "https://www.odoo.com/documentation/18.0/applications/finance/fiscal_localizations.html",
     "icon": "/account/static/description/l10n.png",
     "countries": ["ve"],
     "license": "LGPL-3",
-    "version": "17.0.1.0.10",
+    "version": "18.0.1.0.0",
     "description": """
         Plantilla de plan de cuentas de servicio donde se agregan las
         cuentas contables y diarios para tipo de empresa servicio
