@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': "Modulo de Compatibilidad con Backport",
 
@@ -10,7 +9,7 @@
     'license': "Other proprietary",
     'website': "https://servicioshosting.com",
     'category': 'Other',
-    'version': '17.0.0.0.1',
+    'version': "18.0.1.0.0",
     'depends': ['base'],
     'data': [
         # 'security/ir.model.access.csv',
