@@ -60,9 +60,13 @@
                         </page>
                     </notebook>
                 </group>
-                <group name="group3" position="attributes">
-                    <attribute name="invisible">not edit_retention_fields or payment_difference == 0.0 or not can_edit_wizard or can_group_payments and not group_payment</attribute>
-                </group>
+                <!-- Odoo 18: group3 removed; hide payment difference when retention edit locked -->
+                <label for="payment_difference" position="attributes">
+                    <attribute name="invisible">not show_payment_difference or not edit_retention_fields</attribute>
+                </label>
+                <xpath expr="//div[field[@name='payment_difference']]" position="attributes">
+                    <attribute name="invisible">not show_payment_difference or not edit_retention_fields</attribute>
+                </xpath>
             </field>
         </record>
     </data>
