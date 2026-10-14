@@ -9,7 +9,8 @@
                 <field name="foreign_inverse_rate" invisible="1" />
                 <field name="foreign_inverse_rate" readonly="1" groups="base.group_no_one" />
             </field>
-            <field name="ref" position="after">
+            <!-- Odoo 18: payment.ref → memo -->
+            <field name="memo" position="after">
                 <field name="concept" />
             </field>
         </field>
