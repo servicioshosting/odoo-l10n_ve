@@ -40,11 +40,8 @@
                 <attribute name="readonly">l10n_ve_doc_type_internal_type and (move_type in ['out_invoice', 'out_refund', 'out_receipt'] or state != 'draft')</attribute>
             </field>
 
-            <xpath expr="//div[@name='journal_div']/field[@name='currency_id']" position="attributes">
-                <attribute name="domain">[('name', '=like', 'VE_')]</attribute>
-            </xpath>
-
-            <xpath expr="//div[@name='journal_div']/following-sibling::field[@name='currency_id']" position="attributes">
+            <!-- Odoo 18: currency_id nested under currency_div inside journal_div -->
+            <xpath expr="//div[@name='journal_div']//field[@name='currency_id']" position="attributes">
                 <attribute name="domain">[('name', '=like', 'VE_')]</attribute>
             </xpath>
 
