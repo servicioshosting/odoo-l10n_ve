@@ -975,7 +975,9 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                     total_idx, index, summary_total, cell_formats["number"]
                 )
 
-        self._generate_book_resume(workbook, worksheet, summary_data, total_idx, cell_formats)
+        # Empty period keeps total_idx=0 and would overlap title merges (C3:M3).
+        resume_idx = total_idx if sale_book_lines else INIT_LINES
+        self._generate_book_resume(workbook, worksheet, summary_data, resume_idx, cell_formats)
 
         worksheet.protect(password=password_protection)
 
@@ -1123,7 +1125,9 @@ class WizardAccountingReportsBinauralInvoice(models.TransientModel):
                     total_idx, index, summary_total, cell_formats["number"]
                 )
 
-        self._generate_book_resume(workbook, worksheet, summary_data, total_idx, cell_formats)
+        # Empty period keeps total_idx=0 and would overlap title merges (C3:M3).
+        resume_idx = total_idx if purchase_book_lines else INIT_LINES
+        self._generate_book_resume(workbook, worksheet, summary_data, resume_idx, cell_formats)
 
         worksheet.protect(password=password_protection)
 

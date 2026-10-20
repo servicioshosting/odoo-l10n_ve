@@ -132,6 +132,8 @@ class AccountTax(models.Model):
             )
             for group in subtotal.get("tax_groups") or []:
                 group.setdefault("tax_group_name", group.get("group_name"))
+                # Odoo 17 used tax_group_id; Odoo 18 tax_groups expose `id`.
+                group.setdefault("tax_group_id", group.get("id"))
                 tax_amt = group.get("tax_amount_currency", 0.0)
                 base_amt = group.get("base_amount_currency", 0.0)
                 group["tax_group_amount"] = tax_amt

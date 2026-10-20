@@ -20,7 +20,8 @@ class AccountDebitNote(models.TransientModel):
         move_ids = self.env['account.move'].browse(self.env.context['active_ids']) if self.env.context.get('active_model') == 'account.move' else self.env['account.move']
         
         if move_ids and len(move_ids) == 1:
-            res['journal_id'] = move_ids.journal_id
+            # Many2one defaults must be ids (Odoo 18 ORM / psycopg adapt).
+            res['journal_id'] = move_ids.journal_id.id
             if move_ids.l10n_ve_doc_type_internal_type == 'invoice':
                 balances = move_ids.product_balance_ids
                 vals_list = [balance.copy_data()[0] for balance in balances]
@@ -92,24 +93,23 @@ class AccountDebitNote(models.TransientModel):
         line_vals_list = []
         for line in move.invoice_line_ids:
             if line.display_type == 'product' and line.product_id.id in price_change_map and price_change_map[line.product_id.id]['price_unit'] > 0:
-                line_vals_list.append(Command.create(
-                    {
-                        'name': line.name,
-                        'analytic_distribution': line.analytic_distribution,
-                        'analytic_distribution_search': line.analytic_distribution_search,
-                        'analytic_precision': line.analytic_precision,
-                        'display_type': line.display_type,
-                        'sequence': line.sequence,
-                        'currency_id': line.currency_id.id,
-                        'product_id': line.product_id.id,
-                        'product_uom_id': line.product_uom_id.id,
-                        # 'price_unit': price_change_map[line.product_id.id]['unit_price'],
-                        # 'quantity': price_change_map[line.product_id.id]['quantity'],
-                        'tax_ids': [Command.set(line.tax_ids.ids)],
-                        'group_tax_id': line.group_tax_id.ids,
-                        'tax_tag_ids': [Command.set(line.tax_tag_ids.ids)],
-                        **price_change_map[line.product_id.id]
-                    }
-                ))
+                line_vals = {
+                    'name': line.name,
+                    'analytic_distribution': line.analytic_distribution,
+                    'display_type': line.display_type,
+                    'sequence': line.sequence,
+                    'currency_id': line.currency_id.id,
+                    'product_id': line.product_id.id,
+                    'product_uom_id': line.product_uom_id.id,
+                    'tax_ids': [Command.set(line.tax_ids.ids)],
+                    'tax_tag_ids': [Command.set(line.tax_tag_ids.ids)],
+                    **price_change_map[line.product_id.id],
+                }
+                # Odoo 18 dropped analytic_distribution_search; group_tax_id is Many2one.
+                if 'analytic_precision' in line._fields:
+                    line_vals['analytic_precision'] = line.analytic_precision
+                if line.group_tax_id:
+                    line_vals['group_tax_id'] = line.group_tax_id.id
+                line_vals_list.append(Command.create(line_vals))
         return line_vals_list
 

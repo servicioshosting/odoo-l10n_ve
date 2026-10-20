@@ -163,24 +163,25 @@ class AccountMoveReversal(models.TransientModel):
             line_vals_list = []
             for line in move.invoice_line_ids:
                 if line.display_type == 'product' and line.product_id.id in product_balance_map and product_balance_map[line.product_id.id].quantity > 0:
-                    line_vals_list.append(Command.create(
-                        {
-                            'name': line.name,
-                            'analytic_distribution': line.analytic_distribution,
-                            'analytic_distribution_search': line.analytic_distribution_search,
-                            'analytic_precision': line.analytic_precision,
-                            'display_type': line.display_type,
-                            'sequence': line.sequence,
-                            'currency_id': line.currency_id.id,
-                            'product_id': line.product_id.id,
-                            'product_uom_id': line.product_uom_id.id,
-                            'price_unit': product_balance_map[line.product_id.id].unit_price,
-                            'quantity': product_balance_map[line.product_id.id].quantity,
-                            'tax_ids': [Command.set(line.tax_ids.ids)],
-                            'group_tax_id': line.group_tax_id.ids,
-                            'tax_tag_ids': [Command.set(line.tax_tag_ids.ids)],
-                        }
-                    ))
+                    line_vals = {
+                        'name': line.name,
+                        'analytic_distribution': line.analytic_distribution,
+                        'display_type': line.display_type,
+                        'sequence': line.sequence,
+                        'currency_id': line.currency_id.id,
+                        'product_id': line.product_id.id,
+                        'product_uom_id': line.product_uom_id.id,
+                        'price_unit': product_balance_map[line.product_id.id].unit_price,
+                        'quantity': product_balance_map[line.product_id.id].quantity,
+                        'tax_ids': [Command.set(line.tax_ids.ids)],
+                        'tax_tag_ids': [Command.set(line.tax_tag_ids.ids)],
+                    }
+                    # Odoo 18 dropped analytic_distribution_search; group_tax_id is Many2one.
+                    if 'analytic_precision' in line._fields:
+                        line_vals['analytic_precision'] = line.analytic_precision
+                    if line.group_tax_id:
+                        line_vals['group_tax_id'] = line.group_tax_id.id
+                    line_vals_list.append(Command.create(line_vals))
 
             new_move_vals['line_ids'] = line_vals_list
             self._l10n_ve_modify_reverse_move_data(new_move_vals, move)
