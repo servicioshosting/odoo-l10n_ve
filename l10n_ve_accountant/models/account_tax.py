@@ -125,6 +125,12 @@ class AccountTax(models.Model):
                 "raw_total_excluded",
             ):
                 new_line.pop(key, None)
+            # Odoo 18 indexes these keys directly (KeyError if missing).
+            new_line.setdefault("manual_tax_amounts", None)
+            new_line.setdefault("manual_total_excluded_currency", None)
+            new_line.setdefault("manual_total_excluded", None)
+            new_line.setdefault("filter_tax_function", None)
+            new_line.setdefault("special_mode", False)
             cloned.append(new_line)
         return cloned
 
@@ -144,5 +150,9 @@ class AccountTax(models.Model):
                 if "foreign_price" in record._fields:
                     base_line["price_unit"] = record.foreign_price
                 # quantity / taxes already on the base line
-            base_line.pop("manual_tax_amounts", None)
+            # Keep keys present (do not pop): core does base_line['manual_tax_amounts'].
+            # Clear values so VEF manual amounts are not reused on the foreign recompute.
+            base_line["manual_tax_amounts"] = None
+            base_line["manual_total_excluded_currency"] = None
+            base_line["manual_total_excluded"] = None
         return foreign_base_lines
