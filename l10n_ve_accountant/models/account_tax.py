@@ -107,7 +107,49 @@ class AccountTax(models.Model):
         res["foreign_formatted_discount_amount"] = formatLang(
             self.env, res["foreign_discount_amount"], currency_obj=foreign_currency
         )
+
+        # Odoo 17 report aliases (free-form / legacy QWeb)
+        self._l10n_ve_enrich_subtotals_legacy(res.get("subtotals") or [], currency)
+        self._l10n_ve_enrich_subtotals_legacy(
+            res.get("foreign_subtotals") or [], foreign_currency
+        )
+        res["groups_by_subtotal"] = self._l10n_ve_groups_by_subtotal(
+            res.get("subtotals") or []
+        )
+        res["groups_by_foreign_subtotal"] = self._l10n_ve_groups_by_subtotal(
+            res.get("foreign_subtotals") or []
+        )
+        res["display_tax_base"] = not res.get("same_tax_base", True)
         return res
+
+    @api.model
+    def _l10n_ve_enrich_subtotals_legacy(self, subtotals, currency):
+        """Add formatted_amount / tax_group_* aliases expected by VE QWeb reports."""
+        for subtotal in subtotals:
+            amount = subtotal.get("base_amount_currency", 0.0)
+            subtotal["formatted_amount"] = formatLang(
+                self.env, amount, currency_obj=currency
+            )
+            for group in subtotal.get("tax_groups") or []:
+                group.setdefault("tax_group_name", group.get("group_name"))
+                tax_amt = group.get("tax_amount_currency", 0.0)
+                base_amt = group.get("base_amount_currency", 0.0)
+                group["tax_group_amount"] = tax_amt
+                group["tax_group_base_amount"] = base_amt
+                group["formatted_tax_group_amount"] = formatLang(
+                    self.env, tax_amt, currency_obj=currency
+                )
+                group["formatted_tax_group_base_amount"] = formatLang(
+                    self.env, base_amt, currency_obj=currency
+                )
+
+    @api.model
+    def _l10n_ve_groups_by_subtotal(self, subtotals):
+        """Rebuild Odoo 17 groups_by_subtotal mapping from 18 subtotals."""
+        result = {}
+        for subtotal in subtotals:
+            result[subtotal.get("name")] = list(subtotal.get("tax_groups") or [])
+        return result
 
     @api.model
     def _l10n_ve_clone_base_lines(self, base_lines, force_discount=None):
