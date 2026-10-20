@@ -230,12 +230,19 @@ class AccountMove(models.Model):
             else:
                 invoice_print_type = None
 
-            move.l10n_ve_responsible_id =  self.env.user or move.invoice_user_id \
-                if move.move_type in ['out_invoice', 'out_refund', 'out_receipt'] else False
+            vals = {}
+            if move.move_type in ['out_invoice', 'out_refund', 'out_receipt']:
+                vals['l10n_ve_responsible_id'] = (self.env.user or move.invoice_user_id).id
             if move.is_valid_to_sequence() and invoice_print_type != "fiscal":
-                move.l10n_ve_doc_datetime = fields.Datetime.now()
-                move.invoice_date = move.l10n_ve_doc_datetime
-                move.l10n_ve_control_number = move.get_sequence()
+                doc_dt = fields.Datetime.now()
+                vals.update({
+                    'l10n_ve_doc_datetime': doc_dt,
+                    'invoice_date': doc_dt,
+                    'l10n_ve_control_number': move.get_sequence(),
+                })
+            if vals:
+                # Odoo 18: invoice_date/date are readonly on posted moves.
+                move.with_context(skip_readonly_check=True).write(vals)
 
         return res
 

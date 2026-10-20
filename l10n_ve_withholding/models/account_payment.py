@@ -88,9 +88,10 @@ class AccountPayment(models.Model):
             if payment.retention_id.type_retention == "islr":
                 move_name += "-{:0>3}".format(str(payment.retention_line_ids[0].code))
 
-            vals_to_change = {"name": move_name}
-            move.write(vals_to_change)
-            move.line_ids.write(vals_to_change)
+            # Odoo 18 mutates vals in write() (injects is_manually_modified);
+            # never reuse the same dict for move lines.
+            move.with_context(skip_is_manually_modified=True).write({"name": move_name})
+            move.line_ids.with_context(skip_is_manually_modified=True).write({"name": move_name})
         return res
 
     def unlink(self):

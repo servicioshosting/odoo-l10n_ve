@@ -74,6 +74,16 @@ class AccountPaymentRegister(models.TransientModel):
             )
             payment.update(rate_values)
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Odoo 18 / RPC creates skip onchange; seed foreign rate from payment_date.
+        wizards = super().create(vals_list)
+        Rate = self.env["res.currency.rate"]
+        for wiz in wizards.filtered(lambda w: not w.foreign_rate and w.payment_date and w.foreign_currency_id):
+            rate_values = Rate.compute_rate(wiz.foreign_currency_id.id, wiz.payment_date)
+            wiz.write(rate_values)
+        return wizards
+
     def _create_payment_vals_from_wizard(self, batch_result):
         """
         This method is used to add the foreign rate and the foreign inverse rate to the payment
