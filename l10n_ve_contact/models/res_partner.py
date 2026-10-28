@@ -33,6 +33,17 @@ class ResPartner(models.Model):
 
     l10n_ve_vat = fields.Char('Venezuelan VAT', index=True, compute="_compute_l10n_ve_vat", store=True)
     l10n_ve_vat_formatted = fields.Char('Venezuelan VAT Formatted', index=True, compute="_compute_l10n_ve_vat", store=True)
+    l10n_ve_rif_check_digit = fields.Selection(
+        [
+            ("valid", "Valid"),
+            ("invalid", "Invalid"),
+            ("n/a", "N/A"),
+        ],
+        string="RIF Check Digit",
+        compute="_compute_l10n_ve_rif_check_digit",
+        store=True,
+        index=True,
+    )
     identity_document = fields.Char("Identify Document")
 
     def _default_company_id(self):
@@ -193,6 +204,52 @@ class ResPartner(models.Model):
             self.company_type = 'company'
         else:
             self.company_type = 'person'
+
+    @api.onchange("prefix_vat", "vat")
+    def _onchange_l10n_ve_rif_check_digit(self):
+        prefix = self.prefix_vat or ""
+        vat = self.vat or ""
+        if prefix not in ("V", "E", "J", "G", "C") or not re.match(r"^[0-9]{9}$", vat):
+            return
+        expected = self._l10n_ve_rif_check_digit(prefix, vat[:-1])
+        if expected is None or int(vat[-1]) == expected:
+            return
+        return {
+            "warning": {
+                "title": _("Invalid RIF check digit"),
+                "message": _("The RIF check digit is invalid."),
+            }
+        }
+
+    @api.model
+    def _l10n_ve_rif_check_digit(self, prefix, body8):
+        """SENIAT RIF check digit from letter + 8-digit body."""
+        type_map = {"V": 4, "E": 8, "J": 12, "P": 16, "G": 20, "C": 24}
+        t = type_map.get((prefix or "").upper())
+        if t is None or not body8 or not str(body8).isdigit():
+            return None
+        weights = [3, 2, 7, 6, 5, 4, 3, 2]
+        digits = list(str(body8).zfill(8)[-8:])
+        total = t
+        for w, d in zip(weights, digits):
+            total += w * int(d)
+        rem = total % 11
+        return 0 if rem in (0, 1) else 11 - rem
+
+    @api.depends("prefix_vat", "vat")
+    def _compute_l10n_ve_rif_check_digit(self):
+        rif_prefixes = ("V", "E", "J", "G", "C")
+        for partner in self:
+            prefix = partner.prefix_vat or ""
+            vat = partner.vat or ""
+            if prefix in rif_prefixes and re.match(r"^[0-9]{9}$", vat):
+                expected = self._l10n_ve_rif_check_digit(prefix, vat[:-1])
+                if expected is not None and int(vat[-1]) == expected:
+                    partner.l10n_ve_rif_check_digit = "valid"
+                else:
+                    partner.l10n_ve_rif_check_digit = "invalid"
+            else:
+                partner.l10n_ve_rif_check_digit = "n/a"
 
     @api.depends('prefix_vat', 'vat')
     def _compute_l10n_ve_vat(self):

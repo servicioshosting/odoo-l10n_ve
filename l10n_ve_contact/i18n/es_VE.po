@@ -123,6 +123,19 @@ msgid "Identify Document"
 msgstr "Cédula"
 
 #. module: l10n_ve_contact
+#: model:ir.model.fields.selection,name:l10n_ve_contact.selection__res_partner__l10n_ve_rif_check_digit__invalid
+msgid "Invalid"
+msgstr "Inválido"
+
+#. module: l10n_ve_contact
+#. odoo-python
+#: code:addons/l10n_ve_contact/models/res_partner.py:0
+#: model_terms:ir.ui.view,arch_db:l10n_ve_contact.view_res_partner_filter
+#, python-format
+msgid "Invalid RIF check digit"
+msgstr "RIF dígito inválido"
+
+#. module: l10n_ve_contact
 #: model:ir.model.fields,field_description:l10n_ve_contact.field_res_partner__mobile
 #: model:ir.model.fields,field_description:l10n_ve_contact.field_res_users__mobile
 msgid "Mobile"
@@ -133,6 +146,11 @@ msgstr "Móvil"
 #: model:ir.model.fields,field_description:l10n_ve_contact.field_res_users__municipality
 msgid "Municipality"
 msgstr "Municipio"
+
+#. module: l10n_ve_contact
+#: model:ir.model.fields.selection,name:l10n_ve_contact.selection__res_partner__l10n_ve_rif_check_digit__n_a
+msgid "N/A"
+msgstr "N/A"
 
 #. module: l10n_ve_contact
 #: model:ir.model.fields,field_description:l10n_ve_contact.field_res_partner__name
@@ -165,6 +183,12 @@ msgid "Pricelist"
 msgstr "Tarifa"
 
 #. module: l10n_ve_contact
+#: model:ir.model.fields,field_description:l10n_ve_contact.field_res_partner__l10n_ve_rif_check_digit
+#: model:ir.model.fields,field_description:l10n_ve_contact.field_res_users__l10n_ve_rif_check_digit
+msgid "RIF Check Digit"
+msgstr "Dígito verificador RIF"
+
+#. module: l10n_ve_contact
 #: model:ir.model.fields,field_description:l10n_ve_contact.field_res_partner__state_id
 #: model:ir.model.fields,field_description:l10n_ve_contact.field_res_users__state_id
 msgid "State"
@@ -189,6 +213,14 @@ msgstr "Calle"
 #, python-format
 msgid "The address contains a character that is not allowed for registration."
 msgstr ""
+
+#. module: l10n_ve_contact
+#. odoo-python
+#: code:addons/l10n_ve_contact/models/res_partner.py:0
+#: model_terms:ir.ui.view,arch_db:l10n_ve_contact.res_partner_l10n_ve_form_contacts
+#, python-format
+msgid "The RIF check digit is invalid."
+msgstr "El dígito verificador del RIF es inválido."
 
 #. module: l10n_ve_contact
 #: model:ir.model.fields,help:l10n_ve_contact.field_res_partner__property_account_position_id
@@ -242,6 +274,11 @@ msgid ""
 msgstr ""
 "Esta tarifa se utilizará, en lugar de la por defecto, para las ventas de la "
 "empresa actual."
+
+#. module: l10n_ve_contact
+#: model:ir.model.fields.selection,name:l10n_ve_contact.selection__res_partner__l10n_ve_rif_check_digit__valid
+msgid "Valid"
+msgstr "Válido"
 
 #. module: l10n_ve_contact
 #: model_terms:ir.ui.view,arch_db:l10n_ve_contact.res_config_settings_l10n_ve_contact
