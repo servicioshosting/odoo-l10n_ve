@@ -7,7 +7,7 @@
     "author": "Servitepuy, C.A., binaural-dev",
     "website": "https://servicioshosting.com",
     "category": "Contacts/Contacts",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "depends": ["base", "l10n_ve_lida", "base_vat", "contacts", "l10n_ve_location"],
     "data": [
         "security/ir.model.access.csv",
